@@ -1,0 +1,537 @@
+// Prisma Schema for APIS Project Management & Staff Intelligence System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------
+// RBAC & ORGANIZATION
+// ----------------------------------------------------
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique // CEO, ADMIN, PROJECT_MANAGER, ACCOUNT_MANAGER, DEPARTMENT_HEAD, STAFF, VIEWER
+  description String?
+  users       User[]
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  action      String // e.g., "project:create", "user:manage", "ceo:analytics"
+  description String?
+  roles       Role[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([action])
+}
+
+model Department {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  code        String    @unique
+  description String?
+  headId      String?
+  head        User?     @relation("DepartmentHead", fields: [headId], references: [id])
+  teams       Team[]
+  users       User[]    @relation("DepartmentMembers")
+  projects    Project[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Team {
+  id           String     @id @default(uuid())
+  name         String
+  code         String?    @unique
+  description  String?
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  leaderId     String?
+  leader       User?      @relation("TeamLeader", fields: [leaderId], references: [id])
+  members      User[]     @relation("TeamMembers")
+  projects     Project[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+// ----------------------------------------------------
+// USERS & CLIENTS
+// ----------------------------------------------------
+
+model User {
+  id                 String       @id @default(uuid())
+  employeeId         String       @unique
+  email              String       @unique
+  passwordHash       String
+  name               String
+  designation        String?
+  phone              String?
+  avatarUrl          String?
+  status             String       @default("ACTIVE") // ACTIVE, INACTIVE, SUSPENDED
+  joiningDate        DateTime     @default(now())
+  
+  roleId             String
+  role               Role         @relation(fields: [roleId], references: [id])
+  
+  departmentId       String?
+  department         Department?  @relation("DepartmentMembers", fields: [departmentId], references: [id])
+  
+  teamId             String?
+  team               Team?        @relation("TeamMembers", fields: [teamId], references: [id])
+  
+  // Relations
+  headingDepartments Department[] @relation("DepartmentHead")
+  leadingTeams       Team[]       @relation("TeamLeader")
+  
+  managedProjects    Project[]    @relation("ProjectManager")
+  accountProjects    Project[]    @relation("AccountManager")
+  projectMemberships ProjectMember[]
+  
+  assignedTasks      Task[]       @relation("TaskAssignee")
+  reviewedTasks      Task[]       @relation("TaskReviewer")
+  
+  timesheets         Timesheet[]
+  uploadedDocuments  Document[]   @relation("DocumentUploader")
+  
+  sentMessages       Message[]    @relation("SentMessages")
+  notifications      Notification[]
+  
+  requestedApprovals Approval[]   @relation("ApprovalRequester")
+  decidedApprovals   Approval[]   @relation("ApprovalApprover")
+  
+  activityLogs       ActivityLog[]
+  clientAccounts     Client[]     @relation("AccountManagerClients")
+  
+  announcementsSent  Announcement[] @relation("AnnouncementSender")
+  announcementReads  AnnouncementReceipt[]
+
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@index([email])
+  @@index([roleId])
+  @@index([departmentId])
+}
+
+model Client {
+  id               String    @id @default(uuid())
+  company          String
+  contactPerson    String
+  email            String    @unique
+  phone            String?
+  industry         String?
+  status           String    @default("ACTIVE") // ACTIVE, LEAD, INACTIVE
+  notes            String?
+  address          String?
+  
+  accountManagerId String?
+  accountManager   User?     @relation("AccountManagerClients", fields: [accountManagerId], references: [id])
+  
+  projects         Project[]
+  documents        Document[]
+  
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+// ----------------------------------------------------
+// PROJECTS & TASKS
+// ----------------------------------------------------
+
+model Project {
+  id               String          @id @default(uuid())
+  projectCode      String          @unique
+  name             String
+  description      String?
+  
+  clientId         String?
+  client           Client?         @relation(fields: [clientId], references: [id])
+  
+  accountManagerId String?
+  accountManager   User?           @relation("AccountManager", fields: [accountManagerId], references: [id])
+  
+  projectManagerId String?
+  projectManager   User?           @relation("ProjectManager", fields: [projectManagerId], references: [id])
+  
+  departmentId     String?
+  department       Department?     @relation(fields: [departmentId], references: [id])
+  
+  teamId           String?
+  team             Team?           @relation(fields: [teamId], references: [id])
+  
+  startDate        DateTime        @default(now())
+  deadline         DateTime
+  priority         String          @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status           String          @default("PLANNING") // PLANNING, ACTIVE, IN_REVIEW, ON_HOLD, COMPLETED, CANCELLED
+  
+  budget           Float           @default(0.0)
+  revenue          Float           @default(0.0)
+  actualCost       Float           @default(0.0)
+  progress         Float           @default(0.0) // Dynamically calculated
+  
+  members          ProjectMember[]
+  milestones       Milestone[]
+  tasks            Task[]
+  documents        Document[]
+  conversations    Conversation[]
+  timesheets       Timesheet[]
+  risks            ProjectRisk[]
+  approvals        Approval[]
+
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([status])
+  @@index([projectManagerId])
+  @@index([departmentId])
+}
+
+model ProjectMember {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @default("MEMBER") // LEAD, MEMBER, VIEWER
+  joinedAt  DateTime @default(now())
+
+  @@unique([projectId, userId])
+}
+
+model Milestone {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  dueDate     DateTime
+  status      String    @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, DELAYED
+  progress    Float     @default(0.0)
+  
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  tasks       Task[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Task {
+  id             String      @id @default(uuid())
+  taskCode       String      @unique
+  title          String
+  description    String?
+  
+  projectId      String
+  project        Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  milestoneId    String?
+  milestone      Milestone?  @relation(fields: [milestoneId], references: [id])
+  
+  assigneeId     String?
+  assignee       User?       @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  
+  reviewerId     String?
+  reviewer       User?       @relation("TaskReviewer", fields: [reviewerId], references: [id])
+  
+  priority       String      @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status         String      @default("TO_DO") // TO_DO, IN_PROGRESS, IN_REVIEW, REVISION_REQUIRED, APPROVED, COMPLETED, BLOCKED
+  
+  startDate      DateTime?
+  dueDate        DateTime?
+  estimatedHours Float       @default(0.0)
+  actualHours    Float       @default(0.0)
+  progress       Float       @default(0.0)
+  
+  // Dependencies
+  dependsOnTaskId String?
+  dependsOnTask   Task?       @relation("TaskDependencies", fields: [dependsOnTaskId], references: [id])
+  dependentTasks  Task[]      @relation("TaskDependencies")
+  
+  subtasks       Subtask[]
+  timesheets     Timesheet[]
+  documents      Document[]
+  approvals      Approval[]
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([projectId])
+  @@index([assigneeId])
+  @@index([status])
+}
+
+model Subtask {
+  id          String    @id @default(uuid())
+  title       String
+  isCompleted Boolean   @default(false)
+  dueDate     DateTime?
+  
+  taskId      String
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// ----------------------------------------------------
+// TIMESHEET & TRACKING
+// ----------------------------------------------------
+
+model Timesheet {
+  id                   String    @id @default(uuid())
+  userId               String
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  projectId            String?
+  project              Project?  @relation(fields: [projectId], references: [id])
+  
+  taskId               String?
+  task                 Task?     @relation(fields: [taskId], references: [id])
+  
+  startTime            DateTime
+  endTime              DateTime?
+  breakMinutes         Int       @default(0)
+  totalDurationMinutes Int       @default(0)
+  isRunning            Boolean   @default(false)
+  date                 DateTime  @default(now())
+  notes                String?
+  status               String    @default("SUBMITTED") // DRAFT, SUBMITTED, APPROVED, REJECTED
+  
+  approvals            Approval[]
+
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([date])
+}
+
+// ----------------------------------------------------
+// INTELLIGENCE & RISKS
+// ----------------------------------------------------
+
+model ProjectRisk {
+  id              String   @id @default(uuid())
+  projectId       String
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  riskLevel       String   // LOW, MEDIUM, HIGH, CRITICAL
+  healthScore     Float    // 0 to 100
+  deadlineRisk    Float    // 0 to 100
+  taskRisk        Float    // 0 to 100
+  workloadRisk    Float    // 0 to 100
+  
+  reasons         String   // JSON stringified list of reasons
+  recommendations String?  // JSON stringified recommendations
+  
+  calculatedAt    DateTime @default(now())
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([projectId])
+}
+
+// ----------------------------------------------------
+// DOCUMENTS & APPROVALS
+// ----------------------------------------------------
+
+model Document {
+  id          String            @id @default(uuid())
+  title       String
+  fileName    String
+  fileUrl     String
+  fileType    String            // pdf, docx, xlsx, pptx, jpg, png
+  fileSize    Int               // in bytes
+  category    String            @default("PROJECT") // PROJECT, TASK, CLIENT, COMPANY, INVOICE
+  
+  uploaderId  String
+  uploader    User              @relation("DocumentUploader", fields: [uploaderId], references: [id])
+  
+  projectId   String?
+  project     Project?          @relation(fields: [projectId], references: [id])
+  
+  taskId      String?
+  task        Task?             @relation(fields: [taskId], references: [id])
+  
+  clientId    String?
+  client      Client?           @relation(fields: [clientId], references: [id])
+  
+  versions    DocumentVersion[]
+  approvals   Approval[]
+  
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([projectId])
+  @@index([taskId])
+}
+
+model DocumentVersion {
+  id            String   @id @default(uuid())
+  documentId    String
+  document      Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  versionNumber Int      @default(1)
+  fileUrl       String
+  fileName      String
+  fileSize      Int
+  changeSummary String?
+  uploadedAt    DateTime @default(now())
+}
+
+model Approval {
+  id          String     @id @default(uuid())
+  entityType  String     // TASK, DOCUMENT, TIMESHEET, PROJECT
+  entityId    String
+  
+  requesterId String
+  requester   User       @relation("ApprovalRequester", fields: [requesterId], references: [id])
+  
+  approverId  String?
+  approver    User?      @relation("ApprovalApprover", fields: [approverId], references: [id])
+  
+  status      String     @default("SUBMITTED") // SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, REVISION_REQUIRED
+  comments    String?
+  decisionAt  DateTime?
+  
+  // Relations
+  projectId   String?
+  project     Project?   @relation(fields: [projectId], references: [id])
+  
+  taskId      String?
+  task        Task?      @relation(fields: [taskId], references: [id])
+  
+  documentId  String?
+  document    Document?  @relation(fields: [documentId], references: [id])
+  
+  timesheetId String?
+  timesheet   Timesheet? @relation(fields: [timesheetId], references: [id])
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([requesterId])
+  @@index([approverId])
+  @@index([status])
+}
+
+// ----------------------------------------------------
+// MESSAGING, ANNOUNCEMENTS & NOTIFICATIONS
+// ----------------------------------------------------
+
+model Conversation {
+  id        String    @id @default(uuid())
+  title     String?
+  type      String    @default("DIRECT") // DIRECT, PROJECT, DEPARTMENT, TEAM
+  
+  projectId String?
+  project   Project?  @relation(fields: [projectId], references: [id])
+  
+  messages  Message[]
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id             String        @id @default(uuid())
+  conversationId String
+  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  senderId       String
+  sender         User          @relation("SentMessages", fields: [senderId], references: [id])
+  
+  text           String
+  attachments    String?       // JSON stringified array of attachment URLs
+  mentions       String?       // JSON stringified array of user IDs
+  
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([conversationId])
+}
+
+model Announcement {
+  id        String                @id @default(uuid())
+  title     String
+  message   String
+  priority  String                @default("NORMAL") // LOW, NORMAL, HIGH, URGENT
+  audience  String                @default("EVERYONE") // EVERYONE, DEPARTMENT, TEAM, PROJECT, INDIVIDUAL
+  targetId  String?               // DepartmentId, TeamId, ProjectId or UserId
+  
+  senderId  String
+  sender    User                  @relation("AnnouncementSender", fields: [senderId], references: [id])
+  
+  receipts  AnnouncementReceipt[]
+  
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+}
+
+model AnnouncementReceipt {
+  id             String       @id @default(uuid())
+  announcementId String
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+  isAcknowledged Boolean      @default(false)
+  acknowledgedAt DateTime?
+  
+  createdAt      DateTime     @default(now())
+
+  @@unique([announcementId, userId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type      String   // TASK_ASSIGNED, TASK_DEADLINE, TASK_OVERDUE, PROJECT_RISK, PROJECT_DELAY, NEW_MESSAGE, CEO_ANNOUNCEMENT, APPROVAL_REQUIRED, DOCUMENT_UPLOADED, MENTION
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+// ----------------------------------------------------
+// AUDIT & ACTIVITY LOGS
+// ----------------------------------------------------
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  action    String   // e.g. "USER_LOGIN", "PROJECT_CREATED", "TASK_STATUS_CHANGED", "TIMESHEET_STARTED", "APPROVAL_DECIDED"
+  entity    String   // "PROJECT", "TASK", "DOCUMENT", "USER", "TIMESHEET", "APPROVAL"
+  entityId  String
+  metadata  String?  // JSON stringified event payload / old vs new state
+  ipAddress String?
+  
+  timestamp DateTime @default(now())
+
+  @@index([userId])
+  @@index([entity])
+  @@index([timestamp])
+}

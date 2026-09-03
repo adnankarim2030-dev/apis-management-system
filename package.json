@@ -1,0 +1,26 @@
+{
+  "name": "apis-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "APIS — Project Management & Executive Intelligence Platform",
+  "scripts": {
+    "start": "npm run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "seed": "npm --prefix backend run prisma:seed",
+    "test:backend": "npm --prefix backend test"
+  },
+  "keywords": [
+    "apis",
+    "executive-intelligence",
+    "project-management",
+    "prisma",
+    "postgresql",
+    "react",
+    "typescript"
+  ],
+  "author": "APIS Engineering Team",
+  "license": "ISC"
+}

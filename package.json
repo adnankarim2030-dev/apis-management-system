@@ -2,12 +2,15 @@
   "name": "apis-platform",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "20.x"
+  },
   "workspaces": [
     "frontend",
     "backend"
   ],
   "scripts": {
-    "build": "npm --prefix backend run prisma:generate && npm --prefix frontend run build && node -e \"require('fs').cpSync('frontend/dist', 'dist', {recursive:true})\""
+    "build": "npx prisma generate --schema=backend/prisma/schema.prisma && npm --prefix frontend run build && node -e \"require('fs').cpSync('frontend/dist', 'dist', {recursive:true})\""
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -25,7 +28,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
-    "@types/node": "^22.9.0",
+    "@types/node": "^20.17.0",
     "typescript": "^5.6.3"
   }
 }

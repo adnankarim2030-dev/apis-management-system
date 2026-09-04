@@ -45,7 +45,16 @@ export async function apiRequest<T = any>(
     headers,
   });
 
-  const resJson: ApiResponse<T> = await response.json();
+  const text = await response.text();
+  let resJson: ApiResponse<T>;
+  try {
+    resJson = JSON.parse(text);
+  } catch (parseErr) {
+    if (!response.ok) {
+      throw new Error(`Server connection issue (${response.status}). Please verify database connectivity.`);
+    }
+    throw new Error(`Invalid response from server.`);
+  }
 
   if (!resJson.success) {
     const errorMsg = resJson.error?.message || 'An unexpected error occurred';

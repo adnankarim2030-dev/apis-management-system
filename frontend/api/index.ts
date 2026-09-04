@@ -33,7 +33,7 @@ app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 // Health Check
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     status: 'HEALTHY',
     timestamp: new Date().toISOString(),
@@ -42,7 +42,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Mount Routes
+// Mount Routes with /api prefix
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
@@ -59,5 +59,23 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/activity-logs', activityLogRoutes);
 app.use('/api/search', searchRoutes);
+
+// Dual Mount without /api prefix for Vercel serverless rewrite compatibility
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/projects', projectRoutes);
+app.use('/tasks', taskRoutes);
+app.use('/timesheets', timesheetRoutes);
+app.use('/clients', clientRoutes);
+app.use('/departments', departmentRoutes);
+app.use('/documents', documentRoutes);
+app.use('/approvals', approvalRoutes);
+app.use('/announcements', announcementRoutes);
+app.use('/notifications', notificationRoutes);
+app.use('/messages', messageRoutes);
+app.use('/dashboard', dashboardRoutes);
+app.use('/reports', reportRoutes);
+app.use('/activity-logs', activityLogRoutes);
+app.use('/search', searchRoutes);
 
 export default app;

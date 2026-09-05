@@ -79,14 +79,12 @@ For testing and pair-programming, you can also use the **Instant 1-Click Role Sw
 
 | Role | Email | Name | Designation |
 | :--- | :--- | :--- | :--- |
-| 👑 **CEO** | `ceo@apis.com` | Tariq Al-Mansoor | Chief Executive Officer |
-| ⚡ **Admin** | `admin@apis.com` | Zaid Hassan | VP of Technology |
-| 📊 **Project Manager** | `pm@apis.com` | Bilal Siddiqui | Senior Technical PM |
-| 🤝 **Account Manager** | `am@apis.com` | Nadia Karim | Lead Client Partner |
-| 🏛️ **Department Head** | `head@apis.com` | Omar Farooq | Head of Engineering |
-| 💻 **Senior Dev (Staff)** | `sara@apis.com` | Sara Khan | Senior Full Stack Engineer |
-| 🎨 **UI Architect** | `ahmed@apis.com` | Ahmed Raza | Lead UI/UX Architect |
-| ☁️ **DevOps Engineer** | `ali@apis.com` | Ali Zain | Cloud DevOps Specialist |
+| 👑 **CEO** | `khurram@apis.com` | Khurram Jaffrani | Chief Executive Officer |
+| 🏛️ **Dept Head (Media Ops)** | `naeem@apis.com` | Naeem Ahmed | Head Of Media Buying & Planning |
+| 🤝 **Account Manager** | `kashif@apis.com` | Kashif Aghani | Manager Business Development |
+| 💻 **Operations (Staff)** | `musfira@apis.com` | Syeda Musfira | Client Service & Operations Executive |
+| 🎨 **Dept Head (Design)** | `abeel@apis.com` | Syed Abeel Ahmed | Head Of Design & Digital |
+| 📊 **Project Manager (AI)** | `adnan@apis.com` | Adnan Karim | Creative Manager (AI) |
 
 ---
 

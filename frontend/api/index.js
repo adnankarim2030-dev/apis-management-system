@@ -10,15 +10,8 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
   if (typeof require !== "undefined") return require.apply(this, arguments);
   throw Error('Dynamic require of "' + x + '" is not supported');
 });
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-};
 var __commonJS = (cb, mod) => function __require2() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
@@ -19289,14 +19282,14 @@ var require_init = __commonJS({
   "node_modules/express/lib/middleware/init.js"(exports) {
     "use strict";
     var setPrototypeOf = require_setprototypeof();
-    exports.init = function(app) {
+    exports.init = function(app2) {
       return function expressInit(req, res, next) {
-        if (app.enabled("x-powered-by")) res.setHeader("X-Powered-By", "Express");
+        if (app2.enabled("x-powered-by")) res.setHeader("X-Powered-By", "Express");
         req.res = res;
         res.req = req;
         req.next = next;
-        setPrototypeOf(req, app.request);
-        setPrototypeOf(res, app.response);
+        setPrototypeOf(req, app2.request);
+        setPrototypeOf(res, app2.response);
         res.locals = res.locals || /* @__PURE__ */ Object.create(null);
         next();
       };
@@ -21963,15 +21956,15 @@ var require_application = __commonJS({
     var setPrototypeOf = require_setprototypeof();
     var hasOwnProperty = Object.prototype.hasOwnProperty;
     var slice = Array.prototype.slice;
-    var app = exports = module.exports = {};
+    var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
-    app.init = function init() {
+    app2.init = function init() {
       this.cache = {};
       this.engines = {};
       this.settings = {};
       this.defaultConfiguration();
     };
-    app.defaultConfiguration = function defaultConfiguration() {
+    app2.defaultConfiguration = function defaultConfiguration() {
       var env = process.env.NODE_ENV || "development";
       this.enable("x-powered-by");
       this.set("etag", "weak");
@@ -22009,7 +22002,7 @@ var require_application = __commonJS({
         }
       });
     };
-    app.lazyrouter = function lazyrouter() {
+    app2.lazyrouter = function lazyrouter() {
       if (!this._router) {
         this._router = new Router17({
           caseSensitive: this.enabled("case sensitive routing"),
@@ -22019,7 +22012,7 @@ var require_application = __commonJS({
         this._router.use(middleware.init(this));
       }
     };
-    app.handle = function handle(req, res, callback) {
+    app2.handle = function handle(req, res, callback) {
       var router17 = this._router;
       var done = callback || finalhandler(req, res, {
         env: this.get("env"),
@@ -22032,7 +22025,7 @@ var require_application = __commonJS({
       }
       router17.handle(req, res, done);
     };
-    app.use = function use(fn) {
+    app2.use = function use(fn) {
       var offset = 0;
       var path3 = "/";
       if (typeof fn !== "function") {
@@ -22070,11 +22063,11 @@ var require_application = __commonJS({
       }, this);
       return this;
     };
-    app.route = function route(path3) {
+    app2.route = function route(path3) {
       this.lazyrouter();
       return this._router.route(path3);
     };
-    app.engine = function engine(ext, fn) {
+    app2.engine = function engine(ext, fn) {
       if (typeof fn !== "function") {
         throw new Error("callback function required");
       }
@@ -22082,7 +22075,7 @@ var require_application = __commonJS({
       this.engines[extension] = fn;
       return this;
     };
-    app.param = function param(name, fn) {
+    app2.param = function param(name, fn) {
       this.lazyrouter();
       if (Array.isArray(name)) {
         for (var i = 0; i < name.length; i++) {
@@ -22093,7 +22086,7 @@ var require_application = __commonJS({
       this._router.param(name, fn);
       return this;
     };
-    app.set = function set(setting, val) {
+    app2.set = function set(setting, val) {
       if (arguments.length === 1) {
         var settings = this.settings;
         while (settings && settings !== Object.prototype) {
@@ -22123,23 +22116,23 @@ var require_application = __commonJS({
       }
       return this;
     };
-    app.path = function path3() {
+    app2.path = function path3() {
       return this.parent ? this.parent.path() + this.mountpath : "";
     };
-    app.enabled = function enabled(setting) {
+    app2.enabled = function enabled(setting) {
       return Boolean(this.set(setting));
     };
-    app.disabled = function disabled(setting) {
+    app2.disabled = function disabled(setting) {
       return !this.set(setting);
     };
-    app.enable = function enable(setting) {
+    app2.enable = function enable(setting) {
       return this.set(setting, true);
     };
-    app.disable = function disable(setting) {
+    app2.disable = function disable(setting) {
       return this.set(setting, false);
     };
     methods.forEach(function(method) {
-      app[method] = function(path3) {
+      app2[method] = function(path3) {
         if (method === "get" && arguments.length === 1) {
           return this.set(path3);
         }
@@ -22149,7 +22142,7 @@ var require_application = __commonJS({
         return this;
       };
     });
-    app.all = function all(path3) {
+    app2.all = function all(path3) {
       this.lazyrouter();
       var route = this._router.route(path3);
       var args = slice.call(arguments, 1);
@@ -22158,8 +22151,8 @@ var require_application = __commonJS({
       }
       return this;
     };
-    app.del = deprecate.function(app.delete, "app.del: Use app.delete instead");
-    app.render = function render(name, options, callback) {
+    app2.del = deprecate.function(app2.delete, "app.del: Use app.delete instead");
+    app2.render = function render(name, options, callback) {
       var cache = this.cache;
       var done = callback;
       var engines = this.engines;
@@ -22200,7 +22193,7 @@ var require_application = __commonJS({
       }
       tryRender(view, renderOptions, done);
     };
-    app.listen = function listen() {
+    app2.listen = function listen() {
       var server = http.createServer(this);
       return server.listen.apply(server, arguments);
     };
@@ -23267,7 +23260,7 @@ var require_response = __commonJS({
       var encoding;
       var req = this.req;
       var type;
-      var app = this.app;
+      var app2 = this.app;
       if (arguments.length === 2) {
         if (typeof arguments[0] !== "number" && typeof arguments[1] === "number") {
           deprecate("res.send(body, status): Use res.status(status).send(body) instead");
@@ -23313,7 +23306,7 @@ var require_response = __commonJS({
           this.set("Content-Type", setCharset(type, "utf-8"));
         }
       }
-      var etagFn = app.get("etag fn");
+      var etagFn = app2.get("etag fn");
       var generateETag = !this.get("ETag") && typeof etagFn === "function";
       var len;
       if (chunk !== void 0) {
@@ -23365,10 +23358,10 @@ var require_response = __commonJS({
           val = arguments[1];
         }
       }
-      var app = this.app;
-      var escape2 = app.get("json escape");
-      var replacer = app.get("json replacer");
-      var spaces = app.get("json spaces");
+      var app2 = this.app;
+      var escape2 = app2.get("json escape");
+      var replacer = app2.get("json replacer");
+      var spaces = app2.get("json spaces");
       var body = stringify(val, replacer, spaces, escape2);
       if (!this.get("Content-Type")) {
         this.set("Content-Type", "application/json");
@@ -23387,12 +23380,12 @@ var require_response = __commonJS({
           val = arguments[1];
         }
       }
-      var app = this.app;
-      var escape2 = app.get("json escape");
-      var replacer = app.get("json replacer");
-      var spaces = app.get("json spaces");
+      var app2 = this.app;
+      var escape2 = app2.get("json escape");
+      var replacer = app2.get("json replacer");
+      var spaces = app2.get("json spaces");
       var body = stringify(val, replacer, spaces, escape2);
-      var callback = this.req.query[app.get("jsonp callback name")];
+      var callback = this.req.query[app2.get("jsonp callback name")];
       if (!this.get("Content-Type")) {
         this.set("X-Content-Type-Options", "nosniff");
         this.set("Content-Type", "application/json");
@@ -23657,7 +23650,7 @@ var require_response = __commonJS({
       return this;
     };
     res.render = function render(view, options, callback) {
-      var app = this.req.app;
+      var app2 = this.req.app;
       var done = callback;
       var opts = options || {};
       var req = this.req;
@@ -23671,7 +23664,7 @@ var require_response = __commonJS({
         if (err) return req.next(err);
         self2.send(str);
       };
-      app.render(view, opts, done);
+      app2.render(view, opts, done);
     };
     function sendfile(res2, file, options, callback) {
       var done = false;
@@ -23878,19 +23871,19 @@ var require_express = __commonJS({
     var res = require_response();
     exports = module.exports = createApplication;
     function createApplication() {
-      var app = function(req2, res2, next) {
-        app.handle(req2, res2, next);
+      var app2 = function(req2, res2, next) {
+        app2.handle(req2, res2, next);
       };
-      mixin(app, EventEmitter.prototype, false);
-      mixin(app, proto, false);
-      app.request = Object.create(req, {
-        app: { configurable: true, enumerable: true, writable: true, value: app }
+      mixin(app2, EventEmitter.prototype, false);
+      mixin(app2, proto, false);
+      app2.request = Object.create(req, {
+        app: { configurable: true, enumerable: true, writable: true, value: app2 }
       });
-      app.response = Object.create(res, {
-        app: { configurable: true, enumerable: true, writable: true, value: app }
+      app2.response = Object.create(res, {
+        app: { configurable: true, enumerable: true, writable: true, value: app2 }
       });
-      app.init();
-      return app;
+      app2.init();
+      return app2;
     }
     exports.application = proto;
     exports.request = req;
@@ -24150,7 +24143,7 @@ var require_lib3 = __commonJS({
           }
         }
       }
-      function cors(options, req, res, next) {
+      function cors2(options, req, res, next) {
         var headers = [], method = req.method && req.method.toUpperCase && req.method.toUpperCase();
         if (method === "OPTIONS") {
           headers.push(configureOrigin(options, req));
@@ -24204,7 +24197,7 @@ var require_lib3 = __commonJS({
                     next(err2);
                   } else {
                     corsOptions.origin = origin;
-                    cors(corsOptions, req, res, next);
+                    cors2(corsOptions, req, res, next);
                   }
                 });
               } else {
@@ -24216,604 +24209,6 @@ var require_lib3 = __commonJS({
       }
       module.exports = middlewareWrapper;
     })();
-  }
-});
-
-// node_modules/helmet/index.mjs
-var helmet_exports = {};
-__export(helmet_exports, {
-  contentSecurityPolicy: () => contentSecurityPolicy,
-  crossOriginEmbedderPolicy: () => crossOriginEmbedderPolicy,
-  crossOriginOpenerPolicy: () => crossOriginOpenerPolicy,
-  crossOriginResourcePolicy: () => crossOriginResourcePolicy,
-  default: () => helmet,
-  dnsPrefetchControl: () => xDnsPrefetchControl,
-  frameguard: () => xFrameOptions,
-  hidePoweredBy: () => xPoweredBy,
-  hsts: () => strictTransportSecurity,
-  ieNoOpen: () => xDownloadOptions,
-  noSniff: () => xContentTypeOptions,
-  originAgentCluster: () => originAgentCluster,
-  permittedCrossDomainPolicies: () => xPermittedCrossDomainPolicies,
-  referrerPolicy: () => referrerPolicy,
-  strictTransportSecurity: () => strictTransportSecurity,
-  xContentTypeOptions: () => xContentTypeOptions,
-  xDnsPrefetchControl: () => xDnsPrefetchControl,
-  xDownloadOptions: () => xDownloadOptions,
-  xFrameOptions: () => xFrameOptions,
-  xPermittedCrossDomainPolicies: () => xPermittedCrossDomainPolicies,
-  xPoweredBy: () => xPoweredBy,
-  xXssProtection: () => xXssProtection,
-  xssFilter: () => xXssProtection
-});
-function getHeaderValue(req, res, normalizedDirectives) {
-  const result = [];
-  for (const [directiveName, rawDirectiveValue] of normalizedDirectives) {
-    let directiveValue = "";
-    for (const element of rawDirectiveValue) {
-      if (typeof element === "function") {
-        let newElement;
-        try {
-          newElement = element(req, res);
-        } catch (err2) {
-          return errify(err2);
-        }
-        const err = getDirectiveValueEntryValidationError(directiveName, newElement);
-        if (err) return err;
-        directiveValue += " " + newElement;
-      } else {
-        directiveValue += " " + element;
-      }
-    }
-    if (directiveValue) {
-      const err = getDirectiveValueValidationError(directiveName, directiveValue);
-      if (err) return err;
-      result.push(`${directiveName}${directiveValue}`);
-    } else {
-      result.push(directiveName);
-    }
-  }
-  return result.join(";");
-}
-function getHeaderValueFromOptions$6({ policy = "require-corp" }) {
-  if (ALLOWED_POLICIES$2.has(policy)) {
-    return policy;
-  } else {
-    throw new Error(`Cross-Origin-Embedder-Policy does not support the ${JSON.stringify(policy)} policy`);
-  }
-}
-function crossOriginEmbedderPolicy(options = {}) {
-  const headerValue = getHeaderValueFromOptions$6(options);
-  return function crossOriginEmbedderPolicyMiddleware(_req, res, next) {
-    res.setHeader("Cross-Origin-Embedder-Policy", headerValue);
-    next();
-  };
-}
-function getHeaderValueFromOptions$5({ policy = "same-origin" }) {
-  if (ALLOWED_POLICIES$1.has(policy)) {
-    return policy;
-  } else {
-    throw new Error(`Cross-Origin-Opener-Policy does not support the ${JSON.stringify(policy)} policy`);
-  }
-}
-function crossOriginOpenerPolicy(options = {}) {
-  const headerValue = getHeaderValueFromOptions$5(options);
-  return function crossOriginOpenerPolicyMiddleware(_req, res, next) {
-    res.setHeader("Cross-Origin-Opener-Policy", headerValue);
-    next();
-  };
-}
-function getHeaderValueFromOptions$4({ policy = "same-origin" }) {
-  if (ALLOWED_POLICIES.has(policy)) {
-    return policy;
-  } else {
-    throw new Error(`Cross-Origin-Resource-Policy does not support the ${JSON.stringify(policy)} policy`);
-  }
-}
-function crossOriginResourcePolicy(options = {}) {
-  const headerValue = getHeaderValueFromOptions$4(options);
-  return function crossOriginResourcePolicyMiddleware(_req, res, next) {
-    res.setHeader("Cross-Origin-Resource-Policy", headerValue);
-    next();
-  };
-}
-function originAgentCluster() {
-  return function originAgentClusterMiddleware(_req, res, next) {
-    res.setHeader("Origin-Agent-Cluster", "?1");
-    next();
-  };
-}
-function getHeaderValueFromOptions$3({ policy = ["no-referrer"] }) {
-  const tokens = typeof policy === "string" ? [policy] : policy;
-  if (tokens.length === 0) {
-    throw new Error("Referrer-Policy received no policy tokens");
-  }
-  const tokensSeen = /* @__PURE__ */ new Set();
-  tokens.forEach((token) => {
-    if (!ALLOWED_TOKENS.has(token)) {
-      throw new Error(`Referrer-Policy received an unexpected policy token ${JSON.stringify(token)}`);
-    } else if (tokensSeen.has(token)) {
-      throw new Error(`Referrer-Policy received a duplicate policy token ${JSON.stringify(token)}`);
-    }
-    tokensSeen.add(token);
-  });
-  return tokens.join(",");
-}
-function referrerPolicy(options = {}) {
-  const headerValue = getHeaderValueFromOptions$3(options);
-  return function referrerPolicyMiddleware(_req, res, next) {
-    res.setHeader("Referrer-Policy", headerValue);
-    next();
-  };
-}
-function parseMaxAge(value = DEFAULT_MAX_AGE) {
-  if (value >= 0 && Number.isFinite(value)) {
-    return Math.floor(value);
-  } else {
-    throw new Error(`Strict-Transport-Security: ${JSON.stringify(value)} is not a valid value for maxAge. Please choose a positive integer.`);
-  }
-}
-function getHeaderValueFromOptions$2(options) {
-  if ("maxage" in options) {
-    throw new Error("Strict-Transport-Security received an unsupported property, `maxage`. Did you mean to pass `maxAge`?");
-  }
-  if ("includeSubdomains" in options) {
-    throw new Error('Strict-Transport-Security middleware should use `includeSubDomains` instead of `includeSubdomains`. (The correct one has an uppercase "D".)');
-  }
-  const directives = [`max-age=${parseMaxAge(options.maxAge)}`];
-  if (options.includeSubDomains === void 0 || options.includeSubDomains) {
-    directives.push("includeSubDomains");
-  }
-  if (options.preload) {
-    directives.push("preload");
-  }
-  return directives.join("; ");
-}
-function strictTransportSecurity(options = {}) {
-  const headerValue = getHeaderValueFromOptions$2(options);
-  return function strictTransportSecurityMiddleware(_req, res, next) {
-    res.setHeader("Strict-Transport-Security", headerValue);
-    next();
-  };
-}
-function xContentTypeOptions() {
-  return function xContentTypeOptionsMiddleware(_req, res, next) {
-    res.setHeader("X-Content-Type-Options", "nosniff");
-    next();
-  };
-}
-function xDnsPrefetchControl(options = {}) {
-  const headerValue = options.allow ? "on" : "off";
-  return function xDnsPrefetchControlMiddleware(_req, res, next) {
-    res.setHeader("X-DNS-Prefetch-Control", headerValue);
-    next();
-  };
-}
-function xDownloadOptions() {
-  return function xDownloadOptionsMiddleware(_req, res, next) {
-    res.setHeader("X-Download-Options", "noopen");
-    next();
-  };
-}
-function getHeaderValueFromOptions$1({ action = "sameorigin" }) {
-  const normalizedAction = typeof action === "string" ? action.toUpperCase() : action;
-  switch (normalizedAction) {
-    case "SAME-ORIGIN":
-      return "SAMEORIGIN";
-    case "DENY":
-    case "SAMEORIGIN":
-      return normalizedAction;
-    default:
-      throw new Error(`X-Frame-Options received an invalid action ${JSON.stringify(action)}`);
-  }
-}
-function xFrameOptions(options = {}) {
-  const headerValue = getHeaderValueFromOptions$1(options);
-  return function xFrameOptionsMiddleware(_req, res, next) {
-    res.setHeader("X-Frame-Options", headerValue);
-    next();
-  };
-}
-function getHeaderValueFromOptions({ permittedPolicies = "none" }) {
-  if (ALLOWED_PERMITTED_POLICIES.has(permittedPolicies)) {
-    return permittedPolicies;
-  } else {
-    throw new Error(`X-Permitted-Cross-Domain-Policies does not support ${JSON.stringify(permittedPolicies)}`);
-  }
-}
-function xPermittedCrossDomainPolicies(options = {}) {
-  const headerValue = getHeaderValueFromOptions(options);
-  return function xPermittedCrossDomainPoliciesMiddleware(_req, res, next) {
-    res.setHeader("X-Permitted-Cross-Domain-Policies", headerValue);
-    next();
-  };
-}
-function xPoweredBy() {
-  return function xPoweredByMiddleware(_req, res, next) {
-    res.removeHeader("X-Powered-By");
-    next();
-  };
-}
-function xXssProtection() {
-  return function xXssProtectionMiddleware(_req, res, next) {
-    res.setHeader("X-XSS-Protection", "0");
-    next();
-  };
-}
-function getMiddlewareFunctionsFromOptions(options) {
-  const result = [];
-  switch (options.contentSecurityPolicy) {
-    case void 0:
-    case true:
-      result.push(contentSecurityPolicy());
-      break;
-    case false:
-      break;
-    default:
-      result.push(contentSecurityPolicy(options.contentSecurityPolicy));
-      break;
-  }
-  switch (options.crossOriginEmbedderPolicy) {
-    case void 0:
-    case false:
-      break;
-    case true:
-      result.push(crossOriginEmbedderPolicy());
-      break;
-    default:
-      result.push(crossOriginEmbedderPolicy(options.crossOriginEmbedderPolicy));
-      break;
-  }
-  switch (options.crossOriginOpenerPolicy) {
-    case void 0:
-    case true:
-      result.push(crossOriginOpenerPolicy());
-      break;
-    case false:
-      break;
-    default:
-      result.push(crossOriginOpenerPolicy(options.crossOriginOpenerPolicy));
-      break;
-  }
-  switch (options.crossOriginResourcePolicy) {
-    case void 0:
-    case true:
-      result.push(crossOriginResourcePolicy());
-      break;
-    case false:
-      break;
-    default:
-      result.push(crossOriginResourcePolicy(options.crossOriginResourcePolicy));
-      break;
-  }
-  switch (options.originAgentCluster) {
-    case void 0:
-    case true:
-      result.push(originAgentCluster());
-      break;
-    case false:
-      break;
-    default:
-      console.warn("Origin-Agent-Cluster does not take options. Remove the property to silence this warning.");
-      result.push(originAgentCluster());
-      break;
-  }
-  switch (options.referrerPolicy) {
-    case void 0:
-    case true:
-      result.push(referrerPolicy());
-      break;
-    case false:
-      break;
-    default:
-      result.push(referrerPolicy(options.referrerPolicy));
-      break;
-  }
-  if ("strictTransportSecurity" in options && "hsts" in options) {
-    throw new Error("Strict-Transport-Security option was specified twice. Remove the `hsts` option to fix this error.");
-  }
-  const strictTransportSecurityOption = options.strictTransportSecurity ?? options.hsts;
-  switch (strictTransportSecurityOption) {
-    case void 0:
-    case true:
-      result.push(strictTransportSecurity());
-      break;
-    case false:
-      break;
-    default:
-      result.push(strictTransportSecurity(strictTransportSecurityOption));
-      break;
-  }
-  if ("xContentTypeOptions" in options && "noSniff" in options) {
-    throw new Error("X-Content-Type-Options option was specified twice. Remove the `noSniff` option to fix this error.");
-  }
-  const xContentTypeOptionsOption = options.xContentTypeOptions ?? options.noSniff;
-  switch (xContentTypeOptionsOption) {
-    case void 0:
-    case true:
-      result.push(xContentTypeOptions());
-      break;
-    case false:
-      break;
-    default:
-      console.warn("X-Content-Type-Options does not take options. Remove the property to silence this warning.");
-      result.push(xContentTypeOptions());
-      break;
-  }
-  if ("xDnsPrefetchControl" in options && "dnsPrefetchControl" in options) {
-    throw new Error("X-DNS-Prefetch-Control option was specified twice. Remove the `dnsPrefetchControl` option to fix this error.");
-  }
-  const xDnsPrefetchControlOption = options.xDnsPrefetchControl ?? options.dnsPrefetchControl;
-  switch (xDnsPrefetchControlOption) {
-    case void 0:
-    case true:
-      result.push(xDnsPrefetchControl());
-      break;
-    case false:
-      break;
-    default:
-      result.push(xDnsPrefetchControl(xDnsPrefetchControlOption));
-      break;
-  }
-  if ("xDownloadOptions" in options && "ieNoOpen" in options) {
-    throw new Error("X-Download-Options option was specified twice. Remove the `ieNoOpen` option to fix this error.");
-  }
-  const xDownloadOptionsOption = options.xDownloadOptions ?? options.ieNoOpen;
-  switch (xDownloadOptionsOption) {
-    case void 0:
-    case true:
-      result.push(xDownloadOptions());
-      break;
-    case false:
-      break;
-    default:
-      console.warn("X-Download-Options does not take options. Remove the property to silence this warning.");
-      result.push(xDownloadOptions());
-      break;
-  }
-  if ("xFrameOptions" in options && "frameguard" in options) {
-    throw new Error("X-Frame-Options option was specified twice. Remove the `frameguard` option to fix this error.");
-  }
-  const xFrameOptionsOption = options.xFrameOptions ?? options.frameguard;
-  switch (xFrameOptionsOption) {
-    case void 0:
-    case true:
-      result.push(xFrameOptions());
-      break;
-    case false:
-      break;
-    default:
-      result.push(xFrameOptions(xFrameOptionsOption));
-      break;
-  }
-  if ("xPermittedCrossDomainPolicies" in options && "permittedCrossDomainPolicies" in options) {
-    throw new Error("X-Permitted-Cross-Domain-Policies option was specified twice. Remove the `permittedCrossDomainPolicies` option to fix this error.");
-  }
-  const xPermittedCrossDomainPoliciesOption = options.xPermittedCrossDomainPolicies ?? options.permittedCrossDomainPolicies;
-  switch (xPermittedCrossDomainPoliciesOption) {
-    case void 0:
-    case true:
-      result.push(xPermittedCrossDomainPolicies());
-      break;
-    case false:
-      break;
-    default:
-      result.push(xPermittedCrossDomainPolicies(xPermittedCrossDomainPoliciesOption));
-      break;
-  }
-  if ("xPoweredBy" in options && "hidePoweredBy" in options) {
-    throw new Error("X-Powered-By option was specified twice. Remove the `hidePoweredBy` option to fix this error.");
-  }
-  const xPoweredByOption = options.xPoweredBy ?? options.hidePoweredBy;
-  switch (xPoweredByOption) {
-    case void 0:
-    case true:
-      result.push(xPoweredBy());
-      break;
-    case false:
-      break;
-    default:
-      console.warn("X-Powered-By does not take options. Remove the property to silence this warning.");
-      result.push(xPoweredBy());
-      break;
-  }
-  if ("xXssProtection" in options && "xssFilter" in options) {
-    throw new Error("X-XSS-Protection option was specified twice. Remove the `xssFilter` option to fix this error.");
-  }
-  const xXssProtectionOption = options.xXssProtection ?? options.xssFilter;
-  switch (xXssProtectionOption) {
-    case void 0:
-    case true:
-      result.push(xXssProtection());
-      break;
-    case false:
-      break;
-    default:
-      console.warn("X-XSS-Protection does not take options. Remove the property to silence this warning.");
-      result.push(xXssProtection());
-      break;
-  }
-  return result;
-}
-var dashify, errify, isString, throwErrorIfExists, dangerouslyDisableDefaultSrc, SHOULD_BE_QUOTED, getDefaultDirectives, parseDirectiveName, getDirectiveValueValidationError, getDirectiveValueEntryValidationError, stringifyDirectiveValue, parseDirectives, contentSecurityPolicy, ALLOWED_POLICIES$2, ALLOWED_POLICIES$1, ALLOWED_POLICIES, ALLOWED_TOKENS, DEFAULT_MAX_AGE, ALLOWED_PERMITTED_POLICIES, helmet;
-var init_helmet = __esm({
-  "node_modules/helmet/index.mjs"() {
-    dashify = (str) => str.replace(/[A-Z]/g, (capitalLetter) => "-" + capitalLetter.toLowerCase());
-    errify = (err) => err instanceof Error ? err : new Error(String(err));
-    isString = (value) => typeof value === "string";
-    throwErrorIfExists = (err) => {
-      if (err) throw err;
-    };
-    dangerouslyDisableDefaultSrc = Symbol("dangerouslyDisableDefaultSrc");
-    SHOULD_BE_QUOTED = /* @__PURE__ */ new Set(["none", "self", "strict-dynamic", "report-sample", "inline-speculation-rules", "unsafe-inline", "unsafe-eval", "unsafe-hashes", "wasm-unsafe-eval"]);
-    getDefaultDirectives = () => ({
-      "default-src": ["'self'"],
-      "base-uri": ["'self'"],
-      "font-src": ["'self'", "https:", "data:"],
-      "form-action": ["'self'"],
-      "frame-ancestors": ["'self'"],
-      "img-src": ["'self'", "data:"],
-      "object-src": ["'none'"],
-      "script-src": ["'self'"],
-      "script-src-attr": ["'none'"],
-      "style-src": ["'self'", "https:", "'unsafe-inline'"],
-      "upgrade-insecure-requests": []
-    });
-    parseDirectiveName = (rawDirectiveName) => {
-      if (rawDirectiveName.length === 0 || !/^[a-z](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/.test(rawDirectiveName)) {
-        throw new Error(`Content-Security-Policy received an invalid directive name ${JSON.stringify(rawDirectiveName)}`);
-      }
-      return dashify(rawDirectiveName);
-    };
-    getDirectiveValueValidationError = (directiveName, directiveValue) => /;|,/.test(directiveValue) ? new Error(`Content-Security-Policy received an invalid directive value for ${JSON.stringify(directiveName)}`) : null;
-    getDirectiveValueEntryValidationError = (directiveName, directiveValueEntry) => SHOULD_BE_QUOTED.has(directiveValueEntry) || directiveValueEntry.startsWith("nonce-") || directiveValueEntry.startsWith("sha256-") || directiveValueEntry.startsWith("sha384-") || directiveValueEntry.startsWith("sha512-") ? new Error(`Content-Security-Policy received an invalid directive value for ${JSON.stringify(directiveName)}. ${JSON.stringify(directiveValueEntry)} should be quoted`) : null;
-    stringifyDirectiveValue = (directiveValue) => {
-      if (Array.isArray(directiveValue)) {
-        return directiveValue.every(isString) ? directiveValue.join(" ") : null;
-      }
-      if (directiveValue instanceof Set) {
-        return stringifyDirectiveValue(Array.from(directiveValue));
-      }
-      return null;
-    };
-    parseDirectives = ({ useDefaults = true, directives: rawDirectives = {} }) => {
-      const result = new Map(useDefaults ? Object.entries(getDefaultDirectives()) : []);
-      let hasDisabledDefaultSrc = false;
-      const directiveNamesSeen = /* @__PURE__ */ new Set();
-      for (const rawDirectiveName in rawDirectives) {
-        if (!Object.hasOwn(rawDirectives, rawDirectiveName)) {
-          continue;
-        }
-        const directiveName = parseDirectiveName(rawDirectiveName);
-        if (directiveNamesSeen.has(directiveName)) {
-          throw new Error(`Content-Security-Policy received a duplicate directive ${JSON.stringify(directiveName)}`);
-        }
-        directiveNamesSeen.add(directiveName);
-        const rawDirectiveValue = rawDirectives[rawDirectiveName];
-        let directiveValue;
-        if (rawDirectiveValue === null) {
-          if (directiveName === "default-src") {
-            throw new Error("Content-Security-Policy needs a default-src but it was set to `null`. If you really want to disable it, set it to `contentSecurityPolicy.dangerouslyDisableDefaultSrc`.");
-          }
-          result.delete(directiveName);
-          continue;
-        } else if (typeof rawDirectiveValue === "string") {
-          directiveValue = [rawDirectiveValue];
-        } else if (rawDirectiveValue === dangerouslyDisableDefaultSrc) {
-          if (directiveName === "default-src") {
-            hasDisabledDefaultSrc = true;
-            result.delete(directiveName);
-            continue;
-          } else {
-            throw new Error(`Content-Security-Policy: tried to disable ${JSON.stringify(directiveName)} as if it were default-src; simply omit the key`);
-          }
-        } else if (rawDirectiveValue) {
-          directiveValue = rawDirectiveValue;
-        } else {
-          throw new Error(`Content-Security-Policy received an invalid directive value for ${JSON.stringify(directiveName)}`);
-        }
-        for (const element of directiveValue) {
-          if (typeof element !== "string") continue;
-          throwErrorIfExists(getDirectiveValueValidationError(directiveName, element) ?? getDirectiveValueEntryValidationError(directiveName, element));
-        }
-        result.set(directiveName, directiveValue);
-      }
-      if (!result.size) {
-        throw new Error("Content-Security-Policy has no directives. Either set some or disable the header");
-      }
-      if (!result.has("default-src") && !hasDisabledDefaultSrc) {
-        throw new Error("Content-Security-Policy needs a default-src but none was provided. If you really want to disable it, set it to `contentSecurityPolicy.dangerouslyDisableDefaultSrc`.");
-      }
-      let stringResult = "";
-      let shouldUseStringResult = true;
-      for (const [directiveName, directiveValue] of result) {
-        const directiveValueString = stringifyDirectiveValue(directiveValue);
-        if (directiveValueString === null) {
-          shouldUseStringResult = false;
-          break;
-        } else {
-          if (stringResult) stringResult += ";";
-          stringResult += directiveValueString ? `${directiveName} ${directiveValueString}` : directiveName;
-        }
-      }
-      return shouldUseStringResult ? stringResult : result;
-    };
-    contentSecurityPolicy = function contentSecurityPolicy2(options = {}) {
-      const headerName = options.reportOnly ? "Content-Security-Policy-Report-Only" : "Content-Security-Policy";
-      const parsedDirectives = parseDirectives(options);
-      if (typeof parsedDirectives === "string") {
-        return function contentSecurityPolicyMiddleware(_req, res, next) {
-          res.setHeader(headerName, parsedDirectives);
-          next();
-        };
-      }
-      return function contentSecurityPolicyMiddleware(req, res, next) {
-        const result = getHeaderValue(req, res, parsedDirectives);
-        if (result instanceof Error) {
-          next(result);
-        } else {
-          res.setHeader(headerName, result);
-          next();
-        }
-      };
-    };
-    contentSecurityPolicy.getDefaultDirectives = getDefaultDirectives;
-    contentSecurityPolicy.dangerouslyDisableDefaultSrc = dangerouslyDisableDefaultSrc;
-    ALLOWED_POLICIES$2 = /* @__PURE__ */ new Set(["require-corp", "credentialless", "unsafe-none"]);
-    ALLOWED_POLICIES$1 = /* @__PURE__ */ new Set(["same-origin", "same-origin-allow-popups", "noopener-allow-popups", "unsafe-none"]);
-    ALLOWED_POLICIES = /* @__PURE__ */ new Set(["same-origin", "same-site", "cross-origin"]);
-    ALLOWED_TOKENS = /* @__PURE__ */ new Set(["no-referrer", "no-referrer-when-downgrade", "same-origin", "origin", "strict-origin", "origin-when-cross-origin", "strict-origin-when-cross-origin", "unsafe-url", ""]);
-    DEFAULT_MAX_AGE = 365 * 24 * 60 * 60;
-    ALLOWED_PERMITTED_POLICIES = /* @__PURE__ */ new Set(["none", "master-only", "by-content-type", "all"]);
-    helmet = Object.assign(
-      function helmet2(options = {}) {
-        if (options.constructor?.name === "IncomingMessage") {
-          throw new Error("It appears you have done something like `app.use(helmet)`, but it should be `app.use(helmet())`.");
-        }
-        const middlewareFunctions = getMiddlewareFunctionsFromOptions(options);
-        return function helmetMiddleware(req, res, next) {
-          let middlewareIndex = 0;
-          (function internalNext(err) {
-            if (err) {
-              next(err);
-              return;
-            }
-            const middlewareFunction = middlewareFunctions[middlewareIndex];
-            if (middlewareFunction) {
-              middlewareIndex++;
-              middlewareFunction(req, res, internalNext);
-            } else {
-              next();
-            }
-          })();
-        };
-      },
-      {
-        contentSecurityPolicy,
-        crossOriginEmbedderPolicy,
-        crossOriginOpenerPolicy,
-        crossOriginResourcePolicy,
-        originAgentCluster,
-        referrerPolicy,
-        strictTransportSecurity,
-        xContentTypeOptions,
-        xDnsPrefetchControl,
-        xDownloadOptions,
-        xFrameOptions,
-        xPermittedCrossDomainPolicies,
-        xPoweredBy,
-        xXssProtection,
-        // Legacy aliases
-        dnsPrefetchControl: xDnsPrefetchControl,
-        xssFilter: xXssProtection,
-        permittedCrossDomainPolicies: xPermittedCrossDomainPolicies,
-        ieNoOpen: xDownloadOptions,
-        noSniff: xContentTypeOptions,
-        frameguard: xFrameOptions,
-        hidePoweredBy: xPoweredBy,
-        hsts: strictTransportSecurity
-      }
-    );
   }
 });
 
@@ -26632,30 +26027,6 @@ var require_bcrypt = __commonJS({
 var require_bcryptjs = __commonJS({
   "node_modules/bcryptjs/index.js"(exports, module) {
     module.exports = require_bcrypt();
-  }
-});
-
-// server/config/prisma.ts
-import { PrismaClient } from "@prisma/client";
-var FALLBACK_DB_URL, globalForPrisma, prisma, prisma_default;
-var init_prisma = __esm({
-  "server/config/prisma.ts"() {
-    "use strict";
-    FALLBACK_DB_URL = "postgresql://neondb_owner:npg_OTMfBphb41Hq@ep-calm-rice-aerxsuly-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
-    if (!process.env.DATABASE_URL) {
-      process.env.DATABASE_URL = FALLBACK_DB_URL;
-    }
-    globalForPrisma = globalThis;
-    prisma = globalForPrisma.prisma || new PrismaClient({
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL || FALLBACK_DB_URL
-        }
-      },
-      log: ["error"]
-    });
-    if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
-    prisma_default = prisma;
   }
 });
 
@@ -30763,2608 +30134,6 @@ var require_main = __commonJS({
     module.exports.parse = DotenvModule.parse;
     module.exports.populate = DotenvModule.populate;
     module.exports = DotenvModule;
-  }
-});
-
-// server/config/env.ts
-var import_dotenv, ENV;
-var init_env = __esm({
-  "server/config/env.ts"() {
-    "use strict";
-    import_dotenv = __toESM(require_main(), 1);
-    import_dotenv.default.config();
-    ENV = {
-      NODE_ENV: process.env.NODE_ENV || "development",
-      PORT: parseInt(process.env.PORT || "5000", 10),
-      DATABASE_URL: process.env.DATABASE_URL || "postgresql://neondb_owner:npg_OTMfBphb41Hq@ep-calm-rice-aerxsuly-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require",
-      JWT_SECRET: process.env.JWT_SECRET || "apis_super_secret_jwt_key_2026_enterprise_secure",
-      JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || "7d",
-      SESSION_SECRET: process.env.SESSION_SECRET || "apis_super_secret_session_key_2026",
-      CLIENT_URL: process.env.CLIENT_URL || "http://localhost:5173",
-      SERVER_URL: process.env.SERVER_URL || "http://localhost:5000",
-      UPLOAD_DIR: process.env.UPLOAD_DIR || "./uploads",
-      MAX_FILE_SIZE_MB: parseInt(process.env.MAX_FILE_SIZE_MB || "25", 10),
-      RATE_LIMIT_WINDOW_MS: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "900000", 10),
-      RATE_LIMIT_MAX_REQUESTS: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "1000", 10)
-    };
-  }
-});
-
-// server/utils/jwt.ts
-function generateToken(payload) {
-  return import_jsonwebtoken.default.sign(payload, ENV.JWT_SECRET, {
-    expiresIn: ENV.JWT_EXPIRES_IN
-  });
-}
-function verifyToken(token) {
-  return import_jsonwebtoken.default.verify(token, ENV.JWT_SECRET);
-}
-var import_jsonwebtoken;
-var init_jwt = __esm({
-  "server/utils/jwt.ts"() {
-    "use strict";
-    import_jsonwebtoken = __toESM(require_jsonwebtoken(), 1);
-    init_env();
-  }
-});
-
-// server/services/activityLogService.ts
-async function logActivity(params) {
-  try {
-    return await prisma_default.activityLog.create({
-      data: {
-        userId: params.userId,
-        action: params.action,
-        entity: params.entity,
-        entityId: params.entityId,
-        metadata: params.metadata ? JSON.stringify(params.metadata) : null,
-        ipAddress: params.ipAddress
-      }
-    });
-  } catch (error) {
-    console.error("Failed to record activity log:", error);
-    return null;
-  }
-}
-async function getActivityLogs(filters) {
-  const where = {};
-  if (filters.entity) where.entity = filters.entity;
-  if (filters.entityId) where.entityId = filters.entityId;
-  if (filters.userId) where.userId = filters.userId;
-  const [logs, total] = await Promise.all([
-    prisma_default.activityLog.findMany({
-      where,
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatarUrl: true,
-            role: { select: { name: true } }
-          }
-        }
-      },
-      orderBy: { timestamp: "desc" },
-      take: filters.limit || 50,
-      skip: filters.offset || 0
-    }),
-    prisma_default.activityLog.count({ where })
-  ]);
-  return { logs, total };
-}
-var init_activityLogService = __esm({
-  "server/services/activityLogService.ts"() {
-    "use strict";
-    init_prisma();
-  }
-});
-
-// server/services/authService.ts
-async function loginUser(email, passwordPlain, ipAddress) {
-  const user = await prisma_default.user.findUnique({
-    where: { email: email.toLowerCase().trim() },
-    include: {
-      role: true,
-      department: true,
-      team: true
-    }
-  });
-  if (!user) {
-    throw new Error("Invalid email or password");
-  }
-  if (user.status !== "ACTIVE") {
-    throw new Error("This account has been deactivated. Please contact your administrator.");
-  }
-  const isMatch = await import_bcryptjs.default.compare(passwordPlain, user.passwordHash);
-  if (!isMatch) {
-    throw new Error("Invalid email or password");
-  }
-  const token = generateToken({
-    userId: user.id,
-    email: user.email,
-    role: user.role.name,
-    employeeId: user.employeeId,
-    name: user.name,
-    departmentId: user.departmentId
-  });
-  await logActivity({
-    userId: user.id,
-    action: "USER_LOGIN",
-    entity: "USER",
-    entityId: user.id,
-    ipAddress,
-    metadata: { email: user.email, role: user.role.name }
-  });
-  return {
-    token,
-    user: {
-      id: user.id,
-      employeeId: user.employeeId,
-      name: user.name,
-      email: user.email,
-      role: user.role.name,
-      designation: user.designation,
-      phone: user.phone,
-      avatarUrl: user.avatarUrl,
-      department: user.department ? { id: user.department.id, name: user.department.name } : null,
-      team: user.team ? { id: user.team.id, name: user.team.name } : null,
-      joiningDate: user.joiningDate
-    }
-  };
-}
-async function getCurrentUserProfile(userId) {
-  const user = await prisma_default.user.findUnique({
-    where: { id: userId },
-    include: {
-      role: {
-        include: {
-          permissions: true
-        }
-      },
-      department: true,
-      team: true
-    }
-  });
-  if (!user) {
-    throw new Error("User not found");
-  }
-  return {
-    id: user.id,
-    employeeId: user.employeeId,
-    name: user.name,
-    email: user.email,
-    role: user.role.name,
-    permissions: user.role.permissions.map((p) => p.action),
-    designation: user.designation,
-    phone: user.phone,
-    avatarUrl: user.avatarUrl,
-    status: user.status,
-    department: user.department ? { id: user.department.id, name: user.department.name } : null,
-    team: user.team ? { id: user.team.id, name: user.team.name } : null,
-    joiningDate: user.joiningDate,
-    createdAt: user.createdAt
-  };
-}
-async function changeUserPassword(userId, oldPasswordPlain, newPasswordPlain) {
-  const user = await prisma_default.user.findUnique({ where: { id: userId } });
-  if (!user) throw new Error("User not found");
-  const isMatch = await import_bcryptjs.default.compare(oldPasswordPlain, user.passwordHash);
-  if (!isMatch) throw new Error("Current password is incorrect");
-  const newHash = await import_bcryptjs.default.hash(newPasswordPlain, 10);
-  await prisma_default.user.update({
-    where: { id: userId },
-    data: { passwordHash: newHash }
-  });
-  await logActivity({
-    userId,
-    action: "PASSWORD_CHANGED",
-    entity: "USER",
-    entityId: userId
-  });
-  return { message: "Password updated successfully" };
-}
-var import_bcryptjs;
-var init_authService = __esm({
-  "server/services/authService.ts"() {
-    "use strict";
-    import_bcryptjs = __toESM(require_bcryptjs(), 1);
-    init_prisma();
-    init_jwt();
-    init_activityLogService();
-  }
-});
-
-// server/utils/response.ts
-function sendSuccess(res, data, statusCode = 200, meta) {
-  const response = {
-    success: true,
-    data,
-    ...meta ? { meta } : {}
-  };
-  return res.status(statusCode).json(response);
-}
-function sendError(res, message, statusCode = 400, code = "BAD_REQUEST", details) {
-  const response = {
-    success: false,
-    error: {
-      code,
-      message,
-      ...details ? { details } : {}
-    }
-  };
-  return res.status(statusCode).json(response);
-}
-var init_response = __esm({
-  "server/utils/response.ts"() {
-    "use strict";
-  }
-});
-
-// server/controllers/authController.ts
-async function login(req, res) {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return sendError(res, "Email and password are required", 400, "INVALID_INPUT");
-    }
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-    const result = await loginUser(email, password, ip);
-    return sendSuccess(res, result, 200);
-  } catch (error) {
-    return sendError(res, error.message || "Login failed", 401, "AUTH_FAILED");
-  }
-}
-async function getProfile(req, res) {
-  try {
-    const userId = req.user.userId;
-    const profile = await getCurrentUserProfile(userId);
-    return sendSuccess(res, profile);
-  } catch (error) {
-    return sendError(res, error.message || "Failed to fetch profile", 500);
-  }
-}
-async function changePassword(req, res) {
-  try {
-    const userId = req.user.userId;
-    const { currentPassword, newPassword } = req.body;
-    if (!currentPassword || !newPassword) {
-      return sendError(res, "Current and new password are required", 400);
-    }
-    const result = await changeUserPassword(userId, currentPassword, newPassword);
-    return sendSuccess(res, result);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function logout(req, res) {
-  return sendSuccess(res, { message: "Logged out successfully" });
-}
-var init_authController = __esm({
-  "server/controllers/authController.ts"() {
-    "use strict";
-    init_authService();
-    init_response();
-  }
-});
-
-// server/middleware/auth.ts
-async function authenticate(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return sendError(res, "Authentication token missing or malformed", 401, "UNAUTHORIZED");
-  }
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded = verifyToken(token);
-    const user = await prisma_default.user.findUnique({
-      where: { id: decoded.userId },
-      select: { id: true, status: true, role: { select: { name: true } } }
-    });
-    if (!user || user.status !== "ACTIVE") {
-      return sendError(res, "User account is inactive or not found", 401, "ACCOUNT_INACTIVE");
-    }
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return sendError(res, "Invalid or expired token", 401, "TOKEN_INVALID", err.message);
-  }
-}
-var init_auth = __esm({
-  "server/middleware/auth.ts"() {
-    "use strict";
-    init_jwt();
-    init_response();
-    init_prisma();
-  }
-});
-
-// server/routes/authRoutes.ts
-var authRoutes_exports = {};
-__export(authRoutes_exports, {
-  default: () => authRoutes_default
-});
-var import_express, router, authRoutes_default;
-var init_authRoutes = __esm({
-  "server/routes/authRoutes.ts"() {
-    "use strict";
-    import_express = __toESM(require_express2(), 1);
-    init_authController();
-    init_auth();
-    router = (0, import_express.Router)();
-    router.post("/login", login);
-    router.get("/profile", authenticate, getProfile);
-    router.post("/change-password", authenticate, changePassword);
-    router.post("/logout", authenticate, logout);
-    authRoutes_default = router;
-  }
-});
-
-// server/services/userService.ts
-async function createUser(data, actorUserId) {
-  const existing = await prisma_default.user.findUnique({
-    where: { email: data.email.toLowerCase().trim() }
-  });
-  if (existing) throw new Error("Email is already registered");
-  const role = await prisma_default.role.findUnique({
-    where: { name: data.roleName }
-  });
-  if (!role) throw new Error(`Role ${data.roleName} not found`);
-  let empId = data.employeeId;
-  if (!empId) {
-    const count = await prisma_default.user.count();
-    empId = `EMP-${(count + 1).toString().padStart(4, "0")}`;
-  }
-  const passwordPlain = data.password || "password123";
-  const passwordHash = await import_bcryptjs2.default.hash(passwordPlain, 10);
-  const user = await prisma_default.user.create({
-    data: {
-      email: data.email.toLowerCase().trim(),
-      passwordHash,
-      name: data.name,
-      employeeId: empId,
-      roleId: role.id,
-      designation: data.designation,
-      phone: data.phone,
-      avatarUrl: data.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`,
-      departmentId: data.departmentId,
-      teamId: data.teamId,
-      status: "ACTIVE"
-    },
-    include: {
-      role: true,
-      department: true,
-      team: true
-    }
-  });
-  await logActivity({
-    userId: actorUserId,
-    action: "USER_CREATED",
-    entity: "USER",
-    entityId: user.id,
-    metadata: { name: user.name, email: user.email, role: role.name }
-  });
-  return user;
-}
-async function getUsers(filters) {
-  const page = filters.page || 1;
-  const limit = filters.limit || 50;
-  const skip = (page - 1) * limit;
-  const where = {};
-  if (filters.search) {
-    where.OR = [
-      { name: { contains: filters.search } },
-      { email: { contains: filters.search } },
-      { employeeId: { contains: filters.search } },
-      { designation: { contains: filters.search } }
-    ];
-  }
-  if (filters.role) {
-    where.role = { name: filters.role };
-  }
-  if (filters.departmentId) {
-    where.departmentId = filters.departmentId;
-  }
-  if (filters.status) {
-    where.status = filters.status;
-  }
-  const [users, total] = await Promise.all([
-    prisma_default.user.findMany({
-      where,
-      select: {
-        id: true,
-        employeeId: true,
-        name: true,
-        email: true,
-        designation: true,
-        phone: true,
-        avatarUrl: true,
-        status: true,
-        joiningDate: true,
-        createdAt: true,
-        role: { select: { id: true, name: true } },
-        department: { select: { id: true, name: true, code: true } },
-        team: { select: { id: true, name: true } },
-        _count: {
-          select: {
-            assignedTasks: true,
-            managedProjects: true,
-            timesheets: true
-          }
-        }
-      },
-      orderBy: { name: "asc" },
-      skip,
-      take: limit
-    }),
-    prisma_default.user.count({ where })
-  ]);
-  return {
-    users,
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit)
-  };
-}
-async function getUserById(id) {
-  const user = await prisma_default.user.findUnique({
-    where: { id },
-    include: {
-      role: true,
-      department: true,
-      team: true,
-      managedProjects: { select: { id: true, name: true, status: true, progress: true, deadline: true } },
-      assignedTasks: {
-        where: { status: { in: ["TO_DO", "IN_PROGRESS", "IN_REVIEW", "REVISION_REQUIRED"] } },
-        select: { id: true, title: true, priority: true, status: true, dueDate: true, project: { select: { name: true } } }
-      },
-      timesheets: {
-        orderBy: { date: "desc" },
-        take: 10,
-        include: { project: { select: { name: true } } }
-      }
-    }
-  });
-  if (!user) throw new Error("User not found");
-  return user;
-}
-async function updateUser(id, data, actorUserId) {
-  const updateData = {};
-  if (data.name) updateData.name = data.name;
-  if (data.designation !== void 0) updateData.designation = data.designation;
-  if (data.phone !== void 0) updateData.phone = data.phone;
-  if (data.avatarUrl !== void 0) updateData.avatarUrl = data.avatarUrl;
-  if (data.departmentId !== void 0) updateData.departmentId = data.departmentId;
-  if (data.teamId !== void 0) updateData.teamId = data.teamId;
-  if (data.status) updateData.status = data.status;
-  if (data.roleName) {
-    const role = await prisma_default.role.findUnique({ where: { name: data.roleName } });
-    if (role) updateData.roleId = role.id;
-  }
-  if (data.password) {
-    updateData.passwordHash = await import_bcryptjs2.default.hash(data.password, 10);
-  }
-  const updated = await prisma_default.user.update({
-    where: { id },
-    data: updateData,
-    include: { role: true, department: true, team: true }
-  });
-  await logActivity({
-    userId: actorUserId,
-    action: "USER_UPDATED",
-    entity: "USER",
-    entityId: id,
-    metadata: { name: updated.name, status: updated.status }
-  });
-  return updated;
-}
-async function deleteUser(id, actorUserId) {
-  const updated = await prisma_default.user.update({
-    where: { id },
-    data: { status: "INACTIVE" }
-  });
-  await logActivity({
-    userId: actorUserId,
-    action: "USER_DEACTIVATED",
-    entity: "USER",
-    entityId: id
-  });
-  return updated;
-}
-var import_bcryptjs2;
-var init_userService = __esm({
-  "server/services/userService.ts"() {
-    "use strict";
-    import_bcryptjs2 = __toESM(require_bcryptjs(), 1);
-    init_prisma();
-    init_activityLogService();
-  }
-});
-
-// server/services/workloadEngine.ts
-async function calculateStaffWorkload(userId) {
-  const where = userId ? { id: userId, status: "ACTIVE" } : { status: "ACTIVE" };
-  const users = await prisma_default.user.findMany({
-    where,
-    include: {
-      department: true,
-      assignedTasks: {
-        include: { project: true }
-      },
-      timesheets: {
-        where: {
-          date: {
-            gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1e3)
-            // Last 7 days
-          }
-        }
-      }
-    }
-  });
-  const now = /* @__PURE__ */ new Date();
-  const reports = [];
-  for (const user of users) {
-    const assignedTasks = user.assignedTasks;
-    const assignedTasksCount = assignedTasks.length;
-    const activeTasks = assignedTasks.filter(
-      (t) => t.status === "TO_DO" || t.status === "IN_PROGRESS" || t.status === "IN_REVIEW" || t.status === "REVISION_REQUIRED"
-    );
-    const activeTasksCount = activeTasks.length;
-    const completedTasksCount = assignedTasks.filter((t) => t.status === "COMPLETED" || t.status === "APPROVED").length;
-    const overdueTasksCount = assignedTasks.filter(
-      (t) => t.dueDate && new Date(t.dueDate) < now && t.status !== "COMPLETED" && t.status !== "APPROVED"
-    ).length;
-    const totalEstimatedHours = activeTasks.reduce((sum, t) => sum + (t.estimatedHours || 0), 0);
-    const totalActualHours = user.timesheets.reduce((sum, ts) => sum + (ts.totalDurationMinutes || 0) / 60, 0);
-    const weeklyCapacityHours = 40;
-    let workloadPercentage = Math.round(totalEstimatedHours / weeklyCapacityHours * 100);
-    if (workloadPercentage === 0 && activeTasksCount > 0) {
-      workloadPercentage = Math.min(activeTasksCount * 20, 100);
-    }
-    let status = "HEALTHY";
-    let recommendation = "Workload balanced optimally.";
-    if (workloadPercentage > 85 || activeTasksCount >= 6) {
-      status = "OVERLOADED";
-      recommendation = `High stress risk. Consider redistributing ${activeTasksCount - 3} tasks to available staff members.`;
-    } else if (workloadPercentage < 40 && activeTasksCount <= 2) {
-      status = "AVAILABLE";
-      recommendation = "Capacity available for new project assignments.";
-    }
-    reports.push({
-      userId: user.id,
-      name: user.name,
-      email: user.email,
-      avatarUrl: user.avatarUrl,
-      designation: user.designation,
-      departmentName: user.department?.name,
-      assignedTasksCount,
-      activeTasksCount,
-      completedTasksCount,
-      overdueTasksCount,
-      totalEstimatedHours: Number(totalEstimatedHours.toFixed(1)),
-      totalActualHours: Number(totalActualHours.toFixed(1)),
-      weeklyCapacityHours,
-      workloadPercentage: Math.min(workloadPercentage, 150),
-      status,
-      recommendation
-    });
-  }
-  return reports.sort((a, b) => b.workloadPercentage - a.workloadPercentage);
-}
-var init_workloadEngine = __esm({
-  "server/services/workloadEngine.ts"() {
-    "use strict";
-    init_prisma();
-  }
-});
-
-// server/controllers/userController.ts
-async function getUsers2(req, res) {
-  try {
-    const { search: search2, role, departmentId, status, page, limit } = req.query;
-    const result = await getUsers({
-      search: search2,
-      role,
-      departmentId,
-      status,
-      page: page ? parseInt(page, 10) : 1,
-      limit: limit ? parseInt(limit, 10) : 50
-    });
-    return sendSuccess(res, result.users, 200, {
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-      totalPages: result.totalPages
-    });
-  } catch (error) {
-    return sendError(res, error.message, 500);
-  }
-}
-async function getUserById2(req, res) {
-  try {
-    const user = await getUserById(req.params.id);
-    return sendSuccess(res, user);
-  } catch (error) {
-    return sendError(res, error.message, 404);
-  }
-}
-async function createUser2(req, res) {
-  try {
-    const user = await createUser(req.body, req.user?.userId);
-    return sendSuccess(res, user, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function updateUser2(req, res) {
-  try {
-    const user = await updateUser(req.params.id, req.body, req.user?.userId);
-    return sendSuccess(res, user);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function deleteUser2(req, res) {
-  try {
-    const user = await deleteUser(req.params.id, req.user?.userId);
-    return sendSuccess(res, user);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function getStaffWorkload(req, res) {
-  try {
-    const userId = req.query.userId;
-    const workload = await calculateStaffWorkload(userId);
-    return sendSuccess(res, workload);
-  } catch (error) {
-    return sendError(res, error.message, 500);
-  }
-}
-var init_userController = __esm({
-  "server/controllers/userController.ts"() {
-    "use strict";
-    init_userService();
-    init_workloadEngine();
-    init_response();
-  }
-});
-
-// server/middleware/rbac.ts
-function authorizeRoles(...allowedRoles) {
-  return (req, res, next) => {
-    if (!req.user) {
-      return sendError(res, "Authentication required", 401, "UNAUTHORIZED");
-    }
-    const userRole = req.user.role;
-    if (userRole === "CEO" || userRole === "ADMIN") {
-      return next();
-    }
-    if (!allowedRoles.includes(userRole)) {
-      return sendError(
-        res,
-        `Access denied. Required role: [${allowedRoles.join(", ")}]. Current role: ${userRole}`,
-        403,
-        "FORBIDDEN"
-      );
-    }
-    next();
-  };
-}
-var init_rbac = __esm({
-  "server/middleware/rbac.ts"() {
-    "use strict";
-    init_response();
-  }
-});
-
-// server/routes/userRoutes.ts
-var userRoutes_exports = {};
-__export(userRoutes_exports, {
-  default: () => userRoutes_default
-});
-var import_express2, router2, userRoutes_default;
-var init_userRoutes = __esm({
-  "server/routes/userRoutes.ts"() {
-    "use strict";
-    import_express2 = __toESM(require_express2(), 1);
-    init_userController();
-    init_auth();
-    init_rbac();
-    router2 = (0, import_express2.Router)();
-    router2.use(authenticate);
-    router2.get("/", getUsers2);
-    router2.get("/workload", getStaffWorkload);
-    router2.get("/:id", getUserById2);
-    router2.post("/", authorizeRoles("CEO", "ADMIN", "DEPARTMENT_HEAD"), createUser2);
-    router2.put("/:id", authorizeRoles("CEO", "ADMIN", "DEPARTMENT_HEAD", "PROJECT_MANAGER"), updateUser2);
-    router2.delete("/:id", authorizeRoles("CEO", "ADMIN"), deleteUser2);
-    userRoutes_default = router2;
-  }
-});
-
-// server/services/riskEngine.ts
-async function calculateProjectRisk(projectId) {
-  const project = await prisma_default.project.findUnique({
-    where: { id: projectId },
-    include: {
-      tasks: true,
-      members: { include: { user: true } }
-    }
-  });
-  if (!project) {
-    throw new Error(`Project ${projectId} not found`);
-  }
-  const now = /* @__PURE__ */ new Date();
-  const deadline = new Date(project.deadline);
-  const startDate = new Date(project.startDate);
-  const totalDurationMs = deadline.getTime() - startDate.getTime();
-  const elapsedDurationMs = now.getTime() - startDate.getTime();
-  const timeElapsedRatio = totalDurationMs > 0 ? Math.min(Math.max(elapsedDurationMs / totalDurationMs, 0), 2) : 1;
-  const daysUntilDeadline = Math.ceil((deadline.getTime() - now.getTime()) / (1e3 * 60 * 60 * 24));
-  const totalTasks = project.tasks.length;
-  const completedTasks = project.tasks.filter((t) => t.status === "COMPLETED" || t.status === "APPROVED").length;
-  const overdueTasks = project.tasks.filter((t) => t.dueDate && new Date(t.dueDate) < now && t.status !== "COMPLETED" && t.status !== "APPROVED");
-  const blockedTasks = project.tasks.filter((t) => t.status === "BLOCKED");
-  const revisionTasks = project.tasks.filter((t) => t.status === "REVISION_REQUIRED");
-  const progress = project.progress;
-  const reasons = [];
-  const recommendations = [];
-  let deadlineRisk = 10;
-  let taskRisk = 10;
-  let workloadRisk = 10;
-  if (daysUntilDeadline < 0 && progress < 100) {
-    deadlineRisk = 95;
-    reasons.push(`Project deadline passed ${Math.abs(daysUntilDeadline)} days ago while incomplete (${Math.round(progress)}% progress)`);
-    recommendations.push("Immediate timeline extension and executive review needed");
-  } else if (daysUntilDeadline <= 3 && progress < 80) {
-    deadlineRisk = 85;
-    reasons.push(`Deadline in ${daysUntilDeadline} days with only ${Math.round(progress)}% completed`);
-    recommendations.push("Prioritize remaining high-impact tasks and reassign blockers");
-  } else if (daysUntilDeadline <= 7 && progress < 50) {
-    deadlineRisk = 70;
-    reasons.push(`Only ${daysUntilDeadline} days remaining with less than half completed`);
-    recommendations.push("Assign additional team members to accelerate delivery");
-  } else if (timeElapsedRatio > 0.7 && progress < 40) {
-    deadlineRisk = 60;
-    reasons.push(`Over 70% timeline consumed with only ${Math.round(progress)}% progress`);
-  }
-  if (overdueTasks.length > 0) {
-    taskRisk += overdueTasks.length * 18;
-    reasons.push(`${overdueTasks.length} task(s) currently overdue`);
-    recommendations.push(`Resolve ${overdueTasks.length} overdue task(s) immediately`);
-  }
-  if (blockedTasks.length > 0) {
-    taskRisk += blockedTasks.length * 20;
-    reasons.push(`${blockedTasks.length} task(s) are BLOCKED`);
-    recommendations.push(`Clear dependencies for ${blockedTasks.length} blocked task(s)`);
-  }
-  if (revisionTasks.length > 0) {
-    taskRisk += revisionTasks.length * 12;
-    reasons.push(`${revisionTasks.length} task(s) require revisions`);
-  }
-  if (project.budget > 0 && project.actualCost > project.budget) {
-    workloadRisk += 30;
-    const over = Math.round((project.actualCost - project.budget) / project.budget * 100);
-    reasons.push(`Project budget exceeded by ${over}% ($${project.actualCost.toLocaleString()} / $${project.budget.toLocaleString()})`);
-  }
-  if (project.members.length === 0 && totalTasks > 0) {
-    workloadRisk += 40;
-    reasons.push("No team members assigned to project with active tasks");
-    recommendations.push("Assign project team members");
-  }
-  deadlineRisk = Math.min(Math.max(deadlineRisk, 0), 100);
-  taskRisk = Math.min(Math.max(taskRisk, 0), 100);
-  workloadRisk = Math.min(Math.max(workloadRisk, 0), 100);
-  const aggregateRiskScore = Math.round(deadlineRisk * 0.45 + taskRisk * 0.35 + workloadRisk * 0.2);
-  const healthScore = Math.max(100 - aggregateRiskScore, 0);
-  let riskLevel = "LOW";
-  if (aggregateRiskScore >= 75 || daysUntilDeadline < 0) {
-    riskLevel = "CRITICAL";
-  } else if (aggregateRiskScore >= 50) {
-    riskLevel = "HIGH";
-  } else if (aggregateRiskScore >= 25) {
-    riskLevel = "MEDIUM";
-  } else {
-    riskLevel = "LOW";
-  }
-  if (reasons.length === 0) {
-    reasons.push("Project execution is on schedule and healthy");
-    recommendations.push("Maintain steady sprint velocity");
-  }
-  await prisma_default.projectRisk.create({
-    data: {
-      projectId: project.id,
-      riskLevel,
-      healthScore,
-      deadlineRisk,
-      taskRisk,
-      workloadRisk,
-      reasons: JSON.stringify(reasons),
-      recommendations: JSON.stringify(recommendations)
-    }
-  });
-  return {
-    projectId: project.id,
-    projectName: project.name,
-    riskLevel,
-    healthScore,
-    deadlineRisk,
-    taskRisk,
-    workloadRisk,
-    reasons,
-    recommendations
-  };
-}
-var init_riskEngine = __esm({
-  "server/services/riskEngine.ts"() {
-    "use strict";
-    init_prisma();
-  }
-});
-
-// server/sockets/socketManager.ts
-function getIO() {
-  return ioInstance;
-}
-var ioInstance;
-var init_socketManager = __esm({
-  "server/sockets/socketManager.ts"() {
-    "use strict";
-    ioInstance = null;
-  }
-});
-
-// server/services/notificationService.ts
-async function createNotification(params) {
-  try {
-    const notification = await prisma_default.notification.create({
-      data: {
-        userId: params.userId,
-        type: params.type,
-        title: params.title,
-        message: params.message,
-        link: params.link
-      }
-    });
-    const io = getIO();
-    if (io) {
-      io.to(`user:${params.userId}`).emit("notification_received", notification);
-    }
-    return notification;
-  } catch (error) {
-    console.error("Failed to create notification:", error);
-    return null;
-  }
-}
-async function getUserNotifications(userId) {
-  const [notifications, unreadCount] = await Promise.all([
-    prisma_default.notification.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      take: 50
-    }),
-    prisma_default.notification.count({
-      where: { userId, isRead: false }
-    })
-  ]);
-  return { notifications, unreadCount };
-}
-async function markNotificationAsRead(id, userId) {
-  return prisma_default.notification.updateMany({
-    where: { id, userId },
-    data: { isRead: true }
-  });
-}
-async function markAllNotificationsAsRead(userId) {
-  return prisma_default.notification.updateMany({
-    where: { userId, isRead: false },
-    data: { isRead: true }
-  });
-}
-var init_notificationService = __esm({
-  "server/services/notificationService.ts"() {
-    "use strict";
-    init_prisma();
-    init_socketManager();
-  }
-});
-
-// server/services/projectService.ts
-async function createProject(data, creatorUserId) {
-  let projectCode = data.projectCode;
-  if (!projectCode) {
-    const count = await prisma_default.project.count();
-    projectCode = `PRJ-${(count + 1).toString().padStart(4, "0")}`;
-  }
-  const project = await prisma_default.project.create({
-    data: {
-      name: data.name,
-      projectCode,
-      description: data.description,
-      clientId: data.clientId,
-      accountManagerId: data.accountManagerId,
-      projectManagerId: data.projectManagerId,
-      departmentId: data.departmentId,
-      teamId: data.teamId,
-      startDate: data.startDate ? new Date(data.startDate) : /* @__PURE__ */ new Date(),
-      deadline: new Date(data.deadline),
-      priority: data.priority || "MEDIUM",
-      status: data.status || "PLANNING",
-      budget: data.budget || 0,
-      revenue: data.revenue || 0,
-      progress: 0
-    },
-    include: {
-      client: true,
-      projectManager: true,
-      accountManager: true,
-      department: true,
-      team: true
-    }
-  });
-  if (data.memberIds && data.memberIds.length > 0) {
-    await prisma_default.projectMember.createMany({
-      data: data.memberIds.map((userId) => ({
-        projectId: project.id,
-        userId,
-        role: userId === data.projectManagerId ? "LEAD" : "MEMBER"
-      }))
-    });
-  } else if (data.projectManagerId) {
-    await prisma_default.projectMember.create({
-      data: {
-        projectId: project.id,
-        userId: data.projectManagerId,
-        role: "LEAD"
-      }
-    });
-  }
-  await prisma_default.conversation.create({
-    data: {
-      title: `${project.name} Team Chat`,
-      type: "PROJECT",
-      projectId: project.id
-    }
-  });
-  try {
-    await calculateProjectRisk(project.id);
-  } catch (e) {
-    console.error("Initial risk calculation failed:", e);
-  }
-  await logActivity({
-    userId: creatorUserId,
-    action: "PROJECT_CREATED",
-    entity: "PROJECT",
-    entityId: project.id,
-    metadata: { name: project.name, code: project.projectCode }
-  });
-  if (data.projectManagerId && data.projectManagerId !== creatorUserId) {
-    await createNotification({
-      userId: data.projectManagerId,
-      type: "TASK_ASSIGNED",
-      title: "Assigned as Project Manager",
-      message: `You have been appointed Project Manager for "${project.name}"`,
-      link: `/projects/${project.id}`
-    });
-  }
-  return project;
-}
-async function getProjects(filters) {
-  const page = filters.page || 1;
-  const limit = filters.limit || 50;
-  const skip = (page - 1) * limit;
-  const where = {};
-  if (filters.search) {
-    where.OR = [
-      { name: { contains: filters.search } },
-      { projectCode: { contains: filters.search } },
-      { description: { contains: filters.search } },
-      { client: { company: { contains: filters.search } } }
-    ];
-  }
-  if (filters.status) where.status = filters.status;
-  if (filters.priority) where.priority = filters.priority;
-  if (filters.departmentId) where.departmentId = filters.departmentId;
-  if (filters.clientId) where.clientId = filters.clientId;
-  if (filters.projectManagerId) where.projectManagerId = filters.projectManagerId;
-  if (filters.userId) {
-    where.OR = [
-      { projectManagerId: filters.userId },
-      { accountManagerId: filters.userId },
-      { members: { some: { userId: filters.userId } } }
-    ];
-  }
-  const [projects, total] = await Promise.all([
-    prisma_default.project.findMany({
-      where,
-      include: {
-        client: { select: { id: true, company: true, contactPerson: true } },
-        projectManager: { select: { id: true, name: true, avatarUrl: true, email: true } },
-        accountManager: { select: { id: true, name: true, avatarUrl: true } },
-        department: { select: { id: true, name: true, code: true } },
-        team: { select: { id: true, name: true } },
-        members: {
-          include: {
-            user: { select: { id: true, name: true, avatarUrl: true, designation: true } }
-          }
-        },
-        risks: {
-          orderBy: { calculatedAt: "desc" },
-          take: 1
-        },
-        _count: {
-          select: {
-            tasks: true,
-            documents: true,
-            milestones: true
-          }
-        }
-      },
-      orderBy: { updatedAt: "desc" },
-      skip,
-      take: limit
-    }),
-    prisma_default.project.count({ where })
-  ]);
-  const formatted = projects.map((p) => {
-    const latestRisk = p.risks[0] || null;
-    let reasons = [];
-    if (latestRisk && latestRisk.reasons) {
-      try {
-        reasons = JSON.parse(latestRisk.reasons);
-      } catch {
-        reasons = [latestRisk.reasons];
-      }
-    }
-    return {
-      ...p,
-      riskAssessment: latestRisk ? {
-        riskLevel: latestRisk.riskLevel,
-        healthScore: latestRisk.healthScore,
-        deadlineRisk: latestRisk.deadlineRisk,
-        taskRisk: latestRisk.taskRisk,
-        workloadRisk: latestRisk.workloadRisk,
-        reasons
-      } : {
-        riskLevel: "LOW",
-        healthScore: 90,
-        deadlineRisk: 10,
-        taskRisk: 10,
-        workloadRisk: 10,
-        reasons: ["On track"]
-      }
-    };
-  });
-  return {
-    projects: formatted,
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit)
-  };
-}
-async function getProjectById(id) {
-  const project = await prisma_default.project.findUnique({
-    where: { id },
-    include: {
-      client: true,
-      projectManager: true,
-      accountManager: true,
-      department: true,
-      team: true,
-      members: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              designation: true,
-              avatarUrl: true,
-              role: { select: { name: true } }
-            }
-          }
-        }
-      },
-      milestones: {
-        include: {
-          tasks: {
-            select: { id: true, title: true, status: true, priority: true, progress: true }
-          }
-        },
-        orderBy: { dueDate: "asc" }
-      },
-      tasks: {
-        include: {
-          assignee: { select: { id: true, name: true, avatarUrl: true, designation: true } },
-          reviewer: { select: { id: true, name: true, avatarUrl: true } },
-          subtasks: true
-        },
-        orderBy: { createdAt: "desc" }
-      },
-      documents: {
-        include: {
-          uploader: { select: { id: true, name: true } },
-          versions: { orderBy: { versionNumber: "desc" }, take: 1 }
-        },
-        orderBy: { createdAt: "desc" }
-      },
-      risks: {
-        orderBy: { calculatedAt: "desc" },
-        take: 1
-      },
-      conversations: {
-        take: 1
-      }
-    }
-  });
-  if (!project) throw new Error("Project not found");
-  const latestRisk = project.risks[0] || null;
-  let parsedReasons = [];
-  let parsedRecommendations = [];
-  if (latestRisk) {
-    try {
-      parsedReasons = JSON.parse(latestRisk.reasons);
-    } catch {
-      parsedReasons = [latestRisk.reasons];
-    }
-    try {
-      parsedRecommendations = JSON.parse(latestRisk.recommendations || "[]");
-    } catch {
-      parsedRecommendations = [];
-    }
-  }
-  return {
-    ...project,
-    riskAssessment: latestRisk ? {
-      riskLevel: latestRisk.riskLevel,
-      healthScore: latestRisk.healthScore,
-      deadlineRisk: latestRisk.deadlineRisk,
-      taskRisk: latestRisk.taskRisk,
-      workloadRisk: latestRisk.workloadRisk,
-      reasons: parsedReasons,
-      recommendations: parsedRecommendations,
-      calculatedAt: latestRisk.calculatedAt
-    } : {
-      riskLevel: "LOW",
-      healthScore: 95,
-      deadlineRisk: 10,
-      taskRisk: 10,
-      workloadRisk: 10,
-      reasons: ["Project schedule is stable."],
-      recommendations: ["Maintain regular check-ins."]
-    }
-  };
-}
-async function updateProject(id, data, actorUserId) {
-  const updateData = {};
-  if (data.name) updateData.name = data.name;
-  if (data.description !== void 0) updateData.description = data.description;
-  if (data.clientId !== void 0) updateData.clientId = data.clientId;
-  if (data.accountManagerId !== void 0) updateData.accountManagerId = data.accountManagerId;
-  if (data.projectManagerId !== void 0) updateData.projectManagerId = data.projectManagerId;
-  if (data.departmentId !== void 0) updateData.departmentId = data.departmentId;
-  if (data.teamId !== void 0) updateData.teamId = data.teamId;
-  if (data.startDate) updateData.startDate = new Date(data.startDate);
-  if (data.deadline) updateData.deadline = new Date(data.deadline);
-  if (data.priority) updateData.priority = data.priority;
-  if (data.status) updateData.status = data.status;
-  if (data.budget !== void 0) updateData.budget = data.budget;
-  if (data.revenue !== void 0) updateData.revenue = data.revenue;
-  const updated = await prisma_default.project.update({
-    where: { id },
-    data: updateData,
-    include: { client: true, projectManager: true, department: true }
-  });
-  if (data.memberIds) {
-    await prisma_default.projectMember.deleteMany({ where: { projectId: id } });
-    await prisma_default.projectMember.createMany({
-      data: data.memberIds.map((userId) => ({
-        projectId: id,
-        userId,
-        role: userId === updated.projectManagerId ? "LEAD" : "MEMBER"
-      }))
-    });
-  }
-  try {
-    await calculateProjectRisk(id);
-  } catch (e) {
-    console.error("Risk update error:", e);
-  }
-  await logActivity({
-    userId: actorUserId,
-    action: "PROJECT_UPDATED",
-    entity: "PROJECT",
-    entityId: id,
-    metadata: { name: updated.name, status: updated.status, priority: updated.priority }
-  });
-  return updated;
-}
-async function deleteProject(id, actorUserId) {
-  const project = await prisma_default.project.delete({
-    where: { id }
-  });
-  await logActivity({
-    userId: actorUserId,
-    action: "PROJECT_DELETED",
-    entity: "PROJECT",
-    entityId: id,
-    metadata: { name: project.name }
-  });
-  return project;
-}
-var init_projectService = __esm({
-  "server/services/projectService.ts"() {
-    "use strict";
-    init_prisma();
-    init_riskEngine();
-    init_activityLogService();
-    init_notificationService();
-  }
-});
-
-// server/controllers/projectController.ts
-async function getProjects2(req, res) {
-  try {
-    const { search: search2, status, priority, departmentId, clientId, projectManagerId, userId, riskLevel, page, limit } = req.query;
-    const result = await getProjects({
-      search: search2,
-      status,
-      priority,
-      departmentId,
-      clientId,
-      projectManagerId,
-      userId,
-      riskLevel,
-      page: page ? parseInt(page, 10) : 1,
-      limit: limit ? parseInt(limit, 10) : 50
-    });
-    return sendSuccess(res, result.projects, 200, {
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-      totalPages: result.totalPages
-    });
-  } catch (error) {
-    return sendError(res, error.message, 500);
-  }
-}
-async function getProjectById2(req, res) {
-  try {
-    const project = await getProjectById(req.params.id);
-    return sendSuccess(res, project);
-  } catch (error) {
-    return sendError(res, error.message, 404);
-  }
-}
-async function createProject2(req, res) {
-  try {
-    const project = await createProject(req.body, req.user?.userId);
-    return sendSuccess(res, project, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function updateProject2(req, res) {
-  try {
-    const project = await updateProject(req.params.id, req.body, req.user?.userId);
-    return sendSuccess(res, project);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function deleteProject2(req, res) {
-  try {
-    const project = await deleteProject(req.params.id, req.user?.userId);
-    return sendSuccess(res, project);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function refreshProjectRisk(req, res) {
-  try {
-    const risk = await calculateProjectRisk(req.params.id);
-    return sendSuccess(res, risk);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-var init_projectController = __esm({
-  "server/controllers/projectController.ts"() {
-    "use strict";
-    init_projectService();
-    init_riskEngine();
-    init_response();
-  }
-});
-
-// server/routes/projectRoutes.ts
-var projectRoutes_exports = {};
-__export(projectRoutes_exports, {
-  default: () => projectRoutes_default
-});
-var import_express3, router3, projectRoutes_default;
-var init_projectRoutes = __esm({
-  "server/routes/projectRoutes.ts"() {
-    "use strict";
-    import_express3 = __toESM(require_express2(), 1);
-    init_projectController();
-    init_auth();
-    init_rbac();
-    router3 = (0, import_express3.Router)();
-    router3.use(authenticate);
-    router3.get("/", getProjects2);
-    router3.get("/:id", getProjectById2);
-    router3.post("/", authorizeRoles("CEO", "ADMIN"), createProject2);
-    router3.put("/:id", authorizeRoles("CEO", "ADMIN"), updateProject2);
-    router3.delete("/:id", authorizeRoles("CEO", "ADMIN"), deleteProject2);
-    router3.post("/:id/refresh-risk", refreshProjectRisk);
-    projectRoutes_default = router3;
-  }
-});
-
-// server/services/progressEngine.ts
-async function recalculateProjectProgress(projectId) {
-  const tasks = await prisma_default.task.findMany({
-    where: { projectId },
-    select: {
-      id: true,
-      status: true,
-      progress: true,
-      estimatedHours: true
-    }
-  });
-  if (tasks.length === 0) {
-    await prisma_default.project.update({
-      where: { id: projectId },
-      data: { progress: 0 }
-    });
-    return 0;
-  }
-  let totalWeight = 0;
-  let accumulatedProgress = 0;
-  for (const task of tasks) {
-    const weight = task.estimatedHours > 0 ? task.estimatedHours : 1;
-    totalWeight += weight;
-    if (task.status === "COMPLETED" || task.status === "APPROVED") {
-      accumulatedProgress += 100 * weight;
-    } else if (task.status === "IN_PROGRESS" || task.status === "IN_REVIEW") {
-      accumulatedProgress += Math.max(task.progress, 30) * weight;
-    } else if (task.status === "REVISION_REQUIRED") {
-      accumulatedProgress += 20 * weight;
-    } else {
-      accumulatedProgress += (task.progress || 0) * weight;
-    }
-  }
-  const finalProgress = Math.min(Math.max(Math.round(accumulatedProgress / totalWeight), 0), 100);
-  await prisma_default.project.update({
-    where: { id: projectId },
-    data: {
-      progress: finalProgress,
-      status: finalProgress === 100 ? "COMPLETED" : void 0
-    }
-  });
-  try {
-    await calculateProjectRisk(projectId);
-  } catch (err) {
-    console.error(`Failed to refresh risk for project ${projectId}:`, err);
-  }
-  return finalProgress;
-}
-var init_progressEngine = __esm({
-  "server/services/progressEngine.ts"() {
-    "use strict";
-    init_prisma();
-    init_riskEngine();
-  }
-});
-
-// server/services/taskService.ts
-async function createTask(data, creatorUserId) {
-  let taskCode = data.taskCode;
-  if (!taskCode) {
-    const count = await prisma_default.task.count({ where: { projectId: data.projectId } });
-    const project = await prisma_default.project.findUnique({ where: { id: data.projectId }, select: { projectCode: true } });
-    const prefix = project?.projectCode ? project.projectCode : "TSK";
-    taskCode = `${prefix}-T${(count + 1).toString().padStart(3, "0")}`;
-  }
-  const task = await prisma_default.task.create({
-    data: {
-      title: data.title,
-      taskCode,
-      description: data.description,
-      projectId: data.projectId,
-      milestoneId: data.milestoneId,
-      assigneeId: data.assigneeId,
-      reviewerId: data.reviewerId,
-      priority: data.priority || "MEDIUM",
-      status: data.status || "TO_DO",
-      startDate: data.startDate ? new Date(data.startDate) : /* @__PURE__ */ new Date(),
-      dueDate: data.dueDate ? new Date(data.dueDate) : null,
-      estimatedHours: data.estimatedHours || 0,
-      dependsOnTaskId: data.dependsOnTaskId,
-      progress: data.status === "COMPLETED" || data.status === "APPROVED" ? 100 : 0
-    },
-    include: {
-      project: { select: { id: true, name: true, projectCode: true } },
-      assignee: { select: { id: true, name: true, avatarUrl: true, email: true } },
-      reviewer: { select: { id: true, name: true, avatarUrl: true } }
-    }
-  });
-  if (data.subtasks && data.subtasks.length > 0) {
-    await prisma_default.subtask.createMany({
-      data: data.subtasks.map((st) => ({
-        taskId: task.id,
-        title: st.title,
-        isCompleted: st.isCompleted || false
-      }))
-    });
-  }
-  await recalculateProjectProgress(data.projectId);
-  await logActivity({
-    userId: creatorUserId,
-    action: "TASK_CREATED",
-    entity: "TASK",
-    entityId: task.id,
-    metadata: { title: task.title, code: task.taskCode, projectId: task.projectId }
-  });
-  if (data.assigneeId && data.assigneeId !== creatorUserId) {
-    await createNotification({
-      userId: data.assigneeId,
-      type: "TASK_ASSIGNED",
-      title: "New Task Assigned",
-      message: `You were assigned task "${task.title}" in project ${task.project.name}`,
-      link: `/tasks/${task.id}`
-    });
-  }
-  const io = getIO();
-  if (io) {
-    io.to(`project:${data.projectId}`).emit("task_created", task);
-  }
-  return task;
-}
-async function getTasks(filters) {
-  const page = filters.page || 1;
-  const limit = filters.limit || 100;
-  const skip = (page - 1) * limit;
-  const where = {};
-  if (filters.search) {
-    where.OR = [
-      { title: { contains: filters.search } },
-      { taskCode: { contains: filters.search } },
-      { description: { contains: filters.search } }
-    ];
-  }
-  if (filters.projectId) where.projectId = filters.projectId;
-  if (filters.assigneeId) where.assigneeId = filters.assigneeId;
-  if (filters.reviewerId) where.reviewerId = filters.reviewerId;
-  if (filters.status) where.status = filters.status;
-  if (filters.priority) where.priority = filters.priority;
-  if (filters.isOverdue) {
-    where.dueDate = { lt: /* @__PURE__ */ new Date() };
-    where.status = { notIn: ["COMPLETED", "APPROVED"] };
-  }
-  const [tasks, total] = await Promise.all([
-    prisma_default.task.findMany({
-      where,
-      include: {
-        project: { select: { id: true, name: true, projectCode: true, status: true } },
-        assignee: { select: { id: true, name: true, avatarUrl: true, designation: true } },
-        reviewer: { select: { id: true, name: true, avatarUrl: true } },
-        subtasks: true,
-        dependsOnTask: { select: { id: true, title: true, status: true, taskCode: true } },
-        _count: {
-          select: {
-            timesheets: true,
-            documents: true
-          }
-        }
-      },
-      orderBy: [{ priority: "desc" }, { dueDate: "asc" }],
-      skip,
-      take: limit
-    }),
-    prisma_default.task.count({ where })
-  ]);
-  return {
-    tasks,
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit)
-  };
-}
-async function getTaskById(id) {
-  const task = await prisma_default.task.findUnique({
-    where: { id },
-    include: {
-      project: true,
-      milestone: true,
-      assignee: true,
-      reviewer: true,
-      subtasks: { orderBy: { createdAt: "asc" } },
-      dependsOnTask: true,
-      dependentTasks: true,
-      timesheets: {
-        include: { user: { select: { id: true, name: true, avatarUrl: true } } },
-        orderBy: { date: "desc" }
-      },
-      documents: {
-        include: { uploader: { select: { id: true, name: true } } }
-      },
-      approvals: {
-        include: { requester: true, approver: true },
-        orderBy: { createdAt: "desc" }
-      }
-    }
-  });
-  if (!task) throw new Error("Task not found");
-  return task;
-}
-async function updateTask(id, data, actorUserId) {
-  const existing = await prisma_default.task.findUnique({
-    where: { id },
-    include: { project: true, assignee: true, reviewer: true }
-  });
-  if (!existing) throw new Error("Task not found");
-  const updateData = {};
-  if (data.title) updateData.title = data.title;
-  if (data.description !== void 0) updateData.description = data.description;
-  if (data.milestoneId !== void 0) updateData.milestoneId = data.milestoneId;
-  if (data.assigneeId !== void 0) updateData.assigneeId = data.assigneeId;
-  if (data.reviewerId !== void 0) updateData.reviewerId = data.reviewerId;
-  if (data.priority) updateData.priority = data.priority;
-  if (data.startDate) updateData.startDate = new Date(data.startDate);
-  if (data.dueDate !== void 0) updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null;
-  if (data.estimatedHours !== void 0) updateData.estimatedHours = data.estimatedHours;
-  if (data.actualHours !== void 0) updateData.actualHours = data.actualHours;
-  if (data.dependsOnTaskId !== void 0) updateData.dependsOnTaskId = data.dependsOnTaskId;
-  if (data.status) {
-    updateData.status = data.status;
-    if (data.status === "COMPLETED" || data.status === "APPROVED") {
-      updateData.progress = 100;
-    } else if (data.status === "TO_DO") {
-      updateData.progress = 0;
-    } else if (data.progress !== void 0) {
-      updateData.progress = data.progress;
-    }
-  } else if (data.progress !== void 0) {
-    updateData.progress = data.progress;
-    if (data.progress === 100 && existing.status !== "APPROVED") {
-      updateData.status = "IN_REVIEW";
-    }
-  }
-  const updated = await prisma_default.task.update({
-    where: { id },
-    data: updateData,
-    include: {
-      project: { select: { id: true, name: true, projectCode: true } },
-      assignee: { select: { id: true, name: true, avatarUrl: true } },
-      reviewer: { select: { id: true, name: true, avatarUrl: true } },
-      subtasks: true
-    }
-  });
-  await recalculateProjectProgress(existing.projectId);
-  if (data.status && data.status !== existing.status) {
-    await logActivity({
-      userId: actorUserId,
-      action: "TASK_STATUS_CHANGED",
-      entity: "TASK",
-      entityId: id,
-      metadata: {
-        taskTitle: updated.title,
-        oldStatus: existing.status,
-        newStatus: data.status
-      }
-    });
-    if (data.status === "IN_REVIEW" && existing.reviewerId) {
-      await createNotification({
-        userId: existing.reviewerId,
-        type: "APPROVAL_REQUIRED",
-        title: "Task Ready For Review",
-        message: `Task "${updated.title}" in ${existing.project.name} requires your review.`,
-        link: `/tasks/${updated.id}`
-      });
-    }
-    if (data.status === "REVISION_REQUIRED" && existing.assigneeId) {
-      await createNotification({
-        userId: existing.assigneeId,
-        type: "TASK_ASSIGNED",
-        title: "Task Revision Required",
-        message: `Task "${updated.title}" requires revisions.`,
-        link: `/tasks/${updated.id}`
-      });
-    } else if (data.status === "APPROVED" && existing.assigneeId) {
-      await createNotification({
-        userId: existing.assigneeId,
-        type: "APPROVAL_REQUIRED",
-        title: "Task Approved",
-        message: `Task "${updated.title}" has been approved!`,
-        link: `/tasks/${updated.id}`
-      });
-    }
-  }
-  const io = getIO();
-  if (io) {
-    io.to(`project:${existing.projectId}`).emit("task_updated", updated);
-  }
-  return updated;
-}
-async function deleteTask(id, actorUserId) {
-  const task = await prisma_default.task.delete({ where: { id } });
-  await recalculateProjectProgress(task.projectId);
-  await logActivity({
-    userId: actorUserId,
-    action: "TASK_DELETED",
-    entity: "TASK",
-    entityId: id,
-    metadata: { title: task.title }
-  });
-  return task;
-}
-async function toggleSubtask(subtaskId, isCompleted) {
-  const subtask = await prisma_default.subtask.update({
-    where: { id: subtaskId },
-    data: { isCompleted }
-  });
-  const allSubtasks = await prisma_default.subtask.findMany({
-    where: { taskId: subtask.taskId }
-  });
-  if (allSubtasks.length > 0) {
-    const completedCount = allSubtasks.filter((s) => s.isCompleted).length;
-    const progress = Math.round(completedCount / allSubtasks.length * 100);
-    await prisma_default.task.update({
-      where: { id: subtask.taskId },
-      data: {
-        progress,
-        status: progress === 100 ? "IN_REVIEW" : progress > 0 ? "IN_PROGRESS" : "TO_DO"
-      }
-    });
-    const task = await prisma_default.task.findUnique({ where: { id: subtask.taskId } });
-    if (task) await recalculateProjectProgress(task.projectId);
-  }
-  return subtask;
-}
-async function createSubtask(taskId, title) {
-  return prisma_default.subtask.create({
-    data: { taskId, title, isCompleted: false }
-  });
-}
-async function deleteSubtask(subtaskId) {
-  return prisma_default.subtask.delete({ where: { id: subtaskId } });
-}
-var init_taskService = __esm({
-  "server/services/taskService.ts"() {
-    "use strict";
-    init_prisma();
-    init_progressEngine();
-    init_activityLogService();
-    init_notificationService();
-    init_socketManager();
-  }
-});
-
-// server/controllers/taskController.ts
-async function getTasks2(req, res) {
-  try {
-    const { search: search2, projectId, assigneeId, reviewerId, status, priority, isOverdue, page, limit } = req.query;
-    const result = await getTasks({
-      search: search2,
-      projectId,
-      assigneeId,
-      reviewerId,
-      status,
-      priority,
-      isOverdue: isOverdue === "true",
-      page: page ? parseInt(page, 10) : 1,
-      limit: limit ? parseInt(limit, 10) : 100
-    });
-    return sendSuccess(res, result.tasks, 200, {
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-      totalPages: result.totalPages
-    });
-  } catch (error) {
-    return sendError(res, error.message, 500);
-  }
-}
-async function getTaskById2(req, res) {
-  try {
-    const task = await getTaskById(req.params.id);
-    return sendSuccess(res, task);
-  } catch (error) {
-    return sendError(res, error.message, 404);
-  }
-}
-async function createTask2(req, res) {
-  try {
-    const task = await createTask(req.body, req.user?.userId);
-    return sendSuccess(res, task, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function updateTask2(req, res) {
-  try {
-    const task = await updateTask(req.params.id, req.body, req.user?.userId);
-    return sendSuccess(res, task);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function deleteTask2(req, res) {
-  try {
-    const task = await deleteTask(req.params.id, req.user?.userId);
-    return sendSuccess(res, task);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function createSubtask2(req, res) {
-  try {
-    const { title } = req.body;
-    if (!title) return sendError(res, "Subtask title is required", 400);
-    const subtask = await createSubtask(req.params.id, title);
-    return sendSuccess(res, subtask, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function toggleSubtask2(req, res) {
-  try {
-    const { isCompleted } = req.body;
-    const subtask = await toggleSubtask(req.params.subtaskId, isCompleted);
-    return sendSuccess(res, subtask);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function deleteSubtask2(req, res) {
-  try {
-    const subtask = await deleteSubtask(req.params.subtaskId);
-    return sendSuccess(res, subtask);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-var init_taskController = __esm({
-  "server/controllers/taskController.ts"() {
-    "use strict";
-    init_taskService();
-    init_response();
-  }
-});
-
-// server/routes/taskRoutes.ts
-var taskRoutes_exports = {};
-__export(taskRoutes_exports, {
-  default: () => taskRoutes_default
-});
-var import_express4, router4, taskRoutes_default;
-var init_taskRoutes = __esm({
-  "server/routes/taskRoutes.ts"() {
-    "use strict";
-    import_express4 = __toESM(require_express2(), 1);
-    init_taskController();
-    init_auth();
-    router4 = (0, import_express4.Router)();
-    router4.use(authenticate);
-    router4.get("/", getTasks2);
-    router4.get("/:id", getTaskById2);
-    router4.post("/", createTask2);
-    router4.put("/:id", updateTask2);
-    router4.delete("/:id", deleteTask2);
-    router4.post("/:id/subtasks", createSubtask2);
-    router4.put("/:id/subtasks/:subtaskId", toggleSubtask2);
-    router4.delete("/:id/subtasks/:subtaskId", deleteSubtask2);
-    taskRoutes_default = router4;
-  }
-});
-
-// server/services/timesheetService.ts
-async function startWorkSession(data) {
-  const activeSession = await prisma_default.timesheet.findFirst({
-    where: {
-      userId: data.userId,
-      isRunning: true
-    },
-    include: {
-      project: { select: { name: true } },
-      task: { select: { title: true } }
-    }
-  });
-  if (activeSession) {
-    throw new Error(
-      `An active timer is already running for "${activeSession.task?.title || activeSession.project?.name || "an ongoing task"}". Please stop it before starting a new one.`
-    );
-  }
-  const timesheet = await prisma_default.timesheet.create({
-    data: {
-      userId: data.userId,
-      projectId: data.projectId,
-      taskId: data.taskId,
-      startTime: /* @__PURE__ */ new Date(),
-      isRunning: true,
-      notes: data.notes,
-      date: /* @__PURE__ */ new Date(),
-      status: "SUBMITTED"
-    },
-    include: {
-      project: true,
-      task: true
-    }
-  });
-  await logActivity({
-    userId: data.userId,
-    action: "TIMESHEET_STARTED",
-    entity: "TIMESHEET",
-    entityId: timesheet.id,
-    metadata: { projectId: data.projectId, taskId: data.taskId }
-  });
-  return timesheet;
-}
-async function stopWorkSession(timesheetId, userId, notes) {
-  const session = await prisma_default.timesheet.findFirst({
-    where: { id: timesheetId, userId, isRunning: true }
-  });
-  if (!session) {
-    throw new Error("Active timer session not found");
-  }
-  const now = /* @__PURE__ */ new Date();
-  const durationMinutes = Math.max(
-    Math.round((now.getTime() - new Date(session.startTime).getTime()) / 6e4) - (session.breakMinutes || 0),
-    1
-  );
-  const updated = await prisma_default.timesheet.update({
-    where: { id: timesheetId },
-    data: {
-      endTime: now,
-      isRunning: false,
-      totalDurationMinutes: durationMinutes,
-      notes: notes || session.notes
-    },
-    include: { project: true, task: true }
-  });
-  if (session.taskId) {
-    const allTaskTimesheets = await prisma_default.timesheet.findMany({
-      where: { taskId: session.taskId, isRunning: false },
-      select: { totalDurationMinutes: true }
-    });
-    const totalMinutes = allTaskTimesheets.reduce((sum, t) => sum + t.totalDurationMinutes, 0);
-    await prisma_default.task.update({
-      where: { id: session.taskId },
-      data: { actualHours: Number((totalMinutes / 60).toFixed(2)) }
-    });
-  }
-  await logActivity({
-    userId,
-    action: "TIMESHEET_STOPPED",
-    entity: "TIMESHEET",
-    entityId: timesheetId,
-    metadata: { durationMinutes }
-  });
-  return updated;
-}
-async function getActiveSession(userId) {
-  return prisma_default.timesheet.findFirst({
-    where: { userId, isRunning: true },
-    include: {
-      project: { select: { id: true, name: true, projectCode: true } },
-      task: { select: { id: true, title: true, taskCode: true } }
-    }
-  });
-}
-async function createManualTimeEntry(data) {
-  const start = new Date(data.startTime);
-  const end = new Date(data.endTime);
-  const breakMins = data.breakMinutes || 0;
-  if (end <= start) {
-    throw new Error("End time must be after start time");
-  }
-  const durationMinutes = Math.max(
-    Math.round((end.getTime() - start.getTime()) / 6e4) - breakMins,
-    1
-  );
-  const entry = await prisma_default.timesheet.create({
-    data: {
-      userId: data.userId,
-      projectId: data.projectId,
-      taskId: data.taskId,
-      startTime: start,
-      endTime: end,
-      breakMinutes: breakMins,
-      totalDurationMinutes: durationMinutes,
-      isRunning: false,
-      date: data.date ? new Date(data.date) : start,
-      notes: data.notes,
-      status: "SUBMITTED"
-    },
-    include: { project: true, task: true }
-  });
-  if (data.taskId) {
-    const allTaskTimesheets = await prisma_default.timesheet.findMany({
-      where: { taskId: data.taskId, isRunning: false },
-      select: { totalDurationMinutes: true }
-    });
-    const totalMinutes = allTaskTimesheets.reduce((sum, t) => sum + t.totalDurationMinutes, 0);
-    await prisma_default.task.update({
-      where: { id: data.taskId },
-      data: { actualHours: Number((totalMinutes / 60).toFixed(2)) }
-    });
-  }
-  return entry;
-}
-async function getTimesheets(filters) {
-  const page = filters.page || 1;
-  const limit = filters.limit || 50;
-  const skip = (page - 1) * limit;
-  const where = {};
-  if (filters.userId) where.userId = filters.userId;
-  if (filters.projectId) where.projectId = filters.projectId;
-  if (filters.status) where.status = filters.status;
-  if (filters.startDate || filters.endDate) {
-    where.date = {};
-    if (filters.startDate) where.date.gte = new Date(filters.startDate);
-    if (filters.endDate) where.date.lte = new Date(filters.endDate);
-  }
-  const [timesheets, total] = await Promise.all([
-    prisma_default.timesheet.findMany({
-      where,
-      include: {
-        user: { select: { id: true, name: true, email: true, avatarUrl: true, designation: true } },
-        project: { select: { id: true, name: true, projectCode: true } },
-        task: { select: { id: true, title: true, taskCode: true } }
-      },
-      orderBy: { date: "desc" },
-      skip,
-      take: limit
-    }),
-    prisma_default.timesheet.count({ where })
-  ]);
-  return { timesheets, total, page, limit, totalPages: Math.ceil(total / limit) };
-}
-async function approveOrRejectTimesheet(timesheetId, status, approverUserId, comments) {
-  const updated = await prisma_default.timesheet.update({
-    where: { id: timesheetId },
-    data: { status }
-  });
-  await prisma_default.approval.create({
-    data: {
-      entityType: "TIMESHEET",
-      entityId: timesheetId,
-      requesterId: updated.userId,
-      approverId: approverUserId,
-      status,
-      comments,
-      decisionAt: /* @__PURE__ */ new Date(),
-      timesheetId
-    }
-  });
-  return updated;
-}
-var init_timesheetService = __esm({
-  "server/services/timesheetService.ts"() {
-    "use strict";
-    init_prisma();
-    init_activityLogService();
-  }
-});
-
-// server/controllers/timesheetController.ts
-async function getTimesheets2(req, res) {
-  try {
-    const { userId, projectId, startDate, endDate, status, page, limit } = req.query;
-    const isExecutive = ["CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD"].includes(req.user.role);
-    const targetUserId = isExecutive ? userId : req.user.userId;
-    const result = await getTimesheets({
-      userId: targetUserId,
-      projectId,
-      startDate,
-      endDate,
-      status,
-      page: page ? parseInt(page, 10) : 1,
-      limit: limit ? parseInt(limit, 10) : 50
-    });
-    return sendSuccess(res, result.timesheets, 200, {
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-      totalPages: result.totalPages
-    });
-  } catch (error) {
-    return sendError(res, error.message, 500);
-  }
-}
-async function getActiveSession2(req, res) {
-  try {
-    const session = await getActiveSession(req.user.userId);
-    return sendSuccess(res, session);
-  } catch (error) {
-    return sendError(res, error.message, 500);
-  }
-}
-async function startWorkSession2(req, res) {
-  try {
-    const { projectId, taskId, notes } = req.body;
-    const session = await startWorkSession({
-      userId: req.user.userId,
-      projectId,
-      taskId,
-      notes
-    });
-    return sendSuccess(res, session, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function stopWorkSession2(req, res) {
-  try {
-    const { id } = req.params;
-    const { notes } = req.body;
-    const session = await stopWorkSession(id, req.user.userId, notes);
-    return sendSuccess(res, session);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function createManualEntry(req, res) {
-  try {
-    const entry = await createManualTimeEntry({
-      userId: req.user.userId,
-      ...req.body
-    });
-    return sendSuccess(res, entry, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function reviewTimesheet(req, res) {
-  try {
-    const { id } = req.params;
-    const { status, comments } = req.body;
-    if (!["APPROVED", "REJECTED"].includes(status)) {
-      return sendError(res, "Status must be APPROVED or REJECTED", 400);
-    }
-    const result = await approveOrRejectTimesheet(id, status, req.user.userId, comments);
-    return sendSuccess(res, result);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-var init_timesheetController = __esm({
-  "server/controllers/timesheetController.ts"() {
-    "use strict";
-    init_timesheetService();
-    init_response();
-  }
-});
-
-// server/routes/timesheetRoutes.ts
-var timesheetRoutes_exports = {};
-__export(timesheetRoutes_exports, {
-  default: () => timesheetRoutes_default
-});
-var import_express5, router5, timesheetRoutes_default;
-var init_timesheetRoutes = __esm({
-  "server/routes/timesheetRoutes.ts"() {
-    "use strict";
-    import_express5 = __toESM(require_express2(), 1);
-    init_timesheetController();
-    init_auth();
-    init_rbac();
-    router5 = (0, import_express5.Router)();
-    router5.use(authenticate);
-    router5.get("/", getTimesheets2);
-    router5.get("/active", getActiveSession2);
-    router5.post("/start", startWorkSession2);
-    router5.post("/:id/stop", stopWorkSession2);
-    router5.post("/manual", createManualEntry);
-    router5.post("/:id/review", authorizeRoles("CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD"), reviewTimesheet);
-    timesheetRoutes_default = router5;
-  }
-});
-
-// server/services/clientService.ts
-async function createClient(data, actorUserId) {
-  const existing = await prisma_default.client.findUnique({
-    where: { email: data.email.toLowerCase().trim() }
-  });
-  if (existing) throw new Error("A client with this email already exists");
-  const client = await prisma_default.client.create({
-    data: {
-      company: data.company,
-      contactPerson: data.contactPerson,
-      email: data.email.toLowerCase().trim(),
-      phone: data.phone,
-      industry: data.industry,
-      status: data.status || "ACTIVE",
-      notes: data.notes,
-      address: data.address,
-      accountManagerId: data.accountManagerId
-    },
-    include: {
-      accountManager: { select: { id: true, name: true, email: true, avatarUrl: true } }
-    }
-  });
-  await logActivity({
-    userId: actorUserId,
-    action: "CLIENT_CREATED",
-    entity: "SYSTEM",
-    entityId: client.id,
-    metadata: { company: client.company, contact: client.contactPerson }
-  });
-  return client;
-}
-async function getClients(filters) {
-  const page = filters.page || 1;
-  const limit = filters.limit || 50;
-  const skip = (page - 1) * limit;
-  const where = {};
-  if (filters.search) {
-    where.OR = [
-      { company: { contains: filters.search } },
-      { contactPerson: { contains: filters.search } },
-      { email: { contains: filters.search } },
-      { industry: { contains: filters.search } }
-    ];
-  }
-  if (filters.status) where.status = filters.status;
-  if (filters.accountManagerId) where.accountManagerId = filters.accountManagerId;
-  const [clients, total] = await Promise.all([
-    prisma_default.client.findMany({
-      where,
-      include: {
-        accountManager: { select: { id: true, name: true, avatarUrl: true, email: true } },
-        projects: {
-          select: {
-            id: true,
-            name: true,
-            projectCode: true,
-            status: true,
-            progress: true,
-            budget: true,
-            revenue: true,
-            deadline: true
-          }
-        },
-        _count: {
-          select: {
-            projects: true,
-            documents: true
-          }
-        }
-      },
-      orderBy: { company: "asc" },
-      skip,
-      take: limit
-    }),
-    prisma_default.client.count({ where })
-  ]);
-  return { clients, total, page, limit, totalPages: Math.ceil(total / limit) };
-}
-async function getClientById(id) {
-  const client = await prisma_default.client.findUnique({
-    where: { id },
-    include: {
-      accountManager: true,
-      projects: {
-        include: {
-          projectManager: { select: { id: true, name: true, avatarUrl: true } },
-          tasks: { select: { id: true, status: true } }
-        },
-        orderBy: { updatedAt: "desc" }
-      },
-      documents: {
-        include: { uploader: { select: { id: true, name: true } } }
-      }
-    }
-  });
-  if (!client) throw new Error("Client not found");
-  return client;
-}
-async function updateClient(id, data, actorUserId) {
-  const updated = await prisma_default.client.update({
-    where: { id },
-    data,
-    include: { accountManager: true }
-  });
-  await logActivity({
-    userId: actorUserId,
-    action: "CLIENT_UPDATED",
-    entity: "SYSTEM",
-    entityId: id,
-    metadata: { company: updated.company }
-  });
-  return updated;
-}
-async function deleteClient(id, actorUserId) {
-  const deleted = await prisma_default.client.delete({ where: { id } });
-  await logActivity({
-    userId: actorUserId,
-    action: "CLIENT_DELETED",
-    entity: "SYSTEM",
-    entityId: id,
-    metadata: { company: deleted.company }
-  });
-  return deleted;
-}
-var init_clientService = __esm({
-  "server/services/clientService.ts"() {
-    "use strict";
-    init_prisma();
-    init_activityLogService();
-  }
-});
-
-// server/controllers/clientController.ts
-async function getClients2(req, res) {
-  try {
-    const { search: search2, status, accountManagerId, page, limit } = req.query;
-    const result = await getClients({
-      search: search2,
-      status,
-      accountManagerId,
-      page: page ? parseInt(page, 10) : 1,
-      limit: limit ? parseInt(limit, 10) : 50
-    });
-    return sendSuccess(res, result.clients, 200, {
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-      totalPages: result.totalPages
-    });
-  } catch (error) {
-    return sendError(res, error.message, 500);
-  }
-}
-async function getClientById2(req, res) {
-  try {
-    const client = await getClientById(req.params.id);
-    return sendSuccess(res, client);
-  } catch (error) {
-    return sendError(res, error.message, 404);
-  }
-}
-async function createClient2(req, res) {
-  try {
-    const client = await createClient(req.body, req.user?.userId);
-    return sendSuccess(res, client, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function updateClient2(req, res) {
-  try {
-    const client = await updateClient(req.params.id, req.body, req.user?.userId);
-    return sendSuccess(res, client);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function deleteClient2(req, res) {
-  try {
-    const client = await deleteClient(req.params.id, req.user?.userId);
-    return sendSuccess(res, client);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-var init_clientController = __esm({
-  "server/controllers/clientController.ts"() {
-    "use strict";
-    init_clientService();
-    init_response();
-  }
-});
-
-// server/routes/clientRoutes.ts
-var clientRoutes_exports = {};
-__export(clientRoutes_exports, {
-  default: () => clientRoutes_default
-});
-var import_express6, router6, clientRoutes_default;
-var init_clientRoutes = __esm({
-  "server/routes/clientRoutes.ts"() {
-    "use strict";
-    import_express6 = __toESM(require_express2(), 1);
-    init_clientController();
-    init_auth();
-    init_rbac();
-    router6 = (0, import_express6.Router)();
-    router6.use(authenticate);
-    router6.get("/", getClients2);
-    router6.get("/:id", getClientById2);
-    router6.post("/", authorizeRoles("CEO", "ADMIN", "ACCOUNT_MANAGER", "PROJECT_MANAGER"), createClient2);
-    router6.put("/:id", authorizeRoles("CEO", "ADMIN", "ACCOUNT_MANAGER", "PROJECT_MANAGER"), updateClient2);
-    router6.delete("/:id", authorizeRoles("CEO", "ADMIN"), deleteClient2);
-    clientRoutes_default = router6;
-  }
-});
-
-// server/controllers/departmentController.ts
-async function getDepartments(req, res) {
-  try {
-    const departments = await prisma_default.department.findMany({
-      include: {
-        head: { select: { id: true, name: true, avatarUrl: true } },
-        teams: {
-          include: {
-            leader: { select: { id: true, name: true, avatarUrl: true } },
-            members: { select: { id: true, name: true, avatarUrl: true, designation: true } }
-          }
-        },
-        users: { select: { id: true, name: true, designation: true, avatarUrl: true } },
-        _count: { select: { projects: true, users: true } }
-      }
-    });
-    return sendSuccess(res, departments);
-  } catch (error) {
-    return sendError(res, error.message, 500);
-  }
-}
-async function createDepartment(req, res) {
-  try {
-    const { name, code, description, headId } = req.body;
-    const department = await prisma_default.department.create({
-      data: { name, code: code.toUpperCase(), description, headId }
-    });
-    return sendSuccess(res, department, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function createTeam(req, res) {
-  try {
-    const { name, code, description, departmentId, leaderId } = req.body;
-    const team = await prisma_default.team.create({
-      data: { name, code, description, departmentId, leaderId }
-    });
-    return sendSuccess(res, team, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-var init_departmentController = __esm({
-  "server/controllers/departmentController.ts"() {
-    "use strict";
-    init_prisma();
-    init_response();
-  }
-});
-
-// server/routes/departmentRoutes.ts
-var departmentRoutes_exports = {};
-__export(departmentRoutes_exports, {
-  default: () => departmentRoutes_default
-});
-var import_express7, router7, departmentRoutes_default;
-var init_departmentRoutes = __esm({
-  "server/routes/departmentRoutes.ts"() {
-    "use strict";
-    import_express7 = __toESM(require_express2(), 1);
-    init_departmentController();
-    init_auth();
-    init_rbac();
-    router7 = (0, import_express7.Router)();
-    router7.use(authenticate);
-    router7.get("/", getDepartments);
-    router7.post("/", authorizeRoles("CEO", "ADMIN"), createDepartment);
-    router7.post("/teams", authorizeRoles("CEO", "ADMIN", "DEPARTMENT_HEAD"), createTeam);
-    departmentRoutes_default = router7;
-  }
-});
-
-// server/services/documentService.ts
-async function createDocument(data) {
-  const document2 = await prisma_default.document.create({
-    data: {
-      title: data.title,
-      fileName: data.fileName,
-      fileUrl: data.fileUrl,
-      fileType: data.fileType,
-      fileSize: data.fileSize,
-      category: data.category || "PROJECT",
-      projectId: data.projectId,
-      taskId: data.taskId,
-      clientId: data.clientId,
-      uploaderId: data.uploaderId,
-      versions: {
-        create: {
-          versionNumber: 1,
-          fileName: data.fileName,
-          fileUrl: data.fileUrl,
-          fileSize: data.fileSize,
-          changeSummary: "Initial upload"
-        }
-      }
-    },
-    include: {
-      uploader: { select: { id: true, name: true, avatarUrl: true } },
-      project: { select: { id: true, name: true } },
-      task: { select: { id: true, title: true } },
-      versions: true
-    }
-  });
-  await logActivity({
-    userId: data.uploaderId,
-    action: "DOCUMENT_UPLOADED",
-    entity: "DOCUMENT",
-    entityId: document2.id,
-    metadata: { title: document2.title, fileName: document2.fileName }
-  });
-  return document2;
-}
-async function addDocumentVersion(documentId, fileData, uploaderId) {
-  const doc = await prisma_default.document.findUnique({
-    where: { id: documentId },
-    include: { versions: { orderBy: { versionNumber: "desc" }, take: 1 } }
-  });
-  if (!doc) throw new Error("Document not found");
-  const nextVersion = (doc.versions[0]?.versionNumber || 1) + 1;
-  const version = await prisma_default.documentVersion.create({
-    data: {
-      documentId,
-      versionNumber: nextVersion,
-      fileName: fileData.fileName,
-      fileUrl: fileData.fileUrl,
-      fileSize: fileData.fileSize,
-      changeSummary: fileData.changeSummary || `Updated to version ${nextVersion}`
-    }
-  });
-  await prisma_default.document.update({
-    where: { id: documentId },
-    data: {
-      fileName: fileData.fileName,
-      fileUrl: fileData.fileUrl,
-      fileSize: fileData.fileSize
-    }
-  });
-  await logActivity({
-    userId: uploaderId,
-    action: "DOCUMENT_VERSION_ADDED",
-    entity: "DOCUMENT",
-    entityId: documentId,
-    metadata: { version: nextVersion }
-  });
-  return version;
-}
-async function getDocuments(filters) {
-  const page = filters.page || 1;
-  const limit = filters.limit || 50;
-  const skip = (page - 1) * limit;
-  const where = {};
-  if (filters.category) where.category = filters.category;
-  if (filters.projectId) where.projectId = filters.projectId;
-  if (filters.taskId) where.taskId = filters.taskId;
-  if (filters.clientId) where.clientId = filters.clientId;
-  if (filters.search) {
-    where.OR = [
-      { title: { contains: filters.search } },
-      { fileName: { contains: filters.search } }
-    ];
-  }
-  const [documents, total] = await Promise.all([
-    prisma_default.document.findMany({
-      where,
-      include: {
-        uploader: { select: { id: true, name: true, avatarUrl: true } },
-        project: { select: { id: true, name: true, projectCode: true } },
-        task: { select: { id: true, title: true } },
-        client: { select: { id: true, company: true } },
-        versions: { orderBy: { versionNumber: "desc" } }
-      },
-      orderBy: { updatedAt: "desc" },
-      skip,
-      take: limit
-    }),
-    prisma_default.document.count({ where })
-  ]);
-  return { documents, total, page, limit, totalPages: Math.ceil(total / limit) };
-}
-async function deleteDocument(id, actorUserId) {
-  const deleted = await prisma_default.document.delete({ where: { id } });
-  await logActivity({
-    userId: actorUserId,
-    action: "DOCUMENT_DELETED",
-    entity: "DOCUMENT",
-    entityId: id,
-    metadata: { title: deleted.title }
-  });
-  return deleted;
-}
-var init_documentService = __esm({
-  "server/services/documentService.ts"() {
-    "use strict";
-    init_prisma();
-    init_activityLogService();
-  }
-});
-
-// server/controllers/documentController.ts
-import path from "path";
-async function getDocuments2(req, res) {
-  try {
-    const { category, projectId, taskId, clientId, search: search2, page, limit } = req.query;
-    const result = await getDocuments({
-      category,
-      projectId,
-      taskId,
-      clientId,
-      search: search2,
-      page: page ? parseInt(page, 10) : 1,
-      limit: limit ? parseInt(limit, 10) : 50
-    });
-    return sendSuccess(res, result.documents, 200, {
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-      totalPages: result.totalPages
-    });
-  } catch (error) {
-    return sendError(res, error.message, 500);
-  }
-}
-async function uploadDocument(req, res) {
-  try {
-    if (!req.file) {
-      return sendError(res, "File is required", 400);
-    }
-    const { title, category, projectId, taskId, clientId } = req.body;
-    const fileUrl = `/uploads/${req.file.filename}`;
-    const ext = path.extname(req.file.originalname).toLowerCase().replace(".", "");
-    const document2 = await createDocument({
-      title: title || req.file.originalname,
-      fileName: req.file.originalname,
-      fileUrl,
-      fileType: ext,
-      fileSize: req.file.size,
-      category,
-      projectId: projectId || void 0,
-      taskId: taskId || void 0,
-      clientId: clientId || void 0,
-      uploaderId: req.user.userId
-    });
-    return sendSuccess(res, document2, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function addVersion(req, res) {
-  try {
-    if (!req.file) return sendError(res, "File is required", 400);
-    const { changeSummary } = req.body;
-    const fileUrl = `/uploads/${req.file.filename}`;
-    const version = await addDocumentVersion(
-      req.params.id,
-      {
-        fileName: req.file.originalname,
-        fileUrl,
-        fileSize: req.file.size,
-        changeSummary
-      },
-      req.user.userId
-    );
-    return sendSuccess(res, version, 201);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-async function deleteDocument2(req, res) {
-  try {
-    const deleted = await deleteDocument(req.params.id, req.user.userId);
-    return sendSuccess(res, deleted);
-  } catch (error) {
-    return sendError(res, error.message, 400);
-  }
-}
-var init_documentController = __esm({
-  "server/controllers/documentController.ts"() {
-    "use strict";
-    init_documentService();
-    init_response();
   }
 });
 
@@ -40506,73 +37275,2993 @@ var require_multer = __commonJS({
   }
 });
 
-// server/middleware/upload.ts
-import path2 from "path";
-import fs from "fs";
-var import_multer, uploadDir, storage, ALLOWED_EXTENSIONS, upload;
-var init_upload = __esm({
-  "server/middleware/upload.ts"() {
-    "use strict";
-    import_multer = __toESM(require_multer(), 1);
-    init_env();
-    uploadDir = process.env.VERCEL ? "/tmp/uploads" : ENV.UPLOAD_DIR || "./uploads";
-    try {
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-    } catch (_e) {
+// server/api_entry.ts
+var import_express17 = __toESM(require_express2(), 1);
+var import_cors = __toESM(require_lib3(), 1);
+
+// node_modules/helmet/index.mjs
+var dashify = (str) => str.replace(/[A-Z]/g, (capitalLetter) => "-" + capitalLetter.toLowerCase());
+var errify = (err) => err instanceof Error ? err : new Error(String(err));
+var isString = (value) => typeof value === "string";
+var throwErrorIfExists = (err) => {
+  if (err) throw err;
+};
+var dangerouslyDisableDefaultSrc = Symbol("dangerouslyDisableDefaultSrc");
+var SHOULD_BE_QUOTED = /* @__PURE__ */ new Set(["none", "self", "strict-dynamic", "report-sample", "inline-speculation-rules", "unsafe-inline", "unsafe-eval", "unsafe-hashes", "wasm-unsafe-eval"]);
+var getDefaultDirectives = () => ({
+  "default-src": ["'self'"],
+  "base-uri": ["'self'"],
+  "font-src": ["'self'", "https:", "data:"],
+  "form-action": ["'self'"],
+  "frame-ancestors": ["'self'"],
+  "img-src": ["'self'", "data:"],
+  "object-src": ["'none'"],
+  "script-src": ["'self'"],
+  "script-src-attr": ["'none'"],
+  "style-src": ["'self'", "https:", "'unsafe-inline'"],
+  "upgrade-insecure-requests": []
+});
+var parseDirectiveName = (rawDirectiveName) => {
+  if (rawDirectiveName.length === 0 || !/^[a-z](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/.test(rawDirectiveName)) {
+    throw new Error(`Content-Security-Policy received an invalid directive name ${JSON.stringify(rawDirectiveName)}`);
+  }
+  return dashify(rawDirectiveName);
+};
+var getDirectiveValueValidationError = (directiveName, directiveValue) => /;|,/.test(directiveValue) ? new Error(`Content-Security-Policy received an invalid directive value for ${JSON.stringify(directiveName)}`) : null;
+var getDirectiveValueEntryValidationError = (directiveName, directiveValueEntry) => SHOULD_BE_QUOTED.has(directiveValueEntry) || directiveValueEntry.startsWith("nonce-") || directiveValueEntry.startsWith("sha256-") || directiveValueEntry.startsWith("sha384-") || directiveValueEntry.startsWith("sha512-") ? new Error(`Content-Security-Policy received an invalid directive value for ${JSON.stringify(directiveName)}. ${JSON.stringify(directiveValueEntry)} should be quoted`) : null;
+var stringifyDirectiveValue = (directiveValue) => {
+  if (Array.isArray(directiveValue)) {
+    return directiveValue.every(isString) ? directiveValue.join(" ") : null;
+  }
+  if (directiveValue instanceof Set) {
+    return stringifyDirectiveValue(Array.from(directiveValue));
+  }
+  return null;
+};
+var parseDirectives = ({ useDefaults = true, directives: rawDirectives = {} }) => {
+  const result = new Map(useDefaults ? Object.entries(getDefaultDirectives()) : []);
+  let hasDisabledDefaultSrc = false;
+  const directiveNamesSeen = /* @__PURE__ */ new Set();
+  for (const rawDirectiveName in rawDirectives) {
+    if (!Object.hasOwn(rawDirectives, rawDirectiveName)) {
+      continue;
     }
-    storage = import_multer.default.diskStorage({
-      destination: (_req, _file, cb) => {
-        cb(null, uploadDir);
-      },
-      filename: (_req, file, cb) => {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        const ext = path2.extname(file.originalname).toLowerCase();
-        const safeName = path2.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, "_");
-        cb(null, `${safeName}-${uniqueSuffix}${ext}`);
+    const directiveName = parseDirectiveName(rawDirectiveName);
+    if (directiveNamesSeen.has(directiveName)) {
+      throw new Error(`Content-Security-Policy received a duplicate directive ${JSON.stringify(directiveName)}`);
+    }
+    directiveNamesSeen.add(directiveName);
+    const rawDirectiveValue = rawDirectives[rawDirectiveName];
+    let directiveValue;
+    if (rawDirectiveValue === null) {
+      if (directiveName === "default-src") {
+        throw new Error("Content-Security-Policy needs a default-src but it was set to `null`. If you really want to disable it, set it to `contentSecurityPolicy.dangerouslyDisableDefaultSrc`.");
+      }
+      result.delete(directiveName);
+      continue;
+    } else if (typeof rawDirectiveValue === "string") {
+      directiveValue = [rawDirectiveValue];
+    } else if (rawDirectiveValue === dangerouslyDisableDefaultSrc) {
+      if (directiveName === "default-src") {
+        hasDisabledDefaultSrc = true;
+        result.delete(directiveName);
+        continue;
+      } else {
+        throw new Error(`Content-Security-Policy: tried to disable ${JSON.stringify(directiveName)} as if it were default-src; simply omit the key`);
+      }
+    } else if (rawDirectiveValue) {
+      directiveValue = rawDirectiveValue;
+    } else {
+      throw new Error(`Content-Security-Policy received an invalid directive value for ${JSON.stringify(directiveName)}`);
+    }
+    for (const element of directiveValue) {
+      if (typeof element !== "string") continue;
+      throwErrorIfExists(getDirectiveValueValidationError(directiveName, element) ?? getDirectiveValueEntryValidationError(directiveName, element));
+    }
+    result.set(directiveName, directiveValue);
+  }
+  if (!result.size) {
+    throw new Error("Content-Security-Policy has no directives. Either set some or disable the header");
+  }
+  if (!result.has("default-src") && !hasDisabledDefaultSrc) {
+    throw new Error("Content-Security-Policy needs a default-src but none was provided. If you really want to disable it, set it to `contentSecurityPolicy.dangerouslyDisableDefaultSrc`.");
+  }
+  let stringResult = "";
+  let shouldUseStringResult = true;
+  for (const [directiveName, directiveValue] of result) {
+    const directiveValueString = stringifyDirectiveValue(directiveValue);
+    if (directiveValueString === null) {
+      shouldUseStringResult = false;
+      break;
+    } else {
+      if (stringResult) stringResult += ";";
+      stringResult += directiveValueString ? `${directiveName} ${directiveValueString}` : directiveName;
+    }
+  }
+  return shouldUseStringResult ? stringResult : result;
+};
+function getHeaderValue(req, res, normalizedDirectives) {
+  const result = [];
+  for (const [directiveName, rawDirectiveValue] of normalizedDirectives) {
+    let directiveValue = "";
+    for (const element of rawDirectiveValue) {
+      if (typeof element === "function") {
+        let newElement;
+        try {
+          newElement = element(req, res);
+        } catch (err2) {
+          return errify(err2);
+        }
+        const err = getDirectiveValueEntryValidationError(directiveName, newElement);
+        if (err) return err;
+        directiveValue += " " + newElement;
+      } else {
+        directiveValue += " " + element;
+      }
+    }
+    if (directiveValue) {
+      const err = getDirectiveValueValidationError(directiveName, directiveValue);
+      if (err) return err;
+      result.push(`${directiveName}${directiveValue}`);
+    } else {
+      result.push(directiveName);
+    }
+  }
+  return result.join(";");
+}
+var contentSecurityPolicy = function contentSecurityPolicy2(options = {}) {
+  const headerName = options.reportOnly ? "Content-Security-Policy-Report-Only" : "Content-Security-Policy";
+  const parsedDirectives = parseDirectives(options);
+  if (typeof parsedDirectives === "string") {
+    return function contentSecurityPolicyMiddleware(_req, res, next) {
+      res.setHeader(headerName, parsedDirectives);
+      next();
+    };
+  }
+  return function contentSecurityPolicyMiddleware(req, res, next) {
+    const result = getHeaderValue(req, res, parsedDirectives);
+    if (result instanceof Error) {
+      next(result);
+    } else {
+      res.setHeader(headerName, result);
+      next();
+    }
+  };
+};
+contentSecurityPolicy.getDefaultDirectives = getDefaultDirectives;
+contentSecurityPolicy.dangerouslyDisableDefaultSrc = dangerouslyDisableDefaultSrc;
+var ALLOWED_POLICIES$2 = /* @__PURE__ */ new Set(["require-corp", "credentialless", "unsafe-none"]);
+function getHeaderValueFromOptions$6({ policy = "require-corp" }) {
+  if (ALLOWED_POLICIES$2.has(policy)) {
+    return policy;
+  } else {
+    throw new Error(`Cross-Origin-Embedder-Policy does not support the ${JSON.stringify(policy)} policy`);
+  }
+}
+function crossOriginEmbedderPolicy(options = {}) {
+  const headerValue = getHeaderValueFromOptions$6(options);
+  return function crossOriginEmbedderPolicyMiddleware(_req, res, next) {
+    res.setHeader("Cross-Origin-Embedder-Policy", headerValue);
+    next();
+  };
+}
+var ALLOWED_POLICIES$1 = /* @__PURE__ */ new Set(["same-origin", "same-origin-allow-popups", "noopener-allow-popups", "unsafe-none"]);
+function getHeaderValueFromOptions$5({ policy = "same-origin" }) {
+  if (ALLOWED_POLICIES$1.has(policy)) {
+    return policy;
+  } else {
+    throw new Error(`Cross-Origin-Opener-Policy does not support the ${JSON.stringify(policy)} policy`);
+  }
+}
+function crossOriginOpenerPolicy(options = {}) {
+  const headerValue = getHeaderValueFromOptions$5(options);
+  return function crossOriginOpenerPolicyMiddleware(_req, res, next) {
+    res.setHeader("Cross-Origin-Opener-Policy", headerValue);
+    next();
+  };
+}
+var ALLOWED_POLICIES = /* @__PURE__ */ new Set(["same-origin", "same-site", "cross-origin"]);
+function getHeaderValueFromOptions$4({ policy = "same-origin" }) {
+  if (ALLOWED_POLICIES.has(policy)) {
+    return policy;
+  } else {
+    throw new Error(`Cross-Origin-Resource-Policy does not support the ${JSON.stringify(policy)} policy`);
+  }
+}
+function crossOriginResourcePolicy(options = {}) {
+  const headerValue = getHeaderValueFromOptions$4(options);
+  return function crossOriginResourcePolicyMiddleware(_req, res, next) {
+    res.setHeader("Cross-Origin-Resource-Policy", headerValue);
+    next();
+  };
+}
+function originAgentCluster() {
+  return function originAgentClusterMiddleware(_req, res, next) {
+    res.setHeader("Origin-Agent-Cluster", "?1");
+    next();
+  };
+}
+var ALLOWED_TOKENS = /* @__PURE__ */ new Set(["no-referrer", "no-referrer-when-downgrade", "same-origin", "origin", "strict-origin", "origin-when-cross-origin", "strict-origin-when-cross-origin", "unsafe-url", ""]);
+function getHeaderValueFromOptions$3({ policy = ["no-referrer"] }) {
+  const tokens = typeof policy === "string" ? [policy] : policy;
+  if (tokens.length === 0) {
+    throw new Error("Referrer-Policy received no policy tokens");
+  }
+  const tokensSeen = /* @__PURE__ */ new Set();
+  tokens.forEach((token) => {
+    if (!ALLOWED_TOKENS.has(token)) {
+      throw new Error(`Referrer-Policy received an unexpected policy token ${JSON.stringify(token)}`);
+    } else if (tokensSeen.has(token)) {
+      throw new Error(`Referrer-Policy received a duplicate policy token ${JSON.stringify(token)}`);
+    }
+    tokensSeen.add(token);
+  });
+  return tokens.join(",");
+}
+function referrerPolicy(options = {}) {
+  const headerValue = getHeaderValueFromOptions$3(options);
+  return function referrerPolicyMiddleware(_req, res, next) {
+    res.setHeader("Referrer-Policy", headerValue);
+    next();
+  };
+}
+var DEFAULT_MAX_AGE = 365 * 24 * 60 * 60;
+function parseMaxAge(value = DEFAULT_MAX_AGE) {
+  if (value >= 0 && Number.isFinite(value)) {
+    return Math.floor(value);
+  } else {
+    throw new Error(`Strict-Transport-Security: ${JSON.stringify(value)} is not a valid value for maxAge. Please choose a positive integer.`);
+  }
+}
+function getHeaderValueFromOptions$2(options) {
+  if ("maxage" in options) {
+    throw new Error("Strict-Transport-Security received an unsupported property, `maxage`. Did you mean to pass `maxAge`?");
+  }
+  if ("includeSubdomains" in options) {
+    throw new Error('Strict-Transport-Security middleware should use `includeSubDomains` instead of `includeSubdomains`. (The correct one has an uppercase "D".)');
+  }
+  const directives = [`max-age=${parseMaxAge(options.maxAge)}`];
+  if (options.includeSubDomains === void 0 || options.includeSubDomains) {
+    directives.push("includeSubDomains");
+  }
+  if (options.preload) {
+    directives.push("preload");
+  }
+  return directives.join("; ");
+}
+function strictTransportSecurity(options = {}) {
+  const headerValue = getHeaderValueFromOptions$2(options);
+  return function strictTransportSecurityMiddleware(_req, res, next) {
+    res.setHeader("Strict-Transport-Security", headerValue);
+    next();
+  };
+}
+function xContentTypeOptions() {
+  return function xContentTypeOptionsMiddleware(_req, res, next) {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    next();
+  };
+}
+function xDnsPrefetchControl(options = {}) {
+  const headerValue = options.allow ? "on" : "off";
+  return function xDnsPrefetchControlMiddleware(_req, res, next) {
+    res.setHeader("X-DNS-Prefetch-Control", headerValue);
+    next();
+  };
+}
+function xDownloadOptions() {
+  return function xDownloadOptionsMiddleware(_req, res, next) {
+    res.setHeader("X-Download-Options", "noopen");
+    next();
+  };
+}
+function getHeaderValueFromOptions$1({ action = "sameorigin" }) {
+  const normalizedAction = typeof action === "string" ? action.toUpperCase() : action;
+  switch (normalizedAction) {
+    case "SAME-ORIGIN":
+      return "SAMEORIGIN";
+    case "DENY":
+    case "SAMEORIGIN":
+      return normalizedAction;
+    default:
+      throw new Error(`X-Frame-Options received an invalid action ${JSON.stringify(action)}`);
+  }
+}
+function xFrameOptions(options = {}) {
+  const headerValue = getHeaderValueFromOptions$1(options);
+  return function xFrameOptionsMiddleware(_req, res, next) {
+    res.setHeader("X-Frame-Options", headerValue);
+    next();
+  };
+}
+var ALLOWED_PERMITTED_POLICIES = /* @__PURE__ */ new Set(["none", "master-only", "by-content-type", "all"]);
+function getHeaderValueFromOptions({ permittedPolicies = "none" }) {
+  if (ALLOWED_PERMITTED_POLICIES.has(permittedPolicies)) {
+    return permittedPolicies;
+  } else {
+    throw new Error(`X-Permitted-Cross-Domain-Policies does not support ${JSON.stringify(permittedPolicies)}`);
+  }
+}
+function xPermittedCrossDomainPolicies(options = {}) {
+  const headerValue = getHeaderValueFromOptions(options);
+  return function xPermittedCrossDomainPoliciesMiddleware(_req, res, next) {
+    res.setHeader("X-Permitted-Cross-Domain-Policies", headerValue);
+    next();
+  };
+}
+function xPoweredBy() {
+  return function xPoweredByMiddleware(_req, res, next) {
+    res.removeHeader("X-Powered-By");
+    next();
+  };
+}
+function xXssProtection() {
+  return function xXssProtectionMiddleware(_req, res, next) {
+    res.setHeader("X-XSS-Protection", "0");
+    next();
+  };
+}
+function getMiddlewareFunctionsFromOptions(options) {
+  const result = [];
+  switch (options.contentSecurityPolicy) {
+    case void 0:
+    case true:
+      result.push(contentSecurityPolicy());
+      break;
+    case false:
+      break;
+    default:
+      result.push(contentSecurityPolicy(options.contentSecurityPolicy));
+      break;
+  }
+  switch (options.crossOriginEmbedderPolicy) {
+    case void 0:
+    case false:
+      break;
+    case true:
+      result.push(crossOriginEmbedderPolicy());
+      break;
+    default:
+      result.push(crossOriginEmbedderPolicy(options.crossOriginEmbedderPolicy));
+      break;
+  }
+  switch (options.crossOriginOpenerPolicy) {
+    case void 0:
+    case true:
+      result.push(crossOriginOpenerPolicy());
+      break;
+    case false:
+      break;
+    default:
+      result.push(crossOriginOpenerPolicy(options.crossOriginOpenerPolicy));
+      break;
+  }
+  switch (options.crossOriginResourcePolicy) {
+    case void 0:
+    case true:
+      result.push(crossOriginResourcePolicy());
+      break;
+    case false:
+      break;
+    default:
+      result.push(crossOriginResourcePolicy(options.crossOriginResourcePolicy));
+      break;
+  }
+  switch (options.originAgentCluster) {
+    case void 0:
+    case true:
+      result.push(originAgentCluster());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("Origin-Agent-Cluster does not take options. Remove the property to silence this warning.");
+      result.push(originAgentCluster());
+      break;
+  }
+  switch (options.referrerPolicy) {
+    case void 0:
+    case true:
+      result.push(referrerPolicy());
+      break;
+    case false:
+      break;
+    default:
+      result.push(referrerPolicy(options.referrerPolicy));
+      break;
+  }
+  if ("strictTransportSecurity" in options && "hsts" in options) {
+    throw new Error("Strict-Transport-Security option was specified twice. Remove the `hsts` option to fix this error.");
+  }
+  const strictTransportSecurityOption = options.strictTransportSecurity ?? options.hsts;
+  switch (strictTransportSecurityOption) {
+    case void 0:
+    case true:
+      result.push(strictTransportSecurity());
+      break;
+    case false:
+      break;
+    default:
+      result.push(strictTransportSecurity(strictTransportSecurityOption));
+      break;
+  }
+  if ("xContentTypeOptions" in options && "noSniff" in options) {
+    throw new Error("X-Content-Type-Options option was specified twice. Remove the `noSniff` option to fix this error.");
+  }
+  const xContentTypeOptionsOption = options.xContentTypeOptions ?? options.noSniff;
+  switch (xContentTypeOptionsOption) {
+    case void 0:
+    case true:
+      result.push(xContentTypeOptions());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("X-Content-Type-Options does not take options. Remove the property to silence this warning.");
+      result.push(xContentTypeOptions());
+      break;
+  }
+  if ("xDnsPrefetchControl" in options && "dnsPrefetchControl" in options) {
+    throw new Error("X-DNS-Prefetch-Control option was specified twice. Remove the `dnsPrefetchControl` option to fix this error.");
+  }
+  const xDnsPrefetchControlOption = options.xDnsPrefetchControl ?? options.dnsPrefetchControl;
+  switch (xDnsPrefetchControlOption) {
+    case void 0:
+    case true:
+      result.push(xDnsPrefetchControl());
+      break;
+    case false:
+      break;
+    default:
+      result.push(xDnsPrefetchControl(xDnsPrefetchControlOption));
+      break;
+  }
+  if ("xDownloadOptions" in options && "ieNoOpen" in options) {
+    throw new Error("X-Download-Options option was specified twice. Remove the `ieNoOpen` option to fix this error.");
+  }
+  const xDownloadOptionsOption = options.xDownloadOptions ?? options.ieNoOpen;
+  switch (xDownloadOptionsOption) {
+    case void 0:
+    case true:
+      result.push(xDownloadOptions());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("X-Download-Options does not take options. Remove the property to silence this warning.");
+      result.push(xDownloadOptions());
+      break;
+  }
+  if ("xFrameOptions" in options && "frameguard" in options) {
+    throw new Error("X-Frame-Options option was specified twice. Remove the `frameguard` option to fix this error.");
+  }
+  const xFrameOptionsOption = options.xFrameOptions ?? options.frameguard;
+  switch (xFrameOptionsOption) {
+    case void 0:
+    case true:
+      result.push(xFrameOptions());
+      break;
+    case false:
+      break;
+    default:
+      result.push(xFrameOptions(xFrameOptionsOption));
+      break;
+  }
+  if ("xPermittedCrossDomainPolicies" in options && "permittedCrossDomainPolicies" in options) {
+    throw new Error("X-Permitted-Cross-Domain-Policies option was specified twice. Remove the `permittedCrossDomainPolicies` option to fix this error.");
+  }
+  const xPermittedCrossDomainPoliciesOption = options.xPermittedCrossDomainPolicies ?? options.permittedCrossDomainPolicies;
+  switch (xPermittedCrossDomainPoliciesOption) {
+    case void 0:
+    case true:
+      result.push(xPermittedCrossDomainPolicies());
+      break;
+    case false:
+      break;
+    default:
+      result.push(xPermittedCrossDomainPolicies(xPermittedCrossDomainPoliciesOption));
+      break;
+  }
+  if ("xPoweredBy" in options && "hidePoweredBy" in options) {
+    throw new Error("X-Powered-By option was specified twice. Remove the `hidePoweredBy` option to fix this error.");
+  }
+  const xPoweredByOption = options.xPoweredBy ?? options.hidePoweredBy;
+  switch (xPoweredByOption) {
+    case void 0:
+    case true:
+      result.push(xPoweredBy());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("X-Powered-By does not take options. Remove the property to silence this warning.");
+      result.push(xPoweredBy());
+      break;
+  }
+  if ("xXssProtection" in options && "xssFilter" in options) {
+    throw new Error("X-XSS-Protection option was specified twice. Remove the `xssFilter` option to fix this error.");
+  }
+  const xXssProtectionOption = options.xXssProtection ?? options.xssFilter;
+  switch (xXssProtectionOption) {
+    case void 0:
+    case true:
+      result.push(xXssProtection());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("X-XSS-Protection does not take options. Remove the property to silence this warning.");
+      result.push(xXssProtection());
+      break;
+  }
+  return result;
+}
+var helmet = Object.assign(
+  function helmet2(options = {}) {
+    if (options.constructor?.name === "IncomingMessage") {
+      throw new Error("It appears you have done something like `app.use(helmet)`, but it should be `app.use(helmet())`.");
+    }
+    const middlewareFunctions = getMiddlewareFunctionsFromOptions(options);
+    return function helmetMiddleware(req, res, next) {
+      let middlewareIndex = 0;
+      (function internalNext(err) {
+        if (err) {
+          next(err);
+          return;
+        }
+        const middlewareFunction = middlewareFunctions[middlewareIndex];
+        if (middlewareFunction) {
+          middlewareIndex++;
+          middlewareFunction(req, res, internalNext);
+        } else {
+          next();
+        }
+      })();
+    };
+  },
+  {
+    contentSecurityPolicy,
+    crossOriginEmbedderPolicy,
+    crossOriginOpenerPolicy,
+    crossOriginResourcePolicy,
+    originAgentCluster,
+    referrerPolicy,
+    strictTransportSecurity,
+    xContentTypeOptions,
+    xDnsPrefetchControl,
+    xDownloadOptions,
+    xFrameOptions,
+    xPermittedCrossDomainPolicies,
+    xPoweredBy,
+    xXssProtection,
+    // Legacy aliases
+    dnsPrefetchControl: xDnsPrefetchControl,
+    xssFilter: xXssProtection,
+    permittedCrossDomainPolicies: xPermittedCrossDomainPolicies,
+    ieNoOpen: xDownloadOptions,
+    noSniff: xContentTypeOptions,
+    frameguard: xFrameOptions,
+    hidePoweredBy: xPoweredBy,
+    hsts: strictTransportSecurity
+  }
+);
+
+// server/routes/authRoutes.ts
+var import_express = __toESM(require_express2(), 1);
+
+// server/services/authService.ts
+var import_bcryptjs = __toESM(require_bcryptjs(), 1);
+
+// server/config/prisma.ts
+import { PrismaClient } from "@prisma/client";
+var FALLBACK_DB_URL = "postgresql://neondb_owner:npg_OTMfBphb41Hq@ep-calm-rice-aerxsuly-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = FALLBACK_DB_URL;
+}
+var globalForPrisma = globalThis;
+var prisma = globalForPrisma.prisma || new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL || FALLBACK_DB_URL
+    }
+  },
+  log: ["error"]
+});
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+var prisma_default = prisma;
+
+// server/utils/jwt.ts
+var import_jsonwebtoken = __toESM(require_jsonwebtoken(), 1);
+
+// server/config/env.ts
+var import_dotenv = __toESM(require_main(), 1);
+import_dotenv.default.config();
+var ENV = {
+  NODE_ENV: process.env.NODE_ENV || "development",
+  PORT: parseInt(process.env.PORT || "5000", 10),
+  DATABASE_URL: process.env.DATABASE_URL || "postgresql://neondb_owner:npg_OTMfBphb41Hq@ep-calm-rice-aerxsuly-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require",
+  JWT_SECRET: process.env.JWT_SECRET || "apis_super_secret_jwt_key_2026_enterprise_secure",
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || "7d",
+  SESSION_SECRET: process.env.SESSION_SECRET || "apis_super_secret_session_key_2026",
+  CLIENT_URL: process.env.CLIENT_URL || "http://localhost:5173",
+  SERVER_URL: process.env.SERVER_URL || "http://localhost:5000",
+  UPLOAD_DIR: process.env.UPLOAD_DIR || "./uploads",
+  MAX_FILE_SIZE_MB: parseInt(process.env.MAX_FILE_SIZE_MB || "25", 10),
+  RATE_LIMIT_WINDOW_MS: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "900000", 10),
+  RATE_LIMIT_MAX_REQUESTS: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "1000", 10)
+};
+
+// server/utils/jwt.ts
+function generateToken(payload) {
+  return import_jsonwebtoken.default.sign(payload, ENV.JWT_SECRET, {
+    expiresIn: ENV.JWT_EXPIRES_IN
+  });
+}
+function verifyToken(token) {
+  return import_jsonwebtoken.default.verify(token, ENV.JWT_SECRET);
+}
+
+// server/services/activityLogService.ts
+async function logActivity(params) {
+  try {
+    return await prisma_default.activityLog.create({
+      data: {
+        userId: params.userId,
+        action: params.action,
+        entity: params.entity,
+        entityId: params.entityId,
+        metadata: params.metadata ? JSON.stringify(params.metadata) : null,
+        ipAddress: params.ipAddress
       }
     });
-    ALLOWED_EXTENSIONS = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".jpg", ".jpeg", ".png"];
-    upload = (0, import_multer.default)({
-      storage,
-      limits: {
-        fileSize: ENV.MAX_FILE_SIZE_MB * 1024 * 1024
+  } catch (error) {
+    console.error("Failed to record activity log:", error);
+    return null;
+  }
+}
+async function getActivityLogs(filters) {
+  const where = {};
+  if (filters.entity) where.entity = filters.entity;
+  if (filters.entityId) where.entityId = filters.entityId;
+  if (filters.userId) where.userId = filters.userId;
+  const [logs, total] = await Promise.all([
+    prisma_default.activityLog.findMany({
+      where,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatarUrl: true,
+            role: { select: { name: true } }
+          }
+        }
       },
-      fileFilter: (_req, file, cb) => {
-        const ext = path2.extname(file.originalname).toLowerCase();
-        if (ALLOWED_EXTENSIONS.includes(ext)) {
-          cb(null, true);
-        } else {
-          cb(new Error(`Forbidden file extension: ${ext}. Allowed: ${ALLOWED_EXTENSIONS.join(", ")}`));
+      orderBy: { timestamp: "desc" },
+      take: filters.limit || 50,
+      skip: filters.offset || 0
+    }),
+    prisma_default.activityLog.count({ where })
+  ]);
+  return { logs, total };
+}
+
+// server/services/authService.ts
+async function loginUser(email, passwordPlain, ipAddress) {
+  const user = await prisma_default.user.findUnique({
+    where: { email: email.toLowerCase().trim() },
+    include: {
+      role: true,
+      department: true,
+      team: true
+    }
+  });
+  if (!user) {
+    throw new Error("Invalid email or password");
+  }
+  if (user.status !== "ACTIVE") {
+    throw new Error("This account has been deactivated. Please contact your administrator.");
+  }
+  const isMatch = await import_bcryptjs.default.compare(passwordPlain, user.passwordHash);
+  if (!isMatch) {
+    throw new Error("Invalid email or password");
+  }
+  const token = generateToken({
+    userId: user.id,
+    email: user.email,
+    role: user.role.name,
+    employeeId: user.employeeId,
+    name: user.name,
+    departmentId: user.departmentId
+  });
+  await logActivity({
+    userId: user.id,
+    action: "USER_LOGIN",
+    entity: "USER",
+    entityId: user.id,
+    ipAddress,
+    metadata: { email: user.email, role: user.role.name }
+  });
+  return {
+    token,
+    user: {
+      id: user.id,
+      employeeId: user.employeeId,
+      name: user.name,
+      email: user.email,
+      role: user.role.name,
+      designation: user.designation,
+      phone: user.phone,
+      avatarUrl: user.avatarUrl,
+      department: user.department ? { id: user.department.id, name: user.department.name } : null,
+      team: user.team ? { id: user.team.id, name: user.team.name } : null,
+      joiningDate: user.joiningDate
+    }
+  };
+}
+async function getCurrentUserProfile(userId) {
+  const user = await prisma_default.user.findUnique({
+    where: { id: userId },
+    include: {
+      role: {
+        include: {
+          permissions: true
+        }
+      },
+      department: true,
+      team: true
+    }
+  });
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return {
+    id: user.id,
+    employeeId: user.employeeId,
+    name: user.name,
+    email: user.email,
+    role: user.role.name,
+    permissions: user.role.permissions.map((p) => p.action),
+    designation: user.designation,
+    phone: user.phone,
+    avatarUrl: user.avatarUrl,
+    status: user.status,
+    department: user.department ? { id: user.department.id, name: user.department.name } : null,
+    team: user.team ? { id: user.team.id, name: user.team.name } : null,
+    joiningDate: user.joiningDate,
+    createdAt: user.createdAt
+  };
+}
+async function changeUserPassword(userId, oldPasswordPlain, newPasswordPlain) {
+  const user = await prisma_default.user.findUnique({ where: { id: userId } });
+  if (!user) throw new Error("User not found");
+  const isMatch = await import_bcryptjs.default.compare(oldPasswordPlain, user.passwordHash);
+  if (!isMatch) throw new Error("Current password is incorrect");
+  const newHash = await import_bcryptjs.default.hash(newPasswordPlain, 10);
+  await prisma_default.user.update({
+    where: { id: userId },
+    data: { passwordHash: newHash }
+  });
+  await logActivity({
+    userId,
+    action: "PASSWORD_CHANGED",
+    entity: "USER",
+    entityId: userId
+  });
+  return { message: "Password updated successfully" };
+}
+
+// server/utils/response.ts
+function sendSuccess(res, data, statusCode = 200, meta) {
+  const response = {
+    success: true,
+    data,
+    ...meta ? { meta } : {}
+  };
+  return res.status(statusCode).json(response);
+}
+function sendError(res, message, statusCode = 400, code = "BAD_REQUEST", details) {
+  const response = {
+    success: false,
+    error: {
+      code,
+      message,
+      ...details ? { details } : {}
+    }
+  };
+  return res.status(statusCode).json(response);
+}
+
+// server/controllers/authController.ts
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return sendError(res, "Email and password are required", 400, "INVALID_INPUT");
+    }
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    const result = await loginUser(email, password, ip);
+    return sendSuccess(res, result, 200);
+  } catch (error) {
+    return sendError(res, error.message || "Login failed", 401, "AUTH_FAILED");
+  }
+}
+async function getProfile(req, res) {
+  try {
+    const userId = req.user.userId;
+    const profile = await getCurrentUserProfile(userId);
+    return sendSuccess(res, profile);
+  } catch (error) {
+    return sendError(res, error.message || "Failed to fetch profile", 500);
+  }
+}
+async function changePassword(req, res) {
+  try {
+    const userId = req.user.userId;
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return sendError(res, "Current and new password are required", 400);
+    }
+    const result = await changeUserPassword(userId, currentPassword, newPassword);
+    return sendSuccess(res, result);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function logout(req, res) {
+  return sendSuccess(res, { message: "Logged out successfully" });
+}
+
+// server/middleware/auth.ts
+async function authenticate(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return sendError(res, "Authentication token missing or malformed", 401, "UNAUTHORIZED");
+  }
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = verifyToken(token);
+    const user = await prisma_default.user.findUnique({
+      where: { id: decoded.userId },
+      select: { id: true, status: true, role: { select: { name: true } } }
+    });
+    if (!user || user.status !== "ACTIVE") {
+      return sendError(res, "User account is inactive or not found", 401, "ACCOUNT_INACTIVE");
+    }
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return sendError(res, "Invalid or expired token", 401, "TOKEN_INVALID", err.message);
+  }
+}
+
+// server/routes/authRoutes.ts
+var router = (0, import_express.Router)();
+router.post("/login", login);
+router.get("/profile", authenticate, getProfile);
+router.post("/change-password", authenticate, changePassword);
+router.post("/logout", authenticate, logout);
+var authRoutes_default = router;
+
+// server/routes/userRoutes.ts
+var import_express2 = __toESM(require_express2(), 1);
+
+// server/services/userService.ts
+var import_bcryptjs2 = __toESM(require_bcryptjs(), 1);
+async function createUser(data, actorUserId) {
+  const existing = await prisma_default.user.findUnique({
+    where: { email: data.email.toLowerCase().trim() }
+  });
+  if (existing) throw new Error("Email is already registered");
+  const role = await prisma_default.role.findUnique({
+    where: { name: data.roleName }
+  });
+  if (!role) throw new Error(`Role ${data.roleName} not found`);
+  let empId = data.employeeId;
+  if (!empId) {
+    const count = await prisma_default.user.count();
+    empId = `EMP-${(count + 1).toString().padStart(4, "0")}`;
+  }
+  const passwordPlain = data.password || "password123";
+  const passwordHash = await import_bcryptjs2.default.hash(passwordPlain, 10);
+  const user = await prisma_default.user.create({
+    data: {
+      email: data.email.toLowerCase().trim(),
+      passwordHash,
+      name: data.name,
+      employeeId: empId,
+      roleId: role.id,
+      designation: data.designation,
+      phone: data.phone,
+      avatarUrl: data.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`,
+      departmentId: data.departmentId,
+      teamId: data.teamId,
+      status: "ACTIVE"
+    },
+    include: {
+      role: true,
+      department: true,
+      team: true
+    }
+  });
+  await logActivity({
+    userId: actorUserId,
+    action: "USER_CREATED",
+    entity: "USER",
+    entityId: user.id,
+    metadata: { name: user.name, email: user.email, role: role.name }
+  });
+  return user;
+}
+async function getUsers(filters) {
+  const page = filters.page || 1;
+  const limit = filters.limit || 50;
+  const skip = (page - 1) * limit;
+  const where = {};
+  if (filters.search) {
+    where.OR = [
+      { name: { contains: filters.search } },
+      { email: { contains: filters.search } },
+      { employeeId: { contains: filters.search } },
+      { designation: { contains: filters.search } }
+    ];
+  }
+  if (filters.role) {
+    where.role = { name: filters.role };
+  }
+  if (filters.departmentId) {
+    where.departmentId = filters.departmentId;
+  }
+  if (filters.status) {
+    where.status = filters.status;
+  }
+  const [users, total] = await Promise.all([
+    prisma_default.user.findMany({
+      where,
+      select: {
+        id: true,
+        employeeId: true,
+        name: true,
+        email: true,
+        designation: true,
+        phone: true,
+        avatarUrl: true,
+        status: true,
+        joiningDate: true,
+        createdAt: true,
+        role: { select: { id: true, name: true } },
+        department: { select: { id: true, name: true, code: true } },
+        team: { select: { id: true, name: true } },
+        _count: {
+          select: {
+            assignedTasks: true,
+            managedProjects: true,
+            timesheets: true
+          }
+        }
+      },
+      orderBy: { name: "asc" },
+      skip,
+      take: limit
+    }),
+    prisma_default.user.count({ where })
+  ]);
+  return {
+    users,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit)
+  };
+}
+async function getUserById(id) {
+  const user = await prisma_default.user.findUnique({
+    where: { id },
+    include: {
+      role: true,
+      department: true,
+      team: true,
+      managedProjects: { select: { id: true, name: true, status: true, progress: true, deadline: true } },
+      assignedTasks: {
+        where: { status: { in: ["TO_DO", "IN_PROGRESS", "IN_REVIEW", "REVISION_REQUIRED"] } },
+        select: { id: true, title: true, priority: true, status: true, dueDate: true, project: { select: { name: true } } }
+      },
+      timesheets: {
+        orderBy: { date: "desc" },
+        take: 10,
+        include: { project: { select: { name: true } } }
+      }
+    }
+  });
+  if (!user) throw new Error("User not found");
+  return user;
+}
+async function updateUser(id, data, actorUserId) {
+  const updateData = {};
+  if (data.name) updateData.name = data.name;
+  if (data.designation !== void 0) updateData.designation = data.designation;
+  if (data.phone !== void 0) updateData.phone = data.phone;
+  if (data.avatarUrl !== void 0) updateData.avatarUrl = data.avatarUrl;
+  if (data.departmentId !== void 0) updateData.departmentId = data.departmentId;
+  if (data.teamId !== void 0) updateData.teamId = data.teamId;
+  if (data.status) updateData.status = data.status;
+  if (data.roleName) {
+    const role = await prisma_default.role.findUnique({ where: { name: data.roleName } });
+    if (role) updateData.roleId = role.id;
+  }
+  if (data.password) {
+    updateData.passwordHash = await import_bcryptjs2.default.hash(data.password, 10);
+  }
+  const updated = await prisma_default.user.update({
+    where: { id },
+    data: updateData,
+    include: { role: true, department: true, team: true }
+  });
+  await logActivity({
+    userId: actorUserId,
+    action: "USER_UPDATED",
+    entity: "USER",
+    entityId: id,
+    metadata: { name: updated.name, status: updated.status }
+  });
+  return updated;
+}
+async function deleteUser(id, actorUserId) {
+  const updated = await prisma_default.user.update({
+    where: { id },
+    data: { status: "INACTIVE" }
+  });
+  await logActivity({
+    userId: actorUserId,
+    action: "USER_DEACTIVATED",
+    entity: "USER",
+    entityId: id
+  });
+  return updated;
+}
+
+// server/services/workloadEngine.ts
+async function calculateStaffWorkload(userId) {
+  const where = userId ? { id: userId, status: "ACTIVE" } : { status: "ACTIVE" };
+  const users = await prisma_default.user.findMany({
+    where,
+    include: {
+      department: true,
+      assignedTasks: {
+        include: { project: true }
+      },
+      timesheets: {
+        where: {
+          date: {
+            gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1e3)
+            // Last 7 days
+          }
         }
       }
+    }
+  });
+  const now = /* @__PURE__ */ new Date();
+  const reports = [];
+  for (const user of users) {
+    const assignedTasks = user.assignedTasks;
+    const assignedTasksCount = assignedTasks.length;
+    const activeTasks = assignedTasks.filter(
+      (t) => t.status === "TO_DO" || t.status === "IN_PROGRESS" || t.status === "IN_REVIEW" || t.status === "REVISION_REQUIRED"
+    );
+    const activeTasksCount = activeTasks.length;
+    const completedTasksCount = assignedTasks.filter((t) => t.status === "COMPLETED" || t.status === "APPROVED").length;
+    const overdueTasksCount = assignedTasks.filter(
+      (t) => t.dueDate && new Date(t.dueDate) < now && t.status !== "COMPLETED" && t.status !== "APPROVED"
+    ).length;
+    const totalEstimatedHours = activeTasks.reduce((sum, t) => sum + (t.estimatedHours || 0), 0);
+    const totalActualHours = user.timesheets.reduce((sum, ts) => sum + (ts.totalDurationMinutes || 0) / 60, 0);
+    const weeklyCapacityHours = 40;
+    let workloadPercentage = Math.round(totalEstimatedHours / weeklyCapacityHours * 100);
+    if (workloadPercentage === 0 && activeTasksCount > 0) {
+      workloadPercentage = Math.min(activeTasksCount * 20, 100);
+    }
+    let status = "HEALTHY";
+    let recommendation = "Workload balanced optimally.";
+    if (workloadPercentage > 85 || activeTasksCount >= 6) {
+      status = "OVERLOADED";
+      recommendation = `High stress risk. Consider redistributing ${activeTasksCount - 3} tasks to available staff members.`;
+    } else if (workloadPercentage < 40 && activeTasksCount <= 2) {
+      status = "AVAILABLE";
+      recommendation = "Capacity available for new project assignments.";
+    }
+    reports.push({
+      userId: user.id,
+      name: user.name,
+      email: user.email,
+      avatarUrl: user.avatarUrl,
+      designation: user.designation,
+      departmentName: user.department?.name,
+      assignedTasksCount,
+      activeTasksCount,
+      completedTasksCount,
+      overdueTasksCount,
+      totalEstimatedHours: Number(totalEstimatedHours.toFixed(1)),
+      totalActualHours: Number(totalActualHours.toFixed(1)),
+      weeklyCapacityHours,
+      workloadPercentage: Math.min(workloadPercentage, 150),
+      status,
+      recommendation
     });
+  }
+  return reports.sort((a, b) => b.workloadPercentage - a.workloadPercentage);
+}
+
+// server/controllers/userController.ts
+async function getUsers2(req, res) {
+  try {
+    const { search: search2, role, departmentId, status, page, limit } = req.query;
+    const result = await getUsers({
+      search: search2,
+      role,
+      departmentId,
+      status,
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 50
+    });
+    return sendSuccess(res, result.users, 200, {
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages
+    });
+  } catch (error) {
+    return sendError(res, error.message, 500);
+  }
+}
+async function getUserById2(req, res) {
+  try {
+    const user = await getUserById(req.params.id);
+    return sendSuccess(res, user);
+  } catch (error) {
+    return sendError(res, error.message, 404);
+  }
+}
+async function createUser2(req, res) {
+  try {
+    const user = await createUser(req.body, req.user?.userId);
+    return sendSuccess(res, user, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function updateUser2(req, res) {
+  try {
+    const user = await updateUser(req.params.id, req.body, req.user?.userId);
+    return sendSuccess(res, user);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function deleteUser2(req, res) {
+  try {
+    const user = await deleteUser(req.params.id, req.user?.userId);
+    return sendSuccess(res, user);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function getStaffWorkload(req, res) {
+  try {
+    const userId = req.query.userId;
+    const workload = await calculateStaffWorkload(userId);
+    return sendSuccess(res, workload);
+  } catch (error) {
+    return sendError(res, error.message, 500);
+  }
+}
+
+// server/middleware/rbac.ts
+function authorizeRoles(...allowedRoles) {
+  return (req, res, next) => {
+    if (!req.user) {
+      return sendError(res, "Authentication required", 401, "UNAUTHORIZED");
+    }
+    const userRole = req.user.role;
+    if (userRole === "CEO" || userRole === "ADMIN") {
+      return next();
+    }
+    if (!allowedRoles.includes(userRole)) {
+      return sendError(
+        res,
+        `Access denied. Required role: [${allowedRoles.join(", ")}]. Current role: ${userRole}`,
+        403,
+        "FORBIDDEN"
+      );
+    }
+    next();
+  };
+}
+
+// server/routes/userRoutes.ts
+var router2 = (0, import_express2.Router)();
+router2.use(authenticate);
+router2.get("/", getUsers2);
+router2.get("/workload", getStaffWorkload);
+router2.get("/:id", getUserById2);
+router2.post("/", authorizeRoles("CEO", "ADMIN", "DEPARTMENT_HEAD"), createUser2);
+router2.put("/:id", authorizeRoles("CEO", "ADMIN", "DEPARTMENT_HEAD", "PROJECT_MANAGER"), updateUser2);
+router2.delete("/:id", authorizeRoles("CEO", "ADMIN"), deleteUser2);
+var userRoutes_default = router2;
+
+// server/routes/projectRoutes.ts
+var import_express3 = __toESM(require_express2(), 1);
+
+// server/services/riskEngine.ts
+async function calculateProjectRisk(projectId) {
+  const project = await prisma_default.project.findUnique({
+    where: { id: projectId },
+    include: {
+      tasks: true,
+      members: { include: { user: true } }
+    }
+  });
+  if (!project) {
+    throw new Error(`Project ${projectId} not found`);
+  }
+  const now = /* @__PURE__ */ new Date();
+  const deadline = new Date(project.deadline);
+  const startDate = new Date(project.startDate);
+  const totalDurationMs = deadline.getTime() - startDate.getTime();
+  const elapsedDurationMs = now.getTime() - startDate.getTime();
+  const timeElapsedRatio = totalDurationMs > 0 ? Math.min(Math.max(elapsedDurationMs / totalDurationMs, 0), 2) : 1;
+  const daysUntilDeadline = Math.ceil((deadline.getTime() - now.getTime()) / (1e3 * 60 * 60 * 24));
+  const totalTasks = project.tasks.length;
+  const completedTasks = project.tasks.filter((t) => t.status === "COMPLETED" || t.status === "APPROVED").length;
+  const overdueTasks = project.tasks.filter((t) => t.dueDate && new Date(t.dueDate) < now && t.status !== "COMPLETED" && t.status !== "APPROVED");
+  const blockedTasks = project.tasks.filter((t) => t.status === "BLOCKED");
+  const revisionTasks = project.tasks.filter((t) => t.status === "REVISION_REQUIRED");
+  const progress = project.progress;
+  const reasons = [];
+  const recommendations = [];
+  let deadlineRisk = 10;
+  let taskRisk = 10;
+  let workloadRisk = 10;
+  if (daysUntilDeadline < 0 && progress < 100) {
+    deadlineRisk = 95;
+    reasons.push(`Project deadline passed ${Math.abs(daysUntilDeadline)} days ago while incomplete (${Math.round(progress)}% progress)`);
+    recommendations.push("Immediate timeline extension and executive review needed");
+  } else if (daysUntilDeadline <= 3 && progress < 80) {
+    deadlineRisk = 85;
+    reasons.push(`Deadline in ${daysUntilDeadline} days with only ${Math.round(progress)}% completed`);
+    recommendations.push("Prioritize remaining high-impact tasks and reassign blockers");
+  } else if (daysUntilDeadline <= 7 && progress < 50) {
+    deadlineRisk = 70;
+    reasons.push(`Only ${daysUntilDeadline} days remaining with less than half completed`);
+    recommendations.push("Assign additional team members to accelerate delivery");
+  } else if (timeElapsedRatio > 0.7 && progress < 40) {
+    deadlineRisk = 60;
+    reasons.push(`Over 70% timeline consumed with only ${Math.round(progress)}% progress`);
+  }
+  if (overdueTasks.length > 0) {
+    taskRisk += overdueTasks.length * 18;
+    reasons.push(`${overdueTasks.length} task(s) currently overdue`);
+    recommendations.push(`Resolve ${overdueTasks.length} overdue task(s) immediately`);
+  }
+  if (blockedTasks.length > 0) {
+    taskRisk += blockedTasks.length * 20;
+    reasons.push(`${blockedTasks.length} task(s) are BLOCKED`);
+    recommendations.push(`Clear dependencies for ${blockedTasks.length} blocked task(s)`);
+  }
+  if (revisionTasks.length > 0) {
+    taskRisk += revisionTasks.length * 12;
+    reasons.push(`${revisionTasks.length} task(s) require revisions`);
+  }
+  if (project.budget > 0 && project.actualCost > project.budget) {
+    workloadRisk += 30;
+    const over = Math.round((project.actualCost - project.budget) / project.budget * 100);
+    reasons.push(`Project budget exceeded by ${over}% ($${project.actualCost.toLocaleString()} / $${project.budget.toLocaleString()})`);
+  }
+  if (project.members.length === 0 && totalTasks > 0) {
+    workloadRisk += 40;
+    reasons.push("No team members assigned to project with active tasks");
+    recommendations.push("Assign project team members");
+  }
+  deadlineRisk = Math.min(Math.max(deadlineRisk, 0), 100);
+  taskRisk = Math.min(Math.max(taskRisk, 0), 100);
+  workloadRisk = Math.min(Math.max(workloadRisk, 0), 100);
+  const aggregateRiskScore = Math.round(deadlineRisk * 0.45 + taskRisk * 0.35 + workloadRisk * 0.2);
+  const healthScore = Math.max(100 - aggregateRiskScore, 0);
+  let riskLevel = "LOW";
+  if (aggregateRiskScore >= 75 || daysUntilDeadline < 0) {
+    riskLevel = "CRITICAL";
+  } else if (aggregateRiskScore >= 50) {
+    riskLevel = "HIGH";
+  } else if (aggregateRiskScore >= 25) {
+    riskLevel = "MEDIUM";
+  } else {
+    riskLevel = "LOW";
+  }
+  if (reasons.length === 0) {
+    reasons.push("Project execution is on schedule and healthy");
+    recommendations.push("Maintain steady sprint velocity");
+  }
+  await prisma_default.projectRisk.create({
+    data: {
+      projectId: project.id,
+      riskLevel,
+      healthScore,
+      deadlineRisk,
+      taskRisk,
+      workloadRisk,
+      reasons: JSON.stringify(reasons),
+      recommendations: JSON.stringify(recommendations)
+    }
+  });
+  return {
+    projectId: project.id,
+    projectName: project.name,
+    riskLevel,
+    healthScore,
+    deadlineRisk,
+    taskRisk,
+    workloadRisk,
+    reasons,
+    recommendations
+  };
+}
+
+// server/sockets/socketManager.ts
+var ioInstance = null;
+function getIO() {
+  return ioInstance;
+}
+
+// server/services/notificationService.ts
+async function createNotification(params) {
+  try {
+    const notification = await prisma_default.notification.create({
+      data: {
+        userId: params.userId,
+        type: params.type,
+        title: params.title,
+        message: params.message,
+        link: params.link
+      }
+    });
+    const io = getIO();
+    if (io) {
+      io.to(`user:${params.userId}`).emit("notification_received", notification);
+    }
+    return notification;
+  } catch (error) {
+    console.error("Failed to create notification:", error);
+    return null;
+  }
+}
+async function getUserNotifications(userId) {
+  const [notifications, unreadCount] = await Promise.all([
+    prisma_default.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 50
+    }),
+    prisma_default.notification.count({
+      where: { userId, isRead: false }
+    })
+  ]);
+  return { notifications, unreadCount };
+}
+async function markNotificationAsRead(id, userId) {
+  return prisma_default.notification.updateMany({
+    where: { id, userId },
+    data: { isRead: true }
+  });
+}
+async function markAllNotificationsAsRead(userId) {
+  return prisma_default.notification.updateMany({
+    where: { userId, isRead: false },
+    data: { isRead: true }
+  });
+}
+
+// server/services/projectService.ts
+async function createProject(data, creatorUserId) {
+  let projectCode = data.projectCode;
+  if (!projectCode) {
+    const count = await prisma_default.project.count();
+    projectCode = `PRJ-${(count + 1).toString().padStart(4, "0")}`;
+  }
+  const project = await prisma_default.project.create({
+    data: {
+      name: data.name,
+      projectCode,
+      description: data.description,
+      clientId: data.clientId,
+      accountManagerId: data.accountManagerId,
+      projectManagerId: data.projectManagerId,
+      departmentId: data.departmentId,
+      teamId: data.teamId,
+      startDate: data.startDate ? new Date(data.startDate) : /* @__PURE__ */ new Date(),
+      deadline: new Date(data.deadline),
+      priority: data.priority || "MEDIUM",
+      status: data.status || "PLANNING",
+      budget: data.budget || 0,
+      revenue: data.revenue || 0,
+      progress: 0
+    },
+    include: {
+      client: true,
+      projectManager: true,
+      accountManager: true,
+      department: true,
+      team: true
+    }
+  });
+  if (data.memberIds && data.memberIds.length > 0) {
+    await prisma_default.projectMember.createMany({
+      data: data.memberIds.map((userId) => ({
+        projectId: project.id,
+        userId,
+        role: userId === data.projectManagerId ? "LEAD" : "MEMBER"
+      }))
+    });
+  } else if (data.projectManagerId) {
+    await prisma_default.projectMember.create({
+      data: {
+        projectId: project.id,
+        userId: data.projectManagerId,
+        role: "LEAD"
+      }
+    });
+  }
+  await prisma_default.conversation.create({
+    data: {
+      title: `${project.name} Team Chat`,
+      type: "PROJECT",
+      projectId: project.id
+    }
+  });
+  try {
+    await calculateProjectRisk(project.id);
+  } catch (e) {
+    console.error("Initial risk calculation failed:", e);
+  }
+  await logActivity({
+    userId: creatorUserId,
+    action: "PROJECT_CREATED",
+    entity: "PROJECT",
+    entityId: project.id,
+    metadata: { name: project.name, code: project.projectCode }
+  });
+  if (data.projectManagerId && data.projectManagerId !== creatorUserId) {
+    await createNotification({
+      userId: data.projectManagerId,
+      type: "TASK_ASSIGNED",
+      title: "Assigned as Project Manager",
+      message: `You have been appointed Project Manager for "${project.name}"`,
+      link: `/projects/${project.id}`
+    });
+  }
+  return project;
+}
+async function getProjects(filters) {
+  const page = filters.page || 1;
+  const limit = filters.limit || 50;
+  const skip = (page - 1) * limit;
+  const where = {};
+  if (filters.search) {
+    where.OR = [
+      { name: { contains: filters.search } },
+      { projectCode: { contains: filters.search } },
+      { description: { contains: filters.search } },
+      { client: { company: { contains: filters.search } } }
+    ];
+  }
+  if (filters.status) where.status = filters.status;
+  if (filters.priority) where.priority = filters.priority;
+  if (filters.departmentId) where.departmentId = filters.departmentId;
+  if (filters.clientId) where.clientId = filters.clientId;
+  if (filters.projectManagerId) where.projectManagerId = filters.projectManagerId;
+  if (filters.userId) {
+    where.OR = [
+      { projectManagerId: filters.userId },
+      { accountManagerId: filters.userId },
+      { members: { some: { userId: filters.userId } } }
+    ];
+  }
+  const [projects, total] = await Promise.all([
+    prisma_default.project.findMany({
+      where,
+      include: {
+        client: { select: { id: true, company: true, contactPerson: true } },
+        projectManager: { select: { id: true, name: true, avatarUrl: true, email: true } },
+        accountManager: { select: { id: true, name: true, avatarUrl: true } },
+        department: { select: { id: true, name: true, code: true } },
+        team: { select: { id: true, name: true } },
+        members: {
+          include: {
+            user: { select: { id: true, name: true, avatarUrl: true, designation: true } }
+          }
+        },
+        risks: {
+          orderBy: { calculatedAt: "desc" },
+          take: 1
+        },
+        _count: {
+          select: {
+            tasks: true,
+            documents: true,
+            milestones: true
+          }
+        }
+      },
+      orderBy: { updatedAt: "desc" },
+      skip,
+      take: limit
+    }),
+    prisma_default.project.count({ where })
+  ]);
+  const formatted = projects.map((p) => {
+    const latestRisk = p.risks[0] || null;
+    let reasons = [];
+    if (latestRisk && latestRisk.reasons) {
+      try {
+        reasons = JSON.parse(latestRisk.reasons);
+      } catch {
+        reasons = [latestRisk.reasons];
+      }
+    }
+    return {
+      ...p,
+      riskAssessment: latestRisk ? {
+        riskLevel: latestRisk.riskLevel,
+        healthScore: latestRisk.healthScore,
+        deadlineRisk: latestRisk.deadlineRisk,
+        taskRisk: latestRisk.taskRisk,
+        workloadRisk: latestRisk.workloadRisk,
+        reasons
+      } : {
+        riskLevel: "LOW",
+        healthScore: 90,
+        deadlineRisk: 10,
+        taskRisk: 10,
+        workloadRisk: 10,
+        reasons: ["On track"]
+      }
+    };
+  });
+  return {
+    projects: formatted,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit)
+  };
+}
+async function getProjectById(id) {
+  const project = await prisma_default.project.findUnique({
+    where: { id },
+    include: {
+      client: true,
+      projectManager: true,
+      accountManager: true,
+      department: true,
+      team: true,
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              designation: true,
+              avatarUrl: true,
+              role: { select: { name: true } }
+            }
+          }
+        }
+      },
+      milestones: {
+        include: {
+          tasks: {
+            select: { id: true, title: true, status: true, priority: true, progress: true }
+          }
+        },
+        orderBy: { dueDate: "asc" }
+      },
+      tasks: {
+        include: {
+          assignee: { select: { id: true, name: true, avatarUrl: true, designation: true } },
+          reviewer: { select: { id: true, name: true, avatarUrl: true } },
+          subtasks: true
+        },
+        orderBy: { createdAt: "desc" }
+      },
+      documents: {
+        include: {
+          uploader: { select: { id: true, name: true } },
+          versions: { orderBy: { versionNumber: "desc" }, take: 1 }
+        },
+        orderBy: { createdAt: "desc" }
+      },
+      risks: {
+        orderBy: { calculatedAt: "desc" },
+        take: 1
+      },
+      conversations: {
+        take: 1
+      }
+    }
+  });
+  if (!project) throw new Error("Project not found");
+  const latestRisk = project.risks[0] || null;
+  let parsedReasons = [];
+  let parsedRecommendations = [];
+  if (latestRisk) {
+    try {
+      parsedReasons = JSON.parse(latestRisk.reasons);
+    } catch {
+      parsedReasons = [latestRisk.reasons];
+    }
+    try {
+      parsedRecommendations = JSON.parse(latestRisk.recommendations || "[]");
+    } catch {
+      parsedRecommendations = [];
+    }
+  }
+  return {
+    ...project,
+    riskAssessment: latestRisk ? {
+      riskLevel: latestRisk.riskLevel,
+      healthScore: latestRisk.healthScore,
+      deadlineRisk: latestRisk.deadlineRisk,
+      taskRisk: latestRisk.taskRisk,
+      workloadRisk: latestRisk.workloadRisk,
+      reasons: parsedReasons,
+      recommendations: parsedRecommendations,
+      calculatedAt: latestRisk.calculatedAt
+    } : {
+      riskLevel: "LOW",
+      healthScore: 95,
+      deadlineRisk: 10,
+      taskRisk: 10,
+      workloadRisk: 10,
+      reasons: ["Project schedule is stable."],
+      recommendations: ["Maintain regular check-ins."]
+    }
+  };
+}
+async function updateProject(id, data, actorUserId) {
+  const updateData = {};
+  if (data.name) updateData.name = data.name;
+  if (data.description !== void 0) updateData.description = data.description;
+  if (data.clientId !== void 0) updateData.clientId = data.clientId;
+  if (data.accountManagerId !== void 0) updateData.accountManagerId = data.accountManagerId;
+  if (data.projectManagerId !== void 0) updateData.projectManagerId = data.projectManagerId;
+  if (data.departmentId !== void 0) updateData.departmentId = data.departmentId;
+  if (data.teamId !== void 0) updateData.teamId = data.teamId;
+  if (data.startDate) updateData.startDate = new Date(data.startDate);
+  if (data.deadline) updateData.deadline = new Date(data.deadline);
+  if (data.priority) updateData.priority = data.priority;
+  if (data.status) updateData.status = data.status;
+  if (data.budget !== void 0) updateData.budget = data.budget;
+  if (data.revenue !== void 0) updateData.revenue = data.revenue;
+  const updated = await prisma_default.project.update({
+    where: { id },
+    data: updateData,
+    include: { client: true, projectManager: true, department: true }
+  });
+  if (data.memberIds) {
+    await prisma_default.projectMember.deleteMany({ where: { projectId: id } });
+    await prisma_default.projectMember.createMany({
+      data: data.memberIds.map((userId) => ({
+        projectId: id,
+        userId,
+        role: userId === updated.projectManagerId ? "LEAD" : "MEMBER"
+      }))
+    });
+  }
+  try {
+    await calculateProjectRisk(id);
+  } catch (e) {
+    console.error("Risk update error:", e);
+  }
+  await logActivity({
+    userId: actorUserId,
+    action: "PROJECT_UPDATED",
+    entity: "PROJECT",
+    entityId: id,
+    metadata: { name: updated.name, status: updated.status, priority: updated.priority }
+  });
+  return updated;
+}
+async function deleteProject(id, actorUserId) {
+  const project = await prisma_default.project.delete({
+    where: { id }
+  });
+  await logActivity({
+    userId: actorUserId,
+    action: "PROJECT_DELETED",
+    entity: "PROJECT",
+    entityId: id,
+    metadata: { name: project.name }
+  });
+  return project;
+}
+
+// server/controllers/projectController.ts
+async function getProjects2(req, res) {
+  try {
+    const { search: search2, status, priority, departmentId, clientId, projectManagerId, userId, riskLevel, page, limit } = req.query;
+    const result = await getProjects({
+      search: search2,
+      status,
+      priority,
+      departmentId,
+      clientId,
+      projectManagerId,
+      userId,
+      riskLevel,
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 50
+    });
+    return sendSuccess(res, result.projects, 200, {
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages
+    });
+  } catch (error) {
+    return sendError(res, error.message, 500);
+  }
+}
+async function getProjectById2(req, res) {
+  try {
+    const project = await getProjectById(req.params.id);
+    return sendSuccess(res, project);
+  } catch (error) {
+    return sendError(res, error.message, 404);
+  }
+}
+async function createProject2(req, res) {
+  try {
+    const project = await createProject(req.body, req.user?.userId);
+    return sendSuccess(res, project, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function updateProject2(req, res) {
+  try {
+    const project = await updateProject(req.params.id, req.body, req.user?.userId);
+    return sendSuccess(res, project);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function deleteProject2(req, res) {
+  try {
+    const project = await deleteProject(req.params.id, req.user?.userId);
+    return sendSuccess(res, project);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function refreshProjectRisk(req, res) {
+  try {
+    const risk = await calculateProjectRisk(req.params.id);
+    return sendSuccess(res, risk);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+
+// server/routes/projectRoutes.ts
+var router3 = (0, import_express3.Router)();
+router3.use(authenticate);
+router3.get("/", getProjects2);
+router3.get("/:id", getProjectById2);
+router3.post("/", authorizeRoles("CEO", "ADMIN"), createProject2);
+router3.put("/:id", authorizeRoles("CEO", "ADMIN"), updateProject2);
+router3.delete("/:id", authorizeRoles("CEO", "ADMIN"), deleteProject2);
+router3.post("/:id/refresh-risk", refreshProjectRisk);
+var projectRoutes_default = router3;
+
+// server/routes/taskRoutes.ts
+var import_express4 = __toESM(require_express2(), 1);
+
+// server/services/progressEngine.ts
+async function recalculateProjectProgress(projectId) {
+  const tasks = await prisma_default.task.findMany({
+    where: { projectId },
+    select: {
+      id: true,
+      status: true,
+      progress: true,
+      estimatedHours: true
+    }
+  });
+  if (tasks.length === 0) {
+    await prisma_default.project.update({
+      where: { id: projectId },
+      data: { progress: 0 }
+    });
+    return 0;
+  }
+  let totalWeight = 0;
+  let accumulatedProgress = 0;
+  for (const task of tasks) {
+    const weight = task.estimatedHours > 0 ? task.estimatedHours : 1;
+    totalWeight += weight;
+    if (task.status === "COMPLETED" || task.status === "APPROVED") {
+      accumulatedProgress += 100 * weight;
+    } else if (task.status === "IN_PROGRESS" || task.status === "IN_REVIEW") {
+      accumulatedProgress += Math.max(task.progress, 30) * weight;
+    } else if (task.status === "REVISION_REQUIRED") {
+      accumulatedProgress += 20 * weight;
+    } else {
+      accumulatedProgress += (task.progress || 0) * weight;
+    }
+  }
+  const finalProgress = Math.min(Math.max(Math.round(accumulatedProgress / totalWeight), 0), 100);
+  await prisma_default.project.update({
+    where: { id: projectId },
+    data: {
+      progress: finalProgress,
+      status: finalProgress === 100 ? "COMPLETED" : void 0
+    }
+  });
+  try {
+    await calculateProjectRisk(projectId);
+  } catch (err) {
+    console.error(`Failed to refresh risk for project ${projectId}:`, err);
+  }
+  return finalProgress;
+}
+
+// server/services/taskService.ts
+async function createTask(data, creatorUserId) {
+  let taskCode = data.taskCode;
+  if (!taskCode) {
+    const count = await prisma_default.task.count({ where: { projectId: data.projectId } });
+    const project = await prisma_default.project.findUnique({ where: { id: data.projectId }, select: { projectCode: true } });
+    const prefix = project?.projectCode ? project.projectCode : "TSK";
+    taskCode = `${prefix}-T${(count + 1).toString().padStart(3, "0")}`;
+  }
+  const task = await prisma_default.task.create({
+    data: {
+      title: data.title,
+      taskCode,
+      description: data.description,
+      projectId: data.projectId,
+      milestoneId: data.milestoneId,
+      assigneeId: data.assigneeId,
+      reviewerId: data.reviewerId,
+      priority: data.priority || "MEDIUM",
+      status: data.status || "TO_DO",
+      startDate: data.startDate ? new Date(data.startDate) : /* @__PURE__ */ new Date(),
+      dueDate: data.dueDate ? new Date(data.dueDate) : null,
+      estimatedHours: data.estimatedHours || 0,
+      dependsOnTaskId: data.dependsOnTaskId,
+      progress: data.status === "COMPLETED" || data.status === "APPROVED" ? 100 : 0
+    },
+    include: {
+      project: { select: { id: true, name: true, projectCode: true } },
+      assignee: { select: { id: true, name: true, avatarUrl: true, email: true } },
+      reviewer: { select: { id: true, name: true, avatarUrl: true } }
+    }
+  });
+  if (data.subtasks && data.subtasks.length > 0) {
+    await prisma_default.subtask.createMany({
+      data: data.subtasks.map((st) => ({
+        taskId: task.id,
+        title: st.title,
+        isCompleted: st.isCompleted || false
+      }))
+    });
+  }
+  await recalculateProjectProgress(data.projectId);
+  await logActivity({
+    userId: creatorUserId,
+    action: "TASK_CREATED",
+    entity: "TASK",
+    entityId: task.id,
+    metadata: { title: task.title, code: task.taskCode, projectId: task.projectId }
+  });
+  if (data.assigneeId && data.assigneeId !== creatorUserId) {
+    await createNotification({
+      userId: data.assigneeId,
+      type: "TASK_ASSIGNED",
+      title: "New Task Assigned",
+      message: `You were assigned task "${task.title}" in project ${task.project.name}`,
+      link: `/tasks/${task.id}`
+    });
+  }
+  const io = getIO();
+  if (io) {
+    io.to(`project:${data.projectId}`).emit("task_created", task);
+  }
+  return task;
+}
+async function getTasks(filters) {
+  const page = filters.page || 1;
+  const limit = filters.limit || 100;
+  const skip = (page - 1) * limit;
+  const where = {};
+  if (filters.search) {
+    where.OR = [
+      { title: { contains: filters.search } },
+      { taskCode: { contains: filters.search } },
+      { description: { contains: filters.search } }
+    ];
+  }
+  if (filters.projectId) where.projectId = filters.projectId;
+  if (filters.assigneeId) where.assigneeId = filters.assigneeId;
+  if (filters.reviewerId) where.reviewerId = filters.reviewerId;
+  if (filters.status) where.status = filters.status;
+  if (filters.priority) where.priority = filters.priority;
+  if (filters.isOverdue) {
+    where.dueDate = { lt: /* @__PURE__ */ new Date() };
+    where.status = { notIn: ["COMPLETED", "APPROVED"] };
+  }
+  const [tasks, total] = await Promise.all([
+    prisma_default.task.findMany({
+      where,
+      include: {
+        project: { select: { id: true, name: true, projectCode: true, status: true } },
+        assignee: { select: { id: true, name: true, avatarUrl: true, designation: true } },
+        reviewer: { select: { id: true, name: true, avatarUrl: true } },
+        subtasks: true,
+        dependsOnTask: { select: { id: true, title: true, status: true, taskCode: true } },
+        _count: {
+          select: {
+            timesheets: true,
+            documents: true
+          }
+        }
+      },
+      orderBy: [{ priority: "desc" }, { dueDate: "asc" }],
+      skip,
+      take: limit
+    }),
+    prisma_default.task.count({ where })
+  ]);
+  return {
+    tasks,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit)
+  };
+}
+async function getTaskById(id) {
+  const task = await prisma_default.task.findUnique({
+    where: { id },
+    include: {
+      project: true,
+      milestone: true,
+      assignee: true,
+      reviewer: true,
+      subtasks: { orderBy: { createdAt: "asc" } },
+      dependsOnTask: true,
+      dependentTasks: true,
+      timesheets: {
+        include: { user: { select: { id: true, name: true, avatarUrl: true } } },
+        orderBy: { date: "desc" }
+      },
+      documents: {
+        include: { uploader: { select: { id: true, name: true } } }
+      },
+      approvals: {
+        include: { requester: true, approver: true },
+        orderBy: { createdAt: "desc" }
+      }
+    }
+  });
+  if (!task) throw new Error("Task not found");
+  return task;
+}
+async function updateTask(id, data, actorUserId) {
+  const existing = await prisma_default.task.findUnique({
+    where: { id },
+    include: { project: true, assignee: true, reviewer: true }
+  });
+  if (!existing) throw new Error("Task not found");
+  const updateData = {};
+  if (data.title) updateData.title = data.title;
+  if (data.description !== void 0) updateData.description = data.description;
+  if (data.milestoneId !== void 0) updateData.milestoneId = data.milestoneId;
+  if (data.assigneeId !== void 0) updateData.assigneeId = data.assigneeId;
+  if (data.reviewerId !== void 0) updateData.reviewerId = data.reviewerId;
+  if (data.priority) updateData.priority = data.priority;
+  if (data.startDate) updateData.startDate = new Date(data.startDate);
+  if (data.dueDate !== void 0) updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null;
+  if (data.estimatedHours !== void 0) updateData.estimatedHours = data.estimatedHours;
+  if (data.actualHours !== void 0) updateData.actualHours = data.actualHours;
+  if (data.dependsOnTaskId !== void 0) updateData.dependsOnTaskId = data.dependsOnTaskId;
+  if (data.status) {
+    updateData.status = data.status;
+    if (data.status === "COMPLETED" || data.status === "APPROVED") {
+      updateData.progress = 100;
+    } else if (data.status === "TO_DO") {
+      updateData.progress = 0;
+    } else if (data.progress !== void 0) {
+      updateData.progress = data.progress;
+    }
+  } else if (data.progress !== void 0) {
+    updateData.progress = data.progress;
+    if (data.progress === 100 && existing.status !== "APPROVED") {
+      updateData.status = "IN_REVIEW";
+    }
+  }
+  const updated = await prisma_default.task.update({
+    where: { id },
+    data: updateData,
+    include: {
+      project: { select: { id: true, name: true, projectCode: true } },
+      assignee: { select: { id: true, name: true, avatarUrl: true } },
+      reviewer: { select: { id: true, name: true, avatarUrl: true } },
+      subtasks: true
+    }
+  });
+  await recalculateProjectProgress(existing.projectId);
+  if (data.status && data.status !== existing.status) {
+    await logActivity({
+      userId: actorUserId,
+      action: "TASK_STATUS_CHANGED",
+      entity: "TASK",
+      entityId: id,
+      metadata: {
+        taskTitle: updated.title,
+        oldStatus: existing.status,
+        newStatus: data.status
+      }
+    });
+    if (data.status === "IN_REVIEW" && existing.reviewerId) {
+      await createNotification({
+        userId: existing.reviewerId,
+        type: "APPROVAL_REQUIRED",
+        title: "Task Ready For Review",
+        message: `Task "${updated.title}" in ${existing.project.name} requires your review.`,
+        link: `/tasks/${updated.id}`
+      });
+    }
+    if (data.status === "REVISION_REQUIRED" && existing.assigneeId) {
+      await createNotification({
+        userId: existing.assigneeId,
+        type: "TASK_ASSIGNED",
+        title: "Task Revision Required",
+        message: `Task "${updated.title}" requires revisions.`,
+        link: `/tasks/${updated.id}`
+      });
+    } else if (data.status === "APPROVED" && existing.assigneeId) {
+      await createNotification({
+        userId: existing.assigneeId,
+        type: "APPROVAL_REQUIRED",
+        title: "Task Approved",
+        message: `Task "${updated.title}" has been approved!`,
+        link: `/tasks/${updated.id}`
+      });
+    }
+  }
+  const io = getIO();
+  if (io) {
+    io.to(`project:${existing.projectId}`).emit("task_updated", updated);
+  }
+  return updated;
+}
+async function deleteTask(id, actorUserId) {
+  const task = await prisma_default.task.delete({ where: { id } });
+  await recalculateProjectProgress(task.projectId);
+  await logActivity({
+    userId: actorUserId,
+    action: "TASK_DELETED",
+    entity: "TASK",
+    entityId: id,
+    metadata: { title: task.title }
+  });
+  return task;
+}
+async function toggleSubtask(subtaskId, isCompleted) {
+  const subtask = await prisma_default.subtask.update({
+    where: { id: subtaskId },
+    data: { isCompleted }
+  });
+  const allSubtasks = await prisma_default.subtask.findMany({
+    where: { taskId: subtask.taskId }
+  });
+  if (allSubtasks.length > 0) {
+    const completedCount = allSubtasks.filter((s) => s.isCompleted).length;
+    const progress = Math.round(completedCount / allSubtasks.length * 100);
+    await prisma_default.task.update({
+      where: { id: subtask.taskId },
+      data: {
+        progress,
+        status: progress === 100 ? "IN_REVIEW" : progress > 0 ? "IN_PROGRESS" : "TO_DO"
+      }
+    });
+    const task = await prisma_default.task.findUnique({ where: { id: subtask.taskId } });
+    if (task) await recalculateProjectProgress(task.projectId);
+  }
+  return subtask;
+}
+async function createSubtask(taskId, title) {
+  return prisma_default.subtask.create({
+    data: { taskId, title, isCompleted: false }
+  });
+}
+async function deleteSubtask(subtaskId) {
+  return prisma_default.subtask.delete({ where: { id: subtaskId } });
+}
+
+// server/controllers/taskController.ts
+async function getTasks2(req, res) {
+  try {
+    const { search: search2, projectId, assigneeId, reviewerId, status, priority, isOverdue, page, limit } = req.query;
+    const result = await getTasks({
+      search: search2,
+      projectId,
+      assigneeId,
+      reviewerId,
+      status,
+      priority,
+      isOverdue: isOverdue === "true",
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 100
+    });
+    return sendSuccess(res, result.tasks, 200, {
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages
+    });
+  } catch (error) {
+    return sendError(res, error.message, 500);
+  }
+}
+async function getTaskById2(req, res) {
+  try {
+    const task = await getTaskById(req.params.id);
+    return sendSuccess(res, task);
+  } catch (error) {
+    return sendError(res, error.message, 404);
+  }
+}
+async function createTask2(req, res) {
+  try {
+    const task = await createTask(req.body, req.user?.userId);
+    return sendSuccess(res, task, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function updateTask2(req, res) {
+  try {
+    const task = await updateTask(req.params.id, req.body, req.user?.userId);
+    return sendSuccess(res, task);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function deleteTask2(req, res) {
+  try {
+    const task = await deleteTask(req.params.id, req.user?.userId);
+    return sendSuccess(res, task);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function createSubtask2(req, res) {
+  try {
+    const { title } = req.body;
+    if (!title) return sendError(res, "Subtask title is required", 400);
+    const subtask = await createSubtask(req.params.id, title);
+    return sendSuccess(res, subtask, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function toggleSubtask2(req, res) {
+  try {
+    const { isCompleted } = req.body;
+    const subtask = await toggleSubtask(req.params.subtaskId, isCompleted);
+    return sendSuccess(res, subtask);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function deleteSubtask2(req, res) {
+  try {
+    const subtask = await deleteSubtask(req.params.subtaskId);
+    return sendSuccess(res, subtask);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+
+// server/routes/taskRoutes.ts
+var router4 = (0, import_express4.Router)();
+router4.use(authenticate);
+router4.get("/", getTasks2);
+router4.get("/:id", getTaskById2);
+router4.post("/", createTask2);
+router4.put("/:id", updateTask2);
+router4.delete("/:id", deleteTask2);
+router4.post("/:id/subtasks", createSubtask2);
+router4.put("/:id/subtasks/:subtaskId", toggleSubtask2);
+router4.delete("/:id/subtasks/:subtaskId", deleteSubtask2);
+var taskRoutes_default = router4;
+
+// server/routes/timesheetRoutes.ts
+var import_express5 = __toESM(require_express2(), 1);
+
+// server/services/timesheetService.ts
+async function startWorkSession(data) {
+  const activeSession = await prisma_default.timesheet.findFirst({
+    where: {
+      userId: data.userId,
+      isRunning: true
+    },
+    include: {
+      project: { select: { name: true } },
+      task: { select: { title: true } }
+    }
+  });
+  if (activeSession) {
+    throw new Error(
+      `An active timer is already running for "${activeSession.task?.title || activeSession.project?.name || "an ongoing task"}". Please stop it before starting a new one.`
+    );
+  }
+  const timesheet = await prisma_default.timesheet.create({
+    data: {
+      userId: data.userId,
+      projectId: data.projectId,
+      taskId: data.taskId,
+      startTime: /* @__PURE__ */ new Date(),
+      isRunning: true,
+      notes: data.notes,
+      date: /* @__PURE__ */ new Date(),
+      status: "SUBMITTED"
+    },
+    include: {
+      project: true,
+      task: true
+    }
+  });
+  await logActivity({
+    userId: data.userId,
+    action: "TIMESHEET_STARTED",
+    entity: "TIMESHEET",
+    entityId: timesheet.id,
+    metadata: { projectId: data.projectId, taskId: data.taskId }
+  });
+  return timesheet;
+}
+async function stopWorkSession(timesheetId, userId, notes) {
+  const session = await prisma_default.timesheet.findFirst({
+    where: { id: timesheetId, userId, isRunning: true }
+  });
+  if (!session) {
+    throw new Error("Active timer session not found");
+  }
+  const now = /* @__PURE__ */ new Date();
+  const durationMinutes = Math.max(
+    Math.round((now.getTime() - new Date(session.startTime).getTime()) / 6e4) - (session.breakMinutes || 0),
+    1
+  );
+  const updated = await prisma_default.timesheet.update({
+    where: { id: timesheetId },
+    data: {
+      endTime: now,
+      isRunning: false,
+      totalDurationMinutes: durationMinutes,
+      notes: notes || session.notes
+    },
+    include: { project: true, task: true }
+  });
+  if (session.taskId) {
+    const allTaskTimesheets = await prisma_default.timesheet.findMany({
+      where: { taskId: session.taskId, isRunning: false },
+      select: { totalDurationMinutes: true }
+    });
+    const totalMinutes = allTaskTimesheets.reduce((sum, t) => sum + t.totalDurationMinutes, 0);
+    await prisma_default.task.update({
+      where: { id: session.taskId },
+      data: { actualHours: Number((totalMinutes / 60).toFixed(2)) }
+    });
+  }
+  await logActivity({
+    userId,
+    action: "TIMESHEET_STOPPED",
+    entity: "TIMESHEET",
+    entityId: timesheetId,
+    metadata: { durationMinutes }
+  });
+  return updated;
+}
+async function getActiveSession(userId) {
+  return prisma_default.timesheet.findFirst({
+    where: { userId, isRunning: true },
+    include: {
+      project: { select: { id: true, name: true, projectCode: true } },
+      task: { select: { id: true, title: true, taskCode: true } }
+    }
+  });
+}
+async function createManualTimeEntry(data) {
+  const start = new Date(data.startTime);
+  const end = new Date(data.endTime);
+  const breakMins = data.breakMinutes || 0;
+  if (end <= start) {
+    throw new Error("End time must be after start time");
+  }
+  const durationMinutes = Math.max(
+    Math.round((end.getTime() - start.getTime()) / 6e4) - breakMins,
+    1
+  );
+  const entry = await prisma_default.timesheet.create({
+    data: {
+      userId: data.userId,
+      projectId: data.projectId,
+      taskId: data.taskId,
+      startTime: start,
+      endTime: end,
+      breakMinutes: breakMins,
+      totalDurationMinutes: durationMinutes,
+      isRunning: false,
+      date: data.date ? new Date(data.date) : start,
+      notes: data.notes,
+      status: "SUBMITTED"
+    },
+    include: { project: true, task: true }
+  });
+  if (data.taskId) {
+    const allTaskTimesheets = await prisma_default.timesheet.findMany({
+      where: { taskId: data.taskId, isRunning: false },
+      select: { totalDurationMinutes: true }
+    });
+    const totalMinutes = allTaskTimesheets.reduce((sum, t) => sum + t.totalDurationMinutes, 0);
+    await prisma_default.task.update({
+      where: { id: data.taskId },
+      data: { actualHours: Number((totalMinutes / 60).toFixed(2)) }
+    });
+  }
+  return entry;
+}
+async function getTimesheets(filters) {
+  const page = filters.page || 1;
+  const limit = filters.limit || 50;
+  const skip = (page - 1) * limit;
+  const where = {};
+  if (filters.userId) where.userId = filters.userId;
+  if (filters.projectId) where.projectId = filters.projectId;
+  if (filters.status) where.status = filters.status;
+  if (filters.startDate || filters.endDate) {
+    where.date = {};
+    if (filters.startDate) where.date.gte = new Date(filters.startDate);
+    if (filters.endDate) where.date.lte = new Date(filters.endDate);
+  }
+  const [timesheets, total] = await Promise.all([
+    prisma_default.timesheet.findMany({
+      where,
+      include: {
+        user: { select: { id: true, name: true, email: true, avatarUrl: true, designation: true } },
+        project: { select: { id: true, name: true, projectCode: true } },
+        task: { select: { id: true, title: true, taskCode: true } }
+      },
+      orderBy: { date: "desc" },
+      skip,
+      take: limit
+    }),
+    prisma_default.timesheet.count({ where })
+  ]);
+  return { timesheets, total, page, limit, totalPages: Math.ceil(total / limit) };
+}
+async function approveOrRejectTimesheet(timesheetId, status, approverUserId, comments) {
+  const updated = await prisma_default.timesheet.update({
+    where: { id: timesheetId },
+    data: { status }
+  });
+  await prisma_default.approval.create({
+    data: {
+      entityType: "TIMESHEET",
+      entityId: timesheetId,
+      requesterId: updated.userId,
+      approverId: approverUserId,
+      status,
+      comments,
+      decisionAt: /* @__PURE__ */ new Date(),
+      timesheetId
+    }
+  });
+  return updated;
+}
+
+// server/controllers/timesheetController.ts
+async function getTimesheets2(req, res) {
+  try {
+    const { userId, projectId, startDate, endDate, status, page, limit } = req.query;
+    const isExecutive = ["CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD"].includes(req.user.role);
+    const targetUserId = isExecutive ? userId : req.user.userId;
+    const result = await getTimesheets({
+      userId: targetUserId,
+      projectId,
+      startDate,
+      endDate,
+      status,
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 50
+    });
+    return sendSuccess(res, result.timesheets, 200, {
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages
+    });
+  } catch (error) {
+    return sendError(res, error.message, 500);
+  }
+}
+async function getActiveSession2(req, res) {
+  try {
+    const session = await getActiveSession(req.user.userId);
+    return sendSuccess(res, session);
+  } catch (error) {
+    return sendError(res, error.message, 500);
+  }
+}
+async function startWorkSession2(req, res) {
+  try {
+    const { projectId, taskId, notes } = req.body;
+    const session = await startWorkSession({
+      userId: req.user.userId,
+      projectId,
+      taskId,
+      notes
+    });
+    return sendSuccess(res, session, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function stopWorkSession2(req, res) {
+  try {
+    const { id } = req.params;
+    const { notes } = req.body;
+    const session = await stopWorkSession(id, req.user.userId, notes);
+    return sendSuccess(res, session);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function createManualEntry(req, res) {
+  try {
+    const entry = await createManualTimeEntry({
+      userId: req.user.userId,
+      ...req.body
+    });
+    return sendSuccess(res, entry, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function reviewTimesheet(req, res) {
+  try {
+    const { id } = req.params;
+    const { status, comments } = req.body;
+    if (!["APPROVED", "REJECTED"].includes(status)) {
+      return sendError(res, "Status must be APPROVED or REJECTED", 400);
+    }
+    const result = await approveOrRejectTimesheet(id, status, req.user.userId, comments);
+    return sendSuccess(res, result);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+
+// server/routes/timesheetRoutes.ts
+var router5 = (0, import_express5.Router)();
+router5.use(authenticate);
+router5.get("/", getTimesheets2);
+router5.get("/active", getActiveSession2);
+router5.post("/start", startWorkSession2);
+router5.post("/:id/stop", stopWorkSession2);
+router5.post("/manual", createManualEntry);
+router5.post("/:id/review", authorizeRoles("CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD"), reviewTimesheet);
+var timesheetRoutes_default = router5;
+
+// server/routes/clientRoutes.ts
+var import_express6 = __toESM(require_express2(), 1);
+
+// server/services/clientService.ts
+async function createClient(data, actorUserId) {
+  const existing = await prisma_default.client.findUnique({
+    where: { email: data.email.toLowerCase().trim() }
+  });
+  if (existing) throw new Error("A client with this email already exists");
+  const client = await prisma_default.client.create({
+    data: {
+      company: data.company,
+      contactPerson: data.contactPerson,
+      email: data.email.toLowerCase().trim(),
+      phone: data.phone,
+      industry: data.industry,
+      status: data.status || "ACTIVE",
+      notes: data.notes,
+      address: data.address,
+      accountManagerId: data.accountManagerId
+    },
+    include: {
+      accountManager: { select: { id: true, name: true, email: true, avatarUrl: true } }
+    }
+  });
+  await logActivity({
+    userId: actorUserId,
+    action: "CLIENT_CREATED",
+    entity: "SYSTEM",
+    entityId: client.id,
+    metadata: { company: client.company, contact: client.contactPerson }
+  });
+  return client;
+}
+async function getClients(filters) {
+  const page = filters.page || 1;
+  const limit = filters.limit || 50;
+  const skip = (page - 1) * limit;
+  const where = {};
+  if (filters.search) {
+    where.OR = [
+      { company: { contains: filters.search } },
+      { contactPerson: { contains: filters.search } },
+      { email: { contains: filters.search } },
+      { industry: { contains: filters.search } }
+    ];
+  }
+  if (filters.status) where.status = filters.status;
+  if (filters.accountManagerId) where.accountManagerId = filters.accountManagerId;
+  const [clients, total] = await Promise.all([
+    prisma_default.client.findMany({
+      where,
+      include: {
+        accountManager: { select: { id: true, name: true, avatarUrl: true, email: true } },
+        projects: {
+          select: {
+            id: true,
+            name: true,
+            projectCode: true,
+            status: true,
+            progress: true,
+            budget: true,
+            revenue: true,
+            deadline: true
+          }
+        },
+        _count: {
+          select: {
+            projects: true,
+            documents: true
+          }
+        }
+      },
+      orderBy: { company: "asc" },
+      skip,
+      take: limit
+    }),
+    prisma_default.client.count({ where })
+  ]);
+  return { clients, total, page, limit, totalPages: Math.ceil(total / limit) };
+}
+async function getClientById(id) {
+  const client = await prisma_default.client.findUnique({
+    where: { id },
+    include: {
+      accountManager: true,
+      projects: {
+        include: {
+          projectManager: { select: { id: true, name: true, avatarUrl: true } },
+          tasks: { select: { id: true, status: true } }
+        },
+        orderBy: { updatedAt: "desc" }
+      },
+      documents: {
+        include: { uploader: { select: { id: true, name: true } } }
+      }
+    }
+  });
+  if (!client) throw new Error("Client not found");
+  return client;
+}
+async function updateClient(id, data, actorUserId) {
+  const updated = await prisma_default.client.update({
+    where: { id },
+    data,
+    include: { accountManager: true }
+  });
+  await logActivity({
+    userId: actorUserId,
+    action: "CLIENT_UPDATED",
+    entity: "SYSTEM",
+    entityId: id,
+    metadata: { company: updated.company }
+  });
+  return updated;
+}
+async function deleteClient(id, actorUserId) {
+  const deleted = await prisma_default.client.delete({ where: { id } });
+  await logActivity({
+    userId: actorUserId,
+    action: "CLIENT_DELETED",
+    entity: "SYSTEM",
+    entityId: id,
+    metadata: { company: deleted.company }
+  });
+  return deleted;
+}
+
+// server/controllers/clientController.ts
+async function getClients2(req, res) {
+  try {
+    const { search: search2, status, accountManagerId, page, limit } = req.query;
+    const result = await getClients({
+      search: search2,
+      status,
+      accountManagerId,
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 50
+    });
+    return sendSuccess(res, result.clients, 200, {
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages
+    });
+  } catch (error) {
+    return sendError(res, error.message, 500);
+  }
+}
+async function getClientById2(req, res) {
+  try {
+    const client = await getClientById(req.params.id);
+    return sendSuccess(res, client);
+  } catch (error) {
+    return sendError(res, error.message, 404);
+  }
+}
+async function createClient2(req, res) {
+  try {
+    const client = await createClient(req.body, req.user?.userId);
+    return sendSuccess(res, client, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function updateClient2(req, res) {
+  try {
+    const client = await updateClient(req.params.id, req.body, req.user?.userId);
+    return sendSuccess(res, client);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function deleteClient2(req, res) {
+  try {
+    const client = await deleteClient(req.params.id, req.user?.userId);
+    return sendSuccess(res, client);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+
+// server/routes/clientRoutes.ts
+var router6 = (0, import_express6.Router)();
+router6.use(authenticate);
+router6.get("/", getClients2);
+router6.get("/:id", getClientById2);
+router6.post("/", authorizeRoles("CEO", "ADMIN", "ACCOUNT_MANAGER", "PROJECT_MANAGER"), createClient2);
+router6.put("/:id", authorizeRoles("CEO", "ADMIN", "ACCOUNT_MANAGER", "PROJECT_MANAGER"), updateClient2);
+router6.delete("/:id", authorizeRoles("CEO", "ADMIN"), deleteClient2);
+var clientRoutes_default = router6;
+
+// server/routes/departmentRoutes.ts
+var import_express7 = __toESM(require_express2(), 1);
+
+// server/controllers/departmentController.ts
+async function getDepartments(req, res) {
+  try {
+    const departments = await prisma_default.department.findMany({
+      include: {
+        head: { select: { id: true, name: true, avatarUrl: true } },
+        teams: {
+          include: {
+            leader: { select: { id: true, name: true, avatarUrl: true } },
+            members: { select: { id: true, name: true, avatarUrl: true, designation: true } }
+          }
+        },
+        users: { select: { id: true, name: true, designation: true, avatarUrl: true } },
+        _count: { select: { projects: true, users: true } }
+      }
+    });
+    return sendSuccess(res, departments);
+  } catch (error) {
+    return sendError(res, error.message, 500);
+  }
+}
+async function createDepartment(req, res) {
+  try {
+    const { name, code, description, headId } = req.body;
+    const department = await prisma_default.department.create({
+      data: { name, code: code.toUpperCase(), description, headId }
+    });
+    return sendSuccess(res, department, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function createTeam(req, res) {
+  try {
+    const { name, code, description, departmentId, leaderId } = req.body;
+    const team = await prisma_default.team.create({
+      data: { name, code, description, departmentId, leaderId }
+    });
+    return sendSuccess(res, team, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+
+// server/routes/departmentRoutes.ts
+var router7 = (0, import_express7.Router)();
+router7.use(authenticate);
+router7.get("/", getDepartments);
+router7.post("/", authorizeRoles("CEO", "ADMIN"), createDepartment);
+router7.post("/teams", authorizeRoles("CEO", "ADMIN", "DEPARTMENT_HEAD"), createTeam);
+var departmentRoutes_default = router7;
+
+// server/routes/documentRoutes.ts
+var import_express8 = __toESM(require_express2(), 1);
+
+// server/services/documentService.ts
+async function createDocument(data) {
+  const document2 = await prisma_default.document.create({
+    data: {
+      title: data.title,
+      fileName: data.fileName,
+      fileUrl: data.fileUrl,
+      fileType: data.fileType,
+      fileSize: data.fileSize,
+      category: data.category || "PROJECT",
+      projectId: data.projectId,
+      taskId: data.taskId,
+      clientId: data.clientId,
+      uploaderId: data.uploaderId,
+      versions: {
+        create: {
+          versionNumber: 1,
+          fileName: data.fileName,
+          fileUrl: data.fileUrl,
+          fileSize: data.fileSize,
+          changeSummary: "Initial upload"
+        }
+      }
+    },
+    include: {
+      uploader: { select: { id: true, name: true, avatarUrl: true } },
+      project: { select: { id: true, name: true } },
+      task: { select: { id: true, title: true } },
+      versions: true
+    }
+  });
+  await logActivity({
+    userId: data.uploaderId,
+    action: "DOCUMENT_UPLOADED",
+    entity: "DOCUMENT",
+    entityId: document2.id,
+    metadata: { title: document2.title, fileName: document2.fileName }
+  });
+  return document2;
+}
+async function addDocumentVersion(documentId, fileData, uploaderId) {
+  const doc = await prisma_default.document.findUnique({
+    where: { id: documentId },
+    include: { versions: { orderBy: { versionNumber: "desc" }, take: 1 } }
+  });
+  if (!doc) throw new Error("Document not found");
+  const nextVersion = (doc.versions[0]?.versionNumber || 1) + 1;
+  const version = await prisma_default.documentVersion.create({
+    data: {
+      documentId,
+      versionNumber: nextVersion,
+      fileName: fileData.fileName,
+      fileUrl: fileData.fileUrl,
+      fileSize: fileData.fileSize,
+      changeSummary: fileData.changeSummary || `Updated to version ${nextVersion}`
+    }
+  });
+  await prisma_default.document.update({
+    where: { id: documentId },
+    data: {
+      fileName: fileData.fileName,
+      fileUrl: fileData.fileUrl,
+      fileSize: fileData.fileSize
+    }
+  });
+  await logActivity({
+    userId: uploaderId,
+    action: "DOCUMENT_VERSION_ADDED",
+    entity: "DOCUMENT",
+    entityId: documentId,
+    metadata: { version: nextVersion }
+  });
+  return version;
+}
+async function getDocuments(filters) {
+  const page = filters.page || 1;
+  const limit = filters.limit || 50;
+  const skip = (page - 1) * limit;
+  const where = {};
+  if (filters.category) where.category = filters.category;
+  if (filters.projectId) where.projectId = filters.projectId;
+  if (filters.taskId) where.taskId = filters.taskId;
+  if (filters.clientId) where.clientId = filters.clientId;
+  if (filters.search) {
+    where.OR = [
+      { title: { contains: filters.search } },
+      { fileName: { contains: filters.search } }
+    ];
+  }
+  const [documents, total] = await Promise.all([
+    prisma_default.document.findMany({
+      where,
+      include: {
+        uploader: { select: { id: true, name: true, avatarUrl: true } },
+        project: { select: { id: true, name: true, projectCode: true } },
+        task: { select: { id: true, title: true } },
+        client: { select: { id: true, company: true } },
+        versions: { orderBy: { versionNumber: "desc" } }
+      },
+      orderBy: { updatedAt: "desc" },
+      skip,
+      take: limit
+    }),
+    prisma_default.document.count({ where })
+  ]);
+  return { documents, total, page, limit, totalPages: Math.ceil(total / limit) };
+}
+async function deleteDocument(id, actorUserId) {
+  const deleted = await prisma_default.document.delete({ where: { id } });
+  await logActivity({
+    userId: actorUserId,
+    action: "DOCUMENT_DELETED",
+    entity: "DOCUMENT",
+    entityId: id,
+    metadata: { title: deleted.title }
+  });
+  return deleted;
+}
+
+// server/controllers/documentController.ts
+import path from "path";
+async function getDocuments2(req, res) {
+  try {
+    const { category, projectId, taskId, clientId, search: search2, page, limit } = req.query;
+    const result = await getDocuments({
+      category,
+      projectId,
+      taskId,
+      clientId,
+      search: search2,
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 50
+    });
+    return sendSuccess(res, result.documents, 200, {
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages
+    });
+  } catch (error) {
+    return sendError(res, error.message, 500);
+  }
+}
+async function uploadDocument(req, res) {
+  try {
+    if (!req.file) {
+      return sendError(res, "File is required", 400);
+    }
+    const { title, category, projectId, taskId, clientId } = req.body;
+    const fileUrl = `/uploads/${req.file.filename}`;
+    const ext = path.extname(req.file.originalname).toLowerCase().replace(".", "");
+    const document2 = await createDocument({
+      title: title || req.file.originalname,
+      fileName: req.file.originalname,
+      fileUrl,
+      fileType: ext,
+      fileSize: req.file.size,
+      category,
+      projectId: projectId || void 0,
+      taskId: taskId || void 0,
+      clientId: clientId || void 0,
+      uploaderId: req.user.userId
+    });
+    return sendSuccess(res, document2, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function addVersion(req, res) {
+  try {
+    if (!req.file) return sendError(res, "File is required", 400);
+    const { changeSummary } = req.body;
+    const fileUrl = `/uploads/${req.file.filename}`;
+    const version = await addDocumentVersion(
+      req.params.id,
+      {
+        fileName: req.file.originalname,
+        fileUrl,
+        fileSize: req.file.size,
+        changeSummary
+      },
+      req.user.userId
+    );
+    return sendSuccess(res, version, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+async function deleteDocument2(req, res) {
+  try {
+    const deleted = await deleteDocument(req.params.id, req.user.userId);
+    return sendSuccess(res, deleted);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
+
+// server/middleware/upload.ts
+var import_multer = __toESM(require_multer(), 1);
+import path2 from "path";
+import fs from "fs";
+var uploadDir = process.env.VERCEL ? "/tmp/uploads" : ENV.UPLOAD_DIR || "./uploads";
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (_e) {
+}
+var storage = import_multer.default.diskStorage({
+  destination: (_req, _file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (_req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path2.extname(file.originalname).toLowerCase();
+    const safeName = path2.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, "_");
+    cb(null, `${safeName}-${uniqueSuffix}${ext}`);
+  }
+});
+var ALLOWED_EXTENSIONS = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".jpg", ".jpeg", ".png"];
+var upload = (0, import_multer.default)({
+  storage,
+  limits: {
+    fileSize: ENV.MAX_FILE_SIZE_MB * 1024 * 1024
+  },
+  fileFilter: (_req, file, cb) => {
+    const ext = path2.extname(file.originalname).toLowerCase();
+    if (ALLOWED_EXTENSIONS.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error(`Forbidden file extension: ${ext}. Allowed: ${ALLOWED_EXTENSIONS.join(", ")}`));
+    }
   }
 });
 
 // server/routes/documentRoutes.ts
-var documentRoutes_exports = {};
-__export(documentRoutes_exports, {
-  default: () => documentRoutes_default
-});
-var import_express8, router8, documentRoutes_default;
-var init_documentRoutes = __esm({
-  "server/routes/documentRoutes.ts"() {
-    "use strict";
-    import_express8 = __toESM(require_express2(), 1);
-    init_documentController();
-    init_auth();
-    init_upload();
-    router8 = (0, import_express8.Router)();
-    router8.use(authenticate);
-    router8.get("/", getDocuments2);
-    router8.post("/upload", upload.single("file"), uploadDocument);
-    router8.post("/:id/version", upload.single("file"), addVersion);
-    router8.delete("/:id", deleteDocument2);
-    documentRoutes_default = router8;
-  }
-});
+var router8 = (0, import_express8.Router)();
+router8.use(authenticate);
+router8.get("/", getDocuments2);
+router8.post("/upload", upload.single("file"), uploadDocument);
+router8.post("/:id/version", upload.single("file"), addVersion);
+router8.delete("/:id", deleteDocument2);
+var documentRoutes_default = router8;
+
+// server/routes/approvalRoutes.ts
+var import_express9 = __toESM(require_express2(), 1);
 
 // server/services/approvalService.ts
 async function createApprovalRequest(data) {
@@ -40687,14 +40376,6 @@ async function decideApproval(id, decision, approverUserId, comments) {
   });
   return updated;
 }
-var init_approvalService = __esm({
-  "server/services/approvalService.ts"() {
-    "use strict";
-    init_prisma();
-    init_activityLogService();
-    init_notificationService();
-  }
-});
 
 // server/controllers/approvalController.ts
 async function getApprovals2(req, res) {
@@ -40741,35 +40422,17 @@ async function decideApproval2(req, res) {
     return sendError(res, error.message, 400);
   }
 }
-var init_approvalController = __esm({
-  "server/controllers/approvalController.ts"() {
-    "use strict";
-    init_approvalService();
-    init_response();
-  }
-});
 
 // server/routes/approvalRoutes.ts
-var approvalRoutes_exports = {};
-__export(approvalRoutes_exports, {
-  default: () => approvalRoutes_default
-});
-var import_express9, router9, approvalRoutes_default;
-var init_approvalRoutes = __esm({
-  "server/routes/approvalRoutes.ts"() {
-    "use strict";
-    import_express9 = __toESM(require_express2(), 1);
-    init_approvalController();
-    init_auth();
-    init_rbac();
-    router9 = (0, import_express9.Router)();
-    router9.use(authenticate);
-    router9.get("/", getApprovals2);
-    router9.post("/", createApproval);
-    router9.post("/:id/decide", authorizeRoles("CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD", "ACCOUNT_MANAGER"), decideApproval2);
-    approvalRoutes_default = router9;
-  }
-});
+var router9 = (0, import_express9.Router)();
+router9.use(authenticate);
+router9.get("/", getApprovals2);
+router9.post("/", createApproval);
+router9.post("/:id/decide", authorizeRoles("CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD", "ACCOUNT_MANAGER"), decideApproval2);
+var approvalRoutes_default = router9;
+
+// server/routes/announcementRoutes.ts
+var import_express10 = __toESM(require_express2(), 1);
 
 // server/services/announcementService.ts
 async function createAnnouncement(data) {
@@ -40864,15 +40527,6 @@ async function acknowledgeAnnouncement(announcementId, userId) {
     }
   });
 }
-var init_announcementService = __esm({
-  "server/services/announcementService.ts"() {
-    "use strict";
-    init_prisma();
-    init_activityLogService();
-    init_notificationService();
-    init_socketManager();
-  }
-});
 
 // server/controllers/announcementController.ts
 async function getAnnouncements2(req, res) {
@@ -40902,35 +40556,17 @@ async function acknowledgeAnnouncement2(req, res) {
     return sendError(res, error.message, 400);
   }
 }
-var init_announcementController = __esm({
-  "server/controllers/announcementController.ts"() {
-    "use strict";
-    init_announcementService();
-    init_response();
-  }
-});
 
 // server/routes/announcementRoutes.ts
-var announcementRoutes_exports = {};
-__export(announcementRoutes_exports, {
-  default: () => announcementRoutes_default
-});
-var import_express10, router10, announcementRoutes_default;
-var init_announcementRoutes = __esm({
-  "server/routes/announcementRoutes.ts"() {
-    "use strict";
-    import_express10 = __toESM(require_express2(), 1);
-    init_announcementController();
-    init_auth();
-    init_rbac();
-    router10 = (0, import_express10.Router)();
-    router10.use(authenticate);
-    router10.get("/", getAnnouncements2);
-    router10.post("/", authorizeRoles("CEO", "ADMIN"), createAnnouncement2);
-    router10.post("/:id/acknowledge", acknowledgeAnnouncement2);
-    announcementRoutes_default = router10;
-  }
-});
+var router10 = (0, import_express10.Router)();
+router10.use(authenticate);
+router10.get("/", getAnnouncements2);
+router10.post("/", authorizeRoles("CEO", "ADMIN"), createAnnouncement2);
+router10.post("/:id/acknowledge", acknowledgeAnnouncement2);
+var announcementRoutes_default = router10;
+
+// server/routes/notificationRoutes.ts
+var import_express11 = __toESM(require_express2(), 1);
 
 // server/controllers/notificationController.ts
 async function getNotifications(req, res) {
@@ -40957,34 +40593,17 @@ async function markAllAsRead(req, res) {
     return sendError(res, error.message, 400);
   }
 }
-var init_notificationController = __esm({
-  "server/controllers/notificationController.ts"() {
-    "use strict";
-    init_notificationService();
-    init_response();
-  }
-});
 
 // server/routes/notificationRoutes.ts
-var notificationRoutes_exports = {};
-__export(notificationRoutes_exports, {
-  default: () => notificationRoutes_default
-});
-var import_express11, router11, notificationRoutes_default;
-var init_notificationRoutes = __esm({
-  "server/routes/notificationRoutes.ts"() {
-    "use strict";
-    import_express11 = __toESM(require_express2(), 1);
-    init_notificationController();
-    init_auth();
-    router11 = (0, import_express11.Router)();
-    router11.use(authenticate);
-    router11.get("/", getNotifications);
-    router11.put("/:id/read", markAsRead);
-    router11.put("/read-all", markAllAsRead);
-    notificationRoutes_default = router11;
-  }
-});
+var router11 = (0, import_express11.Router)();
+router11.use(authenticate);
+router11.get("/", getNotifications);
+router11.put("/:id/read", markAsRead);
+router11.put("/read-all", markAllAsRead);
+var notificationRoutes_default = router11;
+
+// server/routes/messageRoutes.ts
+var import_express12 = __toESM(require_express2(), 1);
 
 // server/services/messageService.ts
 async function sendMessage(data) {
@@ -41045,13 +40664,6 @@ async function getConversationMessages(conversationId, limit = 50) {
     take: limit
   });
 }
-var init_messageService = __esm({
-  "server/services/messageService.ts"() {
-    "use strict";
-    init_prisma();
-    init_socketManager();
-  }
-});
 
 // server/controllers/messageController.ts
 async function getConversations2(req, res) {
@@ -41088,34 +40700,17 @@ async function sendMessage2(req, res) {
     return sendError(res, error.message, 400);
   }
 }
-var init_messageController = __esm({
-  "server/controllers/messageController.ts"() {
-    "use strict";
-    init_messageService();
-    init_response();
-  }
-});
 
 // server/routes/messageRoutes.ts
-var messageRoutes_exports = {};
-__export(messageRoutes_exports, {
-  default: () => messageRoutes_default
-});
-var import_express12, router12, messageRoutes_default;
-var init_messageRoutes = __esm({
-  "server/routes/messageRoutes.ts"() {
-    "use strict";
-    import_express12 = __toESM(require_express2(), 1);
-    init_messageController();
-    init_auth();
-    router12 = (0, import_express12.Router)();
-    router12.use(authenticate);
-    router12.get("/conversations", getConversations2);
-    router12.get("/:conversationId", getMessages);
-    router12.post("/", sendMessage2);
-    messageRoutes_default = router12;
-  }
-});
+var router12 = (0, import_express12.Router)();
+router12.use(authenticate);
+router12.get("/conversations", getConversations2);
+router12.get("/:conversationId", getMessages);
+router12.post("/", sendMessage2);
+var messageRoutes_default = router12;
+
+// server/routes/dashboardRoutes.ts
+var import_express13 = __toESM(require_express2(), 1);
 
 // server/services/dashboardService.ts
 async function getCEODashboardData() {
@@ -41349,13 +40944,6 @@ async function getStaffDashboardData(userId) {
     recentNotifications: notifications
   };
 }
-var init_dashboardService = __esm({
-  "server/services/dashboardService.ts"() {
-    "use strict";
-    init_prisma();
-    init_workloadEngine();
-  }
-});
 
 // server/controllers/dashboardController.ts
 async function getCEODashboard(req, res) {
@@ -41374,34 +40962,16 @@ async function getStaffDashboard(req, res) {
     return sendError(res, error.message, 500);
   }
 }
-var init_dashboardController = __esm({
-  "server/controllers/dashboardController.ts"() {
-    "use strict";
-    init_dashboardService();
-    init_response();
-  }
-});
 
 // server/routes/dashboardRoutes.ts
-var dashboardRoutes_exports = {};
-__export(dashboardRoutes_exports, {
-  default: () => dashboardRoutes_default
-});
-var import_express13, router13, dashboardRoutes_default;
-var init_dashboardRoutes = __esm({
-  "server/routes/dashboardRoutes.ts"() {
-    "use strict";
-    import_express13 = __toESM(require_express2(), 1);
-    init_dashboardController();
-    init_auth();
-    init_rbac();
-    router13 = (0, import_express13.Router)();
-    router13.use(authenticate);
-    router13.get("/ceo", authorizeRoles("CEO", "ADMIN", "DEPARTMENT_HEAD"), getCEODashboard);
-    router13.get("/staff", getStaffDashboard);
-    dashboardRoutes_default = router13;
-  }
-});
+var router13 = (0, import_express13.Router)();
+router13.use(authenticate);
+router13.get("/ceo", authorizeRoles("CEO", "ADMIN", "DEPARTMENT_HEAD"), getCEODashboard);
+router13.get("/staff", getStaffDashboard);
+var dashboardRoutes_default = router13;
+
+// server/routes/reportRoutes.ts
+var import_express14 = __toESM(require_express2(), 1);
 
 // server/services/reportService.ts
 async function generateExecutiveReports(filters) {
@@ -41502,12 +41072,6 @@ async function generateExecutiveReports(filters) {
     }))
   };
 }
-var init_reportService = __esm({
-  "server/services/reportService.ts"() {
-    "use strict";
-    init_prisma();
-  }
-});
 
 // server/controllers/reportController.ts
 async function getReports(req, res) {
@@ -41524,33 +41088,15 @@ async function getReports(req, res) {
     return sendError(res, error.message, 500);
   }
 }
-var init_reportController = __esm({
-  "server/controllers/reportController.ts"() {
-    "use strict";
-    init_reportService();
-    init_response();
-  }
-});
 
 // server/routes/reportRoutes.ts
-var reportRoutes_exports = {};
-__export(reportRoutes_exports, {
-  default: () => reportRoutes_default
-});
-var import_express14, router14, reportRoutes_default;
-var init_reportRoutes = __esm({
-  "server/routes/reportRoutes.ts"() {
-    "use strict";
-    import_express14 = __toESM(require_express2(), 1);
-    init_reportController();
-    init_auth();
-    init_rbac();
-    router14 = (0, import_express14.Router)();
-    router14.use(authenticate);
-    router14.get("/", authorizeRoles("CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD", "ACCOUNT_MANAGER"), getReports);
-    reportRoutes_default = router14;
-  }
-});
+var router14 = (0, import_express14.Router)();
+router14.use(authenticate);
+router14.get("/", authorizeRoles("CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD", "ACCOUNT_MANAGER"), getReports);
+var reportRoutes_default = router14;
+
+// server/routes/activityLogRoutes.ts
+var import_express15 = __toESM(require_express2(), 1);
 
 // server/controllers/activityLogController.ts
 async function getActivityLogs2(req, res) {
@@ -41568,32 +41114,15 @@ async function getActivityLogs2(req, res) {
     return sendError(res, error.message, 500);
   }
 }
-var init_activityLogController = __esm({
-  "server/controllers/activityLogController.ts"() {
-    "use strict";
-    init_activityLogService();
-    init_response();
-  }
-});
 
 // server/routes/activityLogRoutes.ts
-var activityLogRoutes_exports = {};
-__export(activityLogRoutes_exports, {
-  default: () => activityLogRoutes_default
-});
-var import_express15, router15, activityLogRoutes_default;
-var init_activityLogRoutes = __esm({
-  "server/routes/activityLogRoutes.ts"() {
-    "use strict";
-    import_express15 = __toESM(require_express2(), 1);
-    init_activityLogController();
-    init_auth();
-    router15 = (0, import_express15.Router)();
-    router15.use(authenticate);
-    router15.get("/", getActivityLogs2);
-    activityLogRoutes_default = router15;
-  }
-});
+var router15 = (0, import_express15.Router)();
+router15.use(authenticate);
+router15.get("/", getActivityLogs2);
+var activityLogRoutes_default = router15;
+
+// server/routes/searchRoutes.ts
+var import_express16 = __toESM(require_express2(), 1);
 
 // server/services/searchService.ts
 async function searchAllEntities(query, limit = 10) {
@@ -41703,12 +41232,6 @@ async function searchAllEntities(query, limit = 10) {
     totalCount: projects.length + tasks.length + users.length + clients.length + documents.length
   };
 }
-var init_searchService = __esm({
-  "server/services/searchService.ts"() {
-    "use strict";
-    init_prisma();
-  }
-});
 
 // server/controllers/searchController.ts
 async function search(req, res) {
@@ -41721,134 +41244,70 @@ async function search(req, res) {
     return sendError(res, error.message, 500);
   }
 }
-var init_searchController = __esm({
-  "server/controllers/searchController.ts"() {
-    "use strict";
-    init_searchService();
-    init_response();
-  }
-});
 
 // server/routes/searchRoutes.ts
-var searchRoutes_exports = {};
-__export(searchRoutes_exports, {
-  default: () => searchRoutes_default
-});
-var import_express16, router16, searchRoutes_default;
-var init_searchRoutes = __esm({
-  "server/routes/searchRoutes.ts"() {
-    "use strict";
-    import_express16 = __toESM(require_express2(), 1);
-    init_searchController();
-    init_auth();
-    router16 = (0, import_express16.Router)();
-    router16.use(authenticate);
-    router16.get("/", search);
-    searchRoutes_default = router16;
-  }
-});
+var router16 = (0, import_express16.Router)();
+router16.use(authenticate);
+router16.get("/", search);
+var searchRoutes_default = router16;
 
-// api/index.ts
-var appInstance = null;
-var initError = null;
-async function getApp() {
-  if (appInstance) return appInstance;
-  if (initError) throw initError;
-  try {
-    if (!process.env.DATABASE_URL) {
-      process.env.DATABASE_URL = "postgresql://neondb_owner:npg_OTMfBphb41Hq@ep-calm-rice-aerxsuly-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
-    }
-    if (!process.env.JWT_SECRET) {
-      process.env.JWT_SECRET = "apis_super_secret_jwt_key_2026_enterprise_secure";
-    }
-    const express = (await Promise.resolve().then(() => __toESM(require_express2(), 1))).default;
-    const cors = (await Promise.resolve().then(() => __toESM(require_lib3(), 1))).default;
-    const helmet3 = (await Promise.resolve().then(() => (init_helmet(), helmet_exports))).default;
-    const authRoutes = (await Promise.resolve().then(() => (init_authRoutes(), authRoutes_exports))).default;
-    const userRoutes = (await Promise.resolve().then(() => (init_userRoutes(), userRoutes_exports))).default;
-    const projectRoutes = (await Promise.resolve().then(() => (init_projectRoutes(), projectRoutes_exports))).default;
-    const taskRoutes = (await Promise.resolve().then(() => (init_taskRoutes(), taskRoutes_exports))).default;
-    const timesheetRoutes = (await Promise.resolve().then(() => (init_timesheetRoutes(), timesheetRoutes_exports))).default;
-    const clientRoutes = (await Promise.resolve().then(() => (init_clientRoutes(), clientRoutes_exports))).default;
-    const departmentRoutes = (await Promise.resolve().then(() => (init_departmentRoutes(), departmentRoutes_exports))).default;
-    const documentRoutes = (await Promise.resolve().then(() => (init_documentRoutes(), documentRoutes_exports))).default;
-    const approvalRoutes = (await Promise.resolve().then(() => (init_approvalRoutes(), approvalRoutes_exports))).default;
-    const announcementRoutes = (await Promise.resolve().then(() => (init_announcementRoutes(), announcementRoutes_exports))).default;
-    const notificationRoutes = (await Promise.resolve().then(() => (init_notificationRoutes(), notificationRoutes_exports))).default;
-    const messageRoutes = (await Promise.resolve().then(() => (init_messageRoutes(), messageRoutes_exports))).default;
-    const dashboardRoutes = (await Promise.resolve().then(() => (init_dashboardRoutes(), dashboardRoutes_exports))).default;
-    const reportRoutes = (await Promise.resolve().then(() => (init_reportRoutes(), reportRoutes_exports))).default;
-    const activityLogRoutes = (await Promise.resolve().then(() => (init_activityLogRoutes(), activityLogRoutes_exports))).default;
-    const searchRoutes = (await Promise.resolve().then(() => (init_searchRoutes(), searchRoutes_exports))).default;
-    const app = express();
-    app.use(helmet3({ contentSecurityPolicy: false }));
-    app.use(cors({ origin: "*", credentials: true }));
-    app.use(express.json({ limit: "25mb" }));
-    app.use(express.urlencoded({ extended: true, limit: "25mb" }));
-    app.get(["/api/health", "/health"], (_req, res) => {
-      res.json({
-        status: "HEALTHY",
-        timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-        service: "APIS Serverless Backend",
-        database: "Neon PostgreSQL Connected"
-      });
-    });
-    app.use("/api/auth", authRoutes);
-    app.use("/api/users", userRoutes);
-    app.use("/api/projects", projectRoutes);
-    app.use("/api/tasks", taskRoutes);
-    app.use("/api/timesheets", timesheetRoutes);
-    app.use("/api/clients", clientRoutes);
-    app.use("/api/departments", departmentRoutes);
-    app.use("/api/documents", documentRoutes);
-    app.use("/api/approvals", approvalRoutes);
-    app.use("/api/announcements", announcementRoutes);
-    app.use("/api/notifications", notificationRoutes);
-    app.use("/api/messages", messageRoutes);
-    app.use("/api/dashboard", dashboardRoutes);
-    app.use("/api/reports", reportRoutes);
-    app.use("/api/activity-logs", activityLogRoutes);
-    app.use("/api/search", searchRoutes);
-    app.use("/auth", authRoutes);
-    app.use("/users", userRoutes);
-    app.use("/projects", projectRoutes);
-    app.use("/tasks", taskRoutes);
-    app.use("/timesheets", timesheetRoutes);
-    app.use("/clients", clientRoutes);
-    app.use("/departments", departmentRoutes);
-    app.use("/documents", documentRoutes);
-    app.use("/approvals", approvalRoutes);
-    app.use("/announcements", announcementRoutes);
-    app.use("/notifications", notificationRoutes);
-    app.use("/messages", messageRoutes);
-    app.use("/dashboard", dashboardRoutes);
-    app.use("/reports", reportRoutes);
-    app.use("/activity-logs", activityLogRoutes);
-    app.use("/search", searchRoutes);
-    appInstance = app;
-    return appInstance;
-  } catch (err) {
-    initError = err;
-    throw err;
-  }
+// server/api_entry.ts
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = "postgresql://neondb_owner:npg_OTMfBphb41Hq@ep-calm-rice-aerxsuly-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
 }
-async function handler(req, res) {
-  try {
-    const app = await getApp();
-    return app(req, res);
-  } catch (err) {
-    console.error("Serverless Init/Runtime Error:", err);
-    return res.status(500).json({
-      success: false,
-      error: {
-        code: "SERVERLESS_ERROR",
-        message: err?.message || String(err),
-        stack: err?.stack
-      }
-    });
-  }
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = "apis_super_secret_jwt_key_2026_enterprise_secure";
+}
+var app = (0, import_express17.default)();
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use((0, import_cors.default)({ origin: "*", credentials: true }));
+app.use(import_express17.default.json({ limit: "25mb" }));
+app.use(import_express17.default.urlencoded({ extended: true, limit: "25mb" }));
+app.get(["/api/health", "/health"], (_req, res) => {
+  res.json({
+    status: "HEALTHY",
+    timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+    service: "APIS Serverless Backend",
+    database: "Neon PostgreSQL Connected"
+  });
+});
+app.use("/api/auth", authRoutes_default);
+app.use("/api/users", userRoutes_default);
+app.use("/api/projects", projectRoutes_default);
+app.use("/api/tasks", taskRoutes_default);
+app.use("/api/timesheets", timesheetRoutes_default);
+app.use("/api/clients", clientRoutes_default);
+app.use("/api/departments", departmentRoutes_default);
+app.use("/api/documents", documentRoutes_default);
+app.use("/api/approvals", approvalRoutes_default);
+app.use("/api/announcements", announcementRoutes_default);
+app.use("/api/notifications", notificationRoutes_default);
+app.use("/api/messages", messageRoutes_default);
+app.use("/api/dashboard", dashboardRoutes_default);
+app.use("/api/reports", reportRoutes_default);
+app.use("/api/activity-logs", activityLogRoutes_default);
+app.use("/api/search", searchRoutes_default);
+app.use("/auth", authRoutes_default);
+app.use("/users", userRoutes_default);
+app.use("/projects", projectRoutes_default);
+app.use("/tasks", taskRoutes_default);
+app.use("/timesheets", timesheetRoutes_default);
+app.use("/clients", clientRoutes_default);
+app.use("/departments", departmentRoutes_default);
+app.use("/documents", documentRoutes_default);
+app.use("/approvals", approvalRoutes_default);
+app.use("/announcements", announcementRoutes_default);
+app.use("/notifications", notificationRoutes_default);
+app.use("/messages", messageRoutes_default);
+app.use("/dashboard", dashboardRoutes_default);
+app.use("/reports", reportRoutes_default);
+app.use("/activity-logs", activityLogRoutes_default);
+app.use("/search", searchRoutes_default);
+function handler(req, res) {
+  return app(req, res);
 }
 export {
+  app,
   handler as default
 };
 /*! Bundled license information:

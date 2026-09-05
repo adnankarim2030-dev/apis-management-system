@@ -4,6 +4,14 @@
     "JWT_SECRET": "apis_super_secret_jwt_key_2026_enterprise_secure",
     "NODE_ENV": "production"
   },
+  "functions": {
+    "api/**": {
+      "includeFiles": "node_modules/.prisma/client/**"
+    },
+    "frontend/api/**": {
+      "includeFiles": "frontend/node_modules/.prisma/client/**"
+    }
+  },
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "rewrites": [

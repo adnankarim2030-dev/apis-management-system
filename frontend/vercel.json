@@ -4,6 +4,11 @@
     "JWT_SECRET": "apis_super_secret_jwt_key_2026_enterprise_secure",
     "NODE_ENV": "production"
   },
+  "functions": {
+    "api/**": {
+      "includeFiles": "node_modules/.prisma/client/**"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",

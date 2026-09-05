@@ -3,14 +3,20 @@ import path from 'path';
 import fs from 'fs';
 import { ENV } from '../config/env';
 
-// Ensure upload directory exists
-if (!fs.existsSync(ENV.UPLOAD_DIR)) {
-  fs.mkdirSync(ENV.UPLOAD_DIR, { recursive: true });
+const uploadDir = process.env.VERCEL ? '/tmp/uploads' : (ENV.UPLOAD_DIR || './uploads');
+
+// Ensure upload directory exists safely
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (_e) {
+  // Ignore filesystem permission errors in serverless
 }
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    cb(null, ENV.UPLOAD_DIR);
+    cb(null, uploadDir);
   },
   filename: (_req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);

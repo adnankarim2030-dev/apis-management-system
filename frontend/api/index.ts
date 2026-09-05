@@ -85,4 +85,7 @@ app.use('/reports', reportRoutes);
 app.use('/activity-logs', activityLogRoutes);
 app.use('/search', searchRoutes);
 
-export default app;
+export default function handler(req: any, res: any) {
+  return app(req, res);
+}
+export { app };

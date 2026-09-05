@@ -18,8 +18,15 @@ import dashboardRoutes from '../server/routes/dashboardRoutes';
 import reportRoutes from '../server/routes/reportRoutes';
 import activityLogRoutes from '../server/routes/activityLogRoutes';
 import searchRoutes from '../server/routes/searchRoutes';
-
 dotenv.config();
+
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL =
+    'postgresql://neondb_owner:npg_OTMfBphb41Hq@ep-calm-rice-aerxsuly-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require';
+}
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = 'apis_super_secret_jwt_key_2026_enterprise_secure';
+}
 
 const app = express();
 

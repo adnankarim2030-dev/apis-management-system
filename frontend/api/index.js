@@ -37858,16 +37858,28 @@ var FALLBACK_DB_URL = "postgresql://neondb_owner:npg_OTMfBphb41Hq@ep-calm-rice-a
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = FALLBACK_DB_URL;
 }
-var globalForPrisma = globalThis;
-var prisma = globalForPrisma.prisma || new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL || FALLBACK_DB_URL
-    }
-  },
-  log: ["error"]
+var prismaInstance = null;
+function getPrisma() {
+  if (!prismaInstance) {
+    const globalForPrisma = globalThis;
+    prismaInstance = globalForPrisma.prisma || new PrismaClient({
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL || FALLBACK_DB_URL
+        }
+      },
+      log: ["error"]
+    });
+    if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prismaInstance;
+  }
+  return prismaInstance;
+}
+var prisma = new Proxy({}, {
+  get(_target, prop) {
+    const client = getPrisma();
+    return typeof client[prop] === "function" ? client[prop].bind(client) : client[prop];
+  }
 });
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 var prisma_default = prisma;
 
 // server/utils/jwt.ts

@@ -42,6 +42,8 @@ app.get(['/api/health', '/health'], (_req: any, res: any) => {
   });
 });
 
+import { errorHandler } from './middleware/errorHandler';
+
 // Mount Routes with /api prefix
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -77,6 +79,9 @@ app.use('/dashboard', dashboardRoutes);
 app.use('/reports', reportRoutes);
 app.use('/activity-logs', activityLogRoutes);
 app.use('/search', searchRoutes);
+
+// Attach error handler
+app.use(errorHandler);
 
 export default function handler(req: any, res: any) {
   return app(req, res);

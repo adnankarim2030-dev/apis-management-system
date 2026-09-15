@@ -41251,6 +41251,39 @@ router16.use(authenticate);
 router16.get("/", search);
 var searchRoutes_default = router16;
 
+// server/middleware/errorHandler.ts
+function errorHandler(err, req, res, next) {
+  console.error("Unhandled Server Error:", err);
+  if (err.name === "ZodError") {
+    return sendError(
+      res,
+      "Validation error",
+      400,
+      "VALIDATION_ERROR",
+      err.errors
+    );
+  }
+  if (err.code === "P2002") {
+    return sendError(
+      res,
+      `A unique constraint failed on field: ${err.meta?.target || "unknown"}`,
+      409,
+      "CONFLICT"
+    );
+  }
+  if (err.code === "P2025") {
+    return sendError(
+      res,
+      "Requested record was not found in the database",
+      404,
+      "NOT_FOUND"
+    );
+  }
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  return sendError(res, message, statusCode, err.code || "INTERNAL_SERVER_ERROR");
+}
+
 // server/api_entry.ts
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = "postgresql://neondb_owner:npg_OTMfBphb41Hq@ep-calm-rice-aerxsuly-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require";
@@ -41303,6 +41336,7 @@ app.use("/dashboard", dashboardRoutes_default);
 app.use("/reports", reportRoutes_default);
 app.use("/activity-logs", activityLogRoutes_default);
 app.use("/search", searchRoutes_default);
+app.use(errorHandler);
 function handler(req, res) {
   return app(req, res);
 }

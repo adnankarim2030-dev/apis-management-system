@@ -38,9 +38,7 @@ export function errorHandler(
   }
 
   const statusCode = err.statusCode || 500;
-  const message = process.env.NODE_ENV === 'production' 
-    ? 'Internal Server Error' 
-    : err.message || 'Internal Server Error';
+  const message = err.message || 'Internal Server Error';
 
   return sendError(res, message, statusCode, err.code || 'INTERNAL_SERVER_ERROR');
 }

@@ -13,27 +13,59 @@ import {
   Send,
   Plus,
   RefreshCw,
+  CheckSquare,
+  X,
 } from 'lucide-react';
 import { api } from '../api/client';
 import { RiskBadge } from '../components/common/RiskBadge';
 import { WorkloadMeter } from '../components/common/WorkloadMeter';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, VERIFIED_PROFILES } from '../context/AuthContext';
+import { Project, User } from '../types';
 
 export const CEODashboard: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [staffList, setStaffList] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Announcement State
   const [announcementText, setAnnouncementText] = useState('');
   const [announcementTitle, setAnnouncementTitle] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
 
+  // CEO Assign Task Modal
+  const [isAssignTaskModalOpen, setIsAssignTaskModalOpen] = useState(false);
+  const [isAssigningTask, setIsAssigningTask] = useState(false);
+  const [assignTaskError, setAssignTaskError] = useState<string | null>(null);
+  const [assignTaskSuccess, setAssignTaskSuccess] = useState<string | null>(null);
+  const [assignTaskForm, setAssignTaskForm] = useState({
+    title: '',
+    description: '',
+    projectId: '',
+    assigneeId: '',
+    priority: 'HIGH',
+    estimatedHours: 8,
+    dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+  });
+
   const fetchCEODashboard = async () => {
     try {
       setIsLoading(true);
-      const res = await api.get('/dashboard/ceo');
-      setData(res.data);
+      const [dashRes, projRes, userRes] = await Promise.all([
+        api.get('/dashboard/ceo'),
+        api.get<Project[]>('/projects'),
+        api.get<User[]>('/users'),
+      ]);
+      setData(dashRes.data);
+      setProjects(projRes.data || []);
+      setStaffList(userRes.data && userRes.data.length ? userRes.data : Object.values(VERIFIED_PROFILES));
+      if (projRes.data?.length && !assignTaskForm.projectId) {
+        setAssignTaskForm((prev) => ({ ...prev, projectId: projRes.data[0].id }));
+      }
     } catch (err) {
       console.error('Failed to load CEO dashboard:', err);
+      setStaffList(Object.values(VERIFIED_PROFILES));
     } finally {
       setIsLoading(false);
     }
@@ -42,6 +74,54 @@ export const CEODashboard: React.FC<{ onNavigate: (path: string) => void }> = ({
   useEffect(() => {
     fetchCEODashboard();
   }, []);
+
+  const handleCEOAssignTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!assignTaskForm.title.trim()) {
+      setAssignTaskError('Task title is required');
+      return;
+    }
+    if (!assignTaskForm.projectId) {
+      setAssignTaskError('Please select a project');
+      return;
+    }
+    if (!assignTaskForm.assigneeId) {
+      setAssignTaskError('Please select an employee');
+      return;
+    }
+    try {
+      setIsAssigningTask(true);
+      setAssignTaskError(null);
+      await api.post('/tasks', {
+        title: assignTaskForm.title.trim(),
+        description: assignTaskForm.description?.trim() || undefined,
+        projectId: assignTaskForm.projectId,
+        assigneeId: assignTaskForm.assigneeId,
+        priority: assignTaskForm.priority,
+        estimatedHours: Number(assignTaskForm.estimatedHours) || 0,
+        dueDate: assignTaskForm.dueDate || undefined,
+      });
+      setAssignTaskSuccess('Task assigned successfully! Realtime notification sent to employee.');
+      setTimeout(() => {
+        setIsAssignTaskModalOpen(false);
+        setAssignTaskSuccess(null);
+        setAssignTaskForm({
+          title: '',
+          description: '',
+          projectId: projects.length > 0 ? projects[0].id : '',
+          assigneeId: '',
+          priority: 'HIGH',
+          estimatedHours: 8,
+          dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        });
+      }, 1200);
+      fetchCEODashboard();
+    } catch (err: any) {
+      setAssignTaskError(err.message || 'Failed to assign task');
+    } finally {
+      setIsAssigningTask(false);
+    }
+  };
 
   const handlePublishAnnouncement = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,7 +176,18 @@ export const CEODashboard: React.FC<{ onNavigate: (path: string) => void }> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => {
+              setAssignTaskError(null);
+              setAssignTaskSuccess(null);
+              setIsAssignTaskModalOpen(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/30 transition-all hover:translate-y-[-1px]"
+          >
+            <CheckSquare className="w-4 h-4" />
+            <span>+ Assign Task to Employee</span>
+          </button>
           <button
             onClick={fetchCEODashboard}
             className="flex items-center gap-2 px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition-colors"
@@ -411,6 +502,153 @@ export const CEODashboard: React.FC<{ onNavigate: (path: string) => void }> = ({
           </div>
         </div>
       </div>
+
+      {/* CEO Assign Task to Employee Modal */}
+      {isAssignTaskModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <button
+              onClick={() => setIsAssignTaskModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-2 mb-1">
+              <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                <CheckSquare className="w-4 h-4" />
+              </span>
+              <h2 className="text-lg font-bold text-white">Delegate & Assign Task</h2>
+            </div>
+            <p className="text-xs text-slate-400 mb-4">
+              Assign deliverable to any team member with realtime dispatch
+            </p>
+
+            <form onSubmit={handleCEOAssignTask} className="space-y-3.5 text-xs">
+              {assignTaskError && (
+                <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+                  {assignTaskError}
+                </div>
+              )}
+
+              {assignTaskSuccess && (
+                <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>{assignTaskSuccess}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Select Project *</label>
+                <select
+                  value={assignTaskForm.projectId}
+                  onChange={(e) => setAssignTaskForm({ ...assignTaskForm, projectId: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  required
+                >
+                  <option value="">-- Choose Project --</option>
+                  {projects.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.projectCode}: {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Assign to Employee *</label>
+                <select
+                  value={assignTaskForm.assigneeId}
+                  onChange={(e) => setAssignTaskForm({ ...assignTaskForm, assigneeId: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  required
+                >
+                  <option value="">-- Choose Employee --</option>
+                  {staffList.map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.name} — {u.designation || u.role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Task Title / Deliverable *</label>
+                <input
+                  type="text"
+                  value={assignTaskForm.title}
+                  onChange={(e) => setAssignTaskForm({ ...assignTaskForm, title: e.target.value })}
+                  placeholder="e.g. Audit OOH LED Campaign Billboard Telemetry"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">Priority</label>
+                  <select
+                    value={assignTaskForm.priority}
+                    onChange={(e) => setAssignTaskForm({ ...assignTaskForm, priority: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  >
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HIGH">High (Important)</option>
+                    <option value="URGENT">Urgent (Immediate)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">Estimated Hours</label>
+                  <input
+                    type="number"
+                    value={assignTaskForm.estimatedHours}
+                    onChange={(e) =>
+                      setAssignTaskForm({ ...assignTaskForm, estimatedHours: Number(e.target.value) })
+                    }
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Due Date</label>
+                <input
+                  type="date"
+                  value={assignTaskForm.dueDate}
+                  onChange={(e) => setAssignTaskForm({ ...assignTaskForm, dueDate: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-800 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAssignTaskModalOpen(false)}
+                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isAssigningTask}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl font-bold shadow-md shadow-emerald-600/30 flex items-center gap-1.5"
+                >
+                  {isAssigningTask ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Assigning to Employee...</span>
+                    </>
+                  ) : (
+                    <span>Assign Deliverable</span>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

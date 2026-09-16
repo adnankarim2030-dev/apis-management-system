@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { api } from '../api/client';
 import { Task, Project, User } from '../types';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, VERIFIED_PROFILES } from '../context/AuthContext';
 
 export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
@@ -24,7 +24,7 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [staffUsers, setStaffUsers] = useState<User[]>([]);
+  const [staffUsers, setStaffUsers] = useState<User[]>(Object.values(VERIFIED_PROFILES));
   const [isLoading, setIsLoading] = useState(true);
 
   // Role-based filter
@@ -91,8 +91,10 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
         api.get<Project[]>('/projects'),
         api.get<User[]>('/users'),
       ]);
-      setProjects(pRes.data);
-      setStaffUsers(uRes.data);
+      setProjects(pRes.data || []);
+      if (uRes.data && uRes.data.length > 0) {
+        setStaffUsers(uRes.data);
+      }
     } catch (err) {
       console.error('Failed to load aux data:', err);
     }

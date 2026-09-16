@@ -12,15 +12,31 @@ import {
   ArrowRight,
   TrendingUp,
   RefreshCw,
+  Plus,
+  X,
 } from 'lucide-react';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
-import { Task, Timesheet } from '../types';
+import { Task, Timesheet, Project } from '../types';
 
 export const StaffDashboard: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Quick Task Creation Modal
+  const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [newTask, setNewTask] = useState({
+    title: '',
+    description: '',
+    projectId: '',
+    priority: 'MEDIUM',
+    estimatedHours: 8,
+    dueDate: '',
+  });
 
   // Timer State
   const [selectedTaskForTimer, setSelectedTaskForTimer] = useState<string>('');
@@ -30,8 +46,15 @@ export const StaffDashboard: React.FC<{ onNavigate: (path: string) => void }> = 
   const fetchStaffDashboard = async () => {
     try {
       setIsLoading(true);
-      const res = await api.get('/dashboard/staff');
-      setData(res.data);
+      const [dashRes, projRes] = await Promise.all([
+        api.get('/dashboard/staff'),
+        api.get<Project[]>('/projects'),
+      ]);
+      setData(dashRes.data);
+      setAllProjects(projRes.data || []);
+      if (projRes.data?.length && !newTask.projectId) {
+        setNewTask((prev) => ({ ...prev, projectId: projRes.data[0].id }));
+      }
     } catch (err) {
       console.error('Failed to load staff dashboard:', err);
     } finally {
@@ -73,6 +96,45 @@ export const StaffDashboard: React.FC<{ onNavigate: (path: string) => void }> = 
     }
   };
 
+  const handleCreateStaffTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTask.title.trim()) {
+      setFormError('Task title is required');
+      return;
+    }
+    if (!newTask.projectId) {
+      setFormError('Please select a project');
+      return;
+    }
+    try {
+      setIsCreating(true);
+      setFormError(null);
+      await api.post('/tasks', {
+        title: newTask.title.trim(),
+        description: newTask.description?.trim() || undefined,
+        projectId: newTask.projectId,
+        assigneeId: user?.id,
+        priority: newTask.priority,
+        estimatedHours: Number(newTask.estimatedHours) || 0,
+        dueDate: newTask.dueDate || undefined,
+      });
+      setIsCreateTaskModalOpen(false);
+      setNewTask({
+        title: '',
+        description: '',
+        projectId: allProjects.length > 0 ? allProjects[0].id : '',
+        priority: 'MEDIUM',
+        estimatedHours: 8,
+        dueDate: '',
+      });
+      fetchStaffDashboard();
+    } catch (err: any) {
+      setFormError(err.message || 'Failed to add task');
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -111,10 +173,20 @@ export const StaffDashboard: React.FC<{ onNavigate: (path: string) => void }> = 
 
         <div className="flex items-center gap-3">
           <button
-            onClick={() => onNavigate('/tasks')}
-            className="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-brand-600/30 transition-all"
+            onClick={() => {
+              setFormError(null);
+              setIsCreateTaskModalOpen(true);
+            }}
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-emerald-600/30 transition-all flex items-center gap-1.5"
           >
-            Open Tasks Hub
+            <Plus className="w-4 h-4" />
+            <span>Add My Task</span>
+          </button>
+          <button
+            onClick={() => onNavigate('/tasks')}
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition-all"
+          >
+            Tasks Board →
           </button>
         </div>
       </div>
@@ -371,6 +443,120 @@ export const StaffDashboard: React.FC<{ onNavigate: (path: string) => void }> = 
           </div>
         </div>
       </div>
+
+      {/* Quick Create Task Modal for Staff */}
+      {isCreateTaskModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <button
+              onClick={() => setIsCreateTaskModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-lg font-bold text-white mb-1">Add Deliverable / Task</h2>
+            <p className="text-xs text-slate-400 mb-4">Create a task assigned directly to you</p>
+
+            <form onSubmit={handleCreateStaffTask} className="space-y-3 text-xs">
+              {formError && (
+                <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+                  {formError}
+                </div>
+              )}
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Select Project *</label>
+                <select
+                  value={newTask.projectId}
+                  onChange={(e) => setNewTask({ ...newTask, projectId: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  required
+                >
+                  <option value="">-- Choose Project --</option>
+                  {allProjects.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.projectCode}: {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Task Title *</label>
+                <input
+                  type="text"
+                  value={newTask.title}
+                  onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                  placeholder="e.g. Design Digital Billboard Creatives"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">Priority</label>
+                  <select
+                    value={newTask.priority}
+                    onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  >
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HIGH">High</option>
+                    <option value="URGENT">Urgent</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">Estimated Hours</label>
+                  <input
+                    type="number"
+                    value={newTask.estimatedHours}
+                    onChange={(e) => setNewTask({ ...newTask, estimatedHours: Number(e.target.value) })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Due Date</label>
+                <input
+                  type="date"
+                  value={newTask.dueDate}
+                  onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-800 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsCreateTaskModalOpen(false)}
+                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isCreating}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl font-bold shadow-md shadow-emerald-600/30 flex items-center gap-1.5"
+                >
+                  {isCreating ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Adding Deliverable...</span>
+                    </>
+                  ) : (
+                    <span>Add Task</span>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

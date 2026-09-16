@@ -20,16 +20,21 @@ import { useAuth } from '../context/AuthContext';
 
 export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
+  const isCEO = user?.role === 'CEO' || user?.role === 'ADMIN';
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [staffUsers, setStaffUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Role-based filter
+  const [myTasksOnly, setMyTasksOnly] = useState(!isCEO);
+
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
   const [projectFilter, setProjectFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
-  const [assigneeFilter, setAssigneeFilter] = useState('');
+  const [assigneeFilter, setAssigneeFilter] = useState(!isCEO ? user?.id || '' : '');
 
   // Active Task Detail Modal
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -54,7 +59,7 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
       title: '',
       description: '',
       projectId: projects.length > 0 ? projects[0].id : '',
-      assigneeId: staffUsers.length > 0 ? staffUsers[0].id : '',
+      assigneeId: !isCEO ? user?.id || '' : staffUsers.length > 0 ? staffUsers[0].id : '',
       priority: 'MEDIUM',
       estimatedHours: 8,
       dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -235,19 +240,55 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
             ))}
           </select>
 
-          {/* Assignee Filter */}
-          <select
-            value={assigneeFilter}
-            onChange={(e) => setAssigneeFilter(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-brand-500"
-          >
-            <option value="">All Assignees</option>
-            {staffUsers.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name}
-              </option>
-            ))}
-          </select>
+          {/* My Tasks vs Team Tasks Quick Switcher */}
+          {!isCEO && (
+            <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800">
+              <button
+                type="button"
+                onClick={() => {
+                  setMyTasksOnly(true);
+                  setAssigneeFilter(user?.id || '');
+                }}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                  myTasksOnly
+                    ? 'bg-brand-600 text-white shadow-sm shadow-brand-600/30'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                My Deliverables
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMyTasksOnly(false);
+                  setAssigneeFilter('');
+                }}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                  !myTasksOnly
+                    ? 'bg-slate-800 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                All Team Tasks
+              </button>
+            </div>
+          )}
+
+          {/* Assignee Filter (Only for CEO/Admin) */}
+          {isCEO && (
+            <select
+              value={assigneeFilter}
+              onChange={(e) => setAssigneeFilter(e.target.value)}
+              className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-brand-500"
+            >
+              <option value="">All Assignees</option>
+              {staffUsers.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <button

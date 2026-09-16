@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules
 .pnp
 .pnp.js
@@ -37,3 +37,7 @@ Thumbs.db
 # Temporary & system
 .system_generated
 scratch
+Downloads/
+*.mp4
+*.webm
+

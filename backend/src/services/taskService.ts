@@ -30,21 +30,38 @@ export async function createTask(data: CreateTaskInput, creatorUserId?: string) 
     taskCode = `${prefix}-T${(count + 1).toString().padStart(3, '0')}`;
   }
 
+  const assigneeId = data.assigneeId && data.assigneeId.trim() !== '' ? data.assigneeId : null;
+  const reviewerId = data.reviewerId && data.reviewerId.trim() !== '' ? data.reviewerId : null;
+  const milestoneId = data.milestoneId && data.milestoneId.trim() !== '' ? data.milestoneId : null;
+  const dependsOnTaskId = data.dependsOnTaskId && data.dependsOnTaskId.trim() !== '' ? data.dependsOnTaskId : null;
+
+  let validStartDate = new Date();
+  if (data.startDate) {
+    const p = new Date(data.startDate);
+    if (!isNaN(p.getTime())) validStartDate = p;
+  }
+
+  let validDueDate: Date | null = null;
+  if (data.dueDate) {
+    const p = new Date(data.dueDate);
+    if (!isNaN(p.getTime())) validDueDate = p;
+  }
+
   const task = await prisma.task.create({
     data: {
       title: data.title,
       taskCode,
-      description: data.description,
+      description: data.description || null,
       projectId: data.projectId,
-      milestoneId: data.milestoneId,
-      assigneeId: data.assigneeId,
-      reviewerId: data.reviewerId,
+      milestoneId,
+      assigneeId,
+      reviewerId,
       priority: data.priority || 'MEDIUM',
       status: data.status || 'TO_DO',
-      startDate: data.startDate ? new Date(data.startDate) : new Date(),
-      dueDate: data.dueDate ? new Date(data.dueDate) : null,
-      estimatedHours: data.estimatedHours || 0,
-      dependsOnTaskId: data.dependsOnTaskId,
+      startDate: validStartDate,
+      dueDate: validDueDate,
+      estimatedHours: typeof data.estimatedHours === 'number' ? data.estimatedHours : 0,
+      dependsOnTaskId,
       progress: data.status === 'COMPLETED' || data.status === 'APPROVED' ? 100 : 0,
     },
     include: {

@@ -37,6 +37,8 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
 
   // Create Task Modal
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
@@ -46,6 +48,20 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
     estimatedHours: 8,
     dueDate: '',
   });
+
+  const openCreateModal = () => {
+    setNewTask({
+      title: '',
+      description: '',
+      projectId: projects.length > 0 ? projects[0].id : '',
+      assigneeId: staffUsers.length > 0 ? staffUsers[0].id : '',
+      priority: 'MEDIUM',
+      estimatedHours: 8,
+      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    });
+    setFormError(null);
+    setIsCreateModalOpen(true);
+  };
 
   const fetchTasks = async () => {
     try {
@@ -123,28 +139,36 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
 
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTask.title || !newTask.projectId) {
-      alert('Task title and Project are required');
+    if (!newTask.title.trim()) {
+      setFormError('Task title is required');
+      return;
+    }
+    if (!newTask.projectId) {
+      setFormError('Please select a project');
       return;
     }
     try {
-      await api.post('/tasks', {
-        ...newTask,
-        estimatedHours: Number(newTask.estimatedHours),
+      setIsCreating(true);
+      setFormError(null);
+      const res = await api.post<Task>('/tasks', {
+        title: newTask.title.trim(),
+        description: newTask.description?.trim() || undefined,
+        projectId: newTask.projectId,
+        assigneeId: newTask.assigneeId || undefined,
+        priority: newTask.priority || 'MEDIUM',
+        estimatedHours: Number(newTask.estimatedHours) || 0,
+        dueDate: newTask.dueDate || undefined,
       });
+
+      if (res.data) {
+        setTasks((prev) => [res.data, ...prev]);
+      }
       setIsCreateModalOpen(false);
-      setNewTask({
-        title: '',
-        description: '',
-        projectId: '',
-        assigneeId: '',
-        priority: 'MEDIUM',
-        estimatedHours: 8,
-        dueDate: '',
-      });
       fetchTasks();
     } catch (err: any) {
-      alert(err.message || 'Failed to create task');
+      setFormError(err.message || 'Failed to create task');
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -173,7 +197,7 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
 
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setIsCreateModalOpen(true)}
+            onClick={openCreateModal}
             className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-brand-600/30 transition-all"
           >
             <Plus className="w-4 h-4" />
@@ -458,6 +482,12 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
             <p className="text-xs text-slate-400 mb-4">Add a new deliverable to project pipeline</p>
 
             <form onSubmit={handleCreateTask} className="space-y-3 text-xs">
+              {formError && (
+                <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+                  {formError}
+                </div>
+              )}
+
               <div>
                 <label className="block font-semibold text-slate-300 mb-1">Select Project *</label>
                 <select
@@ -551,9 +581,17 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold shadow-md shadow-brand-600/30"
+                  disabled={isCreating}
+                  className="px-4 py-2 bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl font-bold shadow-md shadow-brand-600/30 flex items-center gap-1.5"
                 >
-                  Create Task
+                  {isCreating ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Creating Deliverable...</span>
+                    </>
+                  ) : (
+                    <span>Create Task</span>
+                  )}
                 </button>
               </div>
             </form>

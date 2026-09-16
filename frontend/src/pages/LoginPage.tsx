@@ -44,8 +44,8 @@ export const LoginPage: React.FC = () => {
       <div className="max-w-md w-full relative z-10 space-y-6">
         {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 shadow-xl shadow-brand-500/20 mb-2">
-            <Shield className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 p-2 shadow-xl shadow-brand-500/20 mb-2 overflow-hidden">
+            <img src="/adpulse-logo.png" alt="AdPulse" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
             APIS <span className="text-brand-400">Enterprise</span>

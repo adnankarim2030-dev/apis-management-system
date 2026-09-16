@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ShieldCheck,
   ExternalLink,
+  Menu,
 } from 'lucide-react';
 import { useAuth, DEMO_USERS } from '../../context/AuthContext';
 import { UserRole, Timesheet, Notification } from '../../types';
@@ -20,9 +21,10 @@ import { useSocket } from '../../context/SocketContext';
 interface HeaderProps {
   onOpenSearch: () => void;
   onNavigate: (path: string) => void;
+  onToggleMobile?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenSearch, onNavigate }) => {
+export const Header: React.FC<HeaderProps> = ({ onOpenSearch, onNavigate, onToggleMobile }) => {
   const { user, logout, switchDemoRole } = useAuth();
   const { socket } = useSocket();
 
@@ -124,15 +126,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, onNavigate }) => {
 
   return (
     <header className="h-16 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-4 md:px-6 flex items-center justify-between sticky top-0 z-30">
-      {/* Left: Global Search Bar */}
-      <div className="flex items-center gap-3 flex-1 max-w-md">
+      {/* Left: Hamburger Button & Global Search Bar */}
+      <div className="flex items-center gap-2.5 flex-1 max-w-md">
+        <button
+          onClick={onToggleMobile}
+          className="p-2 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-300 hover:text-white lg:hidden border border-slate-700/80 transition-colors flex-shrink-0"
+          aria-label="Open Navigation Menu"
+        >
+          <Menu className="w-4 h-4" />
+        </button>
+
         <button
           onClick={onOpenSearch}
           className="w-full flex items-center justify-between px-3.5 py-2 bg-slate-950/60 hover:bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl text-xs text-slate-400 transition-all shadow-inner group"
         >
           <div className="flex items-center gap-2.5">
             <Search className="w-4 h-4 text-slate-400 group-hover:text-brand-400 transition-colors" />
-            <span>Search anything across APIS...</span>
+            <span className="truncate">Search anything...</span>
           </div>
           <kbd className="hidden sm:inline-block font-mono text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700">
             Ctrl + K

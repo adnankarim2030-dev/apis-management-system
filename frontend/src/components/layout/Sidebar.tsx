@@ -147,7 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Brand Header */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-slate-800/80 bg-slate-950/50">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => onNavigate(isExecutive ? '/ceo-dashboard' : '/staff-dashboard')}>
-            <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-800/80 flex items-center justify-center p-1.5 shadow-lg shadow-brand-500/10 overflow-hidden">
+            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1 shadow-md shadow-white/10 overflow-hidden border border-white/20">
               <img src="/adpulse-logo.png" alt="AdPulse" className="w-full h-full object-contain" />
             </div>
             <div>

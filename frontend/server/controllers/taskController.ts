@@ -8,7 +8,8 @@ export async function getTasks(req: AuthenticatedRequest, res: Response) {
     const { search, projectId, assigneeId, reviewerId, status, priority, isOverdue, page, limit } = req.query;
     
     const userRole = req.user?.role;
-    const isExecutiveOrOperations = ['CEO', 'ADMIN', 'DEPARTMENT_HEAD'].includes(userRole || '');
+    const userEmail = req.user?.email;
+    const isExecutiveOrOperations = ['CEO', 'ADMIN'].includes(userRole || '') || ['khurram@apis.com', 'musfira@apis.com', 'operation@apis.com'].includes(userEmail || '');
 
     // For staff users who are not operations/executive, if no project is specified and no assignee specified, default to their own tasks
     let effectiveAssigneeId = assigneeId as string;

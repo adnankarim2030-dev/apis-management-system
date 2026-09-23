@@ -115,14 +115,15 @@ export const LoginPage: React.FC = () => {
 
             <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
               {[
-                { email: 'operation@apis.com', role: 'CEO' as UserRole, name: 'Operations Oversight', title: 'Full Access • All Projects & Staff', avatar: '/avatars/khurram_jaffrani.png' },
-                { email: 'staff@apis.com', role: 'STAFF' as UserRole, name: 'Staff Workspace', title: 'Isolated Access • Only Own Projects & Tasks', avatar: '/avatars/syeda_musfira.png' },
-                { email: 'khurram@apis.com', role: 'CEO' as UserRole, name: 'Khurram Jaffrani', title: 'Chief Executive Officer', avatar: '/avatars/khurram_jaffrani.png' },
-                { email: 'musfira@apis.com', role: 'STAFF' as UserRole, name: 'Syeda Musfira', title: 'Client Service & Operations Executive', avatar: '/avatars/syeda_musfira.png' },
-                { email: 'naeem@apis.com', role: 'DEPARTMENT_HEAD' as UserRole, name: 'Naeem Ahmed', title: 'Head Of Media Buying & Planning', avatar: '/avatars/naeem_ahmed.png' },
-                { email: 'kashif@apis.com', role: 'ACCOUNT_MANAGER' as UserRole, name: 'Kashif Aghani', title: 'Manager Business Development', avatar: '/avatars/kashif_aghani.png' },
-                { email: 'abeel@apis.com', role: 'VIEWER' as UserRole, name: 'Syed Abeel Ahmed', title: 'Head Of Design & Digital', avatar: '/avatars/syed_abeel_ahmed.png' },
-                { email: 'adnan@apis.com', role: 'PROJECT_MANAGER' as UserRole, name: 'Adnan Karim', title: 'Creative Manager (AI)', avatar: '/avatars/adnan_karim.png' },
+                { email: 'khurram@apis.com', role: 'CEO' as UserRole, name: 'Khurram Jaffrani', title: 'Chief Executive Officer • Full Access', avatar: '/avatars/khurram_jaffrani.png' },
+                { email: 'musfira@apis.com', role: 'CEO' as UserRole, name: 'Syeda Musfira', title: 'Client Service & Operations Executive • Full Access', avatar: '/avatars/syeda_musfira.png' },
+                { email: 'operation@apis.com', role: 'CEO' as UserRole, name: 'Operations Oversight', title: 'Operations & Strategy Director • Full Access', avatar: '/avatars/khurram_jaffrani.png' },
+                { email: 'shoaib@apis.com', role: 'STAFF' as UserRole, name: 'Shoaib Jaffrani', title: 'Head Of Client Service', avatar: '/avatars/shoaib_jaffrani.png' },
+                { email: 'noel@apis.com', role: 'STAFF' as UserRole, name: 'Noel Francis', title: 'Business Director', avatar: '/avatars/noel_francis.png' },
+                { email: 'naeem@apis.com', role: 'STAFF' as UserRole, name: 'Naeem Ahmed', title: 'Head Of Media Buying & Planning', avatar: '/avatars/naeem_ahmed.png' },
+                { email: 'kashif@apis.com', role: 'STAFF' as UserRole, name: 'Kashif Aghani', title: 'Manager Business Development', avatar: '/avatars/kashif_aghani.png' },
+                { email: 'abeel@apis.com', role: 'STAFF' as UserRole, name: 'Syed Abeel Ahmed', title: 'Head Of Design & Digital', avatar: '/avatars/syed_abeel_ahmed.png' },
+                { email: 'adnan@apis.com', role: 'STAFF' as UserRole, name: 'Adnan Karim', title: 'Creative Manager (AI)', avatar: '/avatars/adnan_karim.png' },
               ].map(({ email: userEmail, role, name, title, avatar }) => (
                 <button
                   key={name}
@@ -144,7 +145,12 @@ export const LoginPage: React.FC = () => {
                   <div className="flex items-center gap-2.5 truncate">
                     <img src={avatar} alt={name} className="w-8 h-8 rounded-lg object-cover border border-slate-700 shadow-sm" />
                     <div className="truncate">
-                      <div className="font-bold text-white group-hover:text-brand-300">{name}</div>
+                      <div className="font-bold text-white group-hover:text-brand-300 flex items-center gap-1.5">
+                        {name}
+                        {(userEmail === 'khurram@apis.com' || userEmail === 'musfira@apis.com' || userEmail === 'operation@apis.com') && (
+                          <span className="px-1.5 py-0.2 text-[9px] font-mono bg-brand-500/20 text-brand-300 border border-brand-500/30 rounded-md">Full Access</span>
+                        )}
+                      </div>
                       <div className="text-[10px] text-slate-400 truncate">{title}</div>
                     </div>
                   </div>

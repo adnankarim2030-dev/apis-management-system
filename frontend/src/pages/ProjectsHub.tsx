@@ -34,6 +34,8 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
 
   // Create Project Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
   const [newProject, setNewProject] = useState({
     name: '',
     description: '',
@@ -66,8 +68,8 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
         api.get<Client[]>('/clients'),
         api.get<User[]>('/users'),
       ]);
-      setClients(clientsRes.data);
-      setStaffUsers(usersRes.data);
+      setClients(clientsRes.data || []);
+      setStaffUsers(usersRes.data || []);
     } catch (err) {
       console.error('Failed to load aux data:', err);
     }
@@ -78,20 +80,46 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
     fetchAuxData();
   }, [searchTerm, statusFilter, priorityFilter]);
 
+  const handleOpenModal = () => {
+    setCreateError(null);
+    // Set default deadline to 30 days from now
+    const defaultDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    setNewProject({
+      name: '',
+      description: '',
+      clientId: '',
+      projectManagerId: user?.id || '',
+      priority: 'MEDIUM',
+      budget: 50000,
+      deadline: defaultDate,
+    });
+    setIsModalOpen(true);
+  };
+
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newProject.name || !newProject.deadline) {
-      alert('Please fill in required fields (Name and Deadline)');
+    setCreateError(null);
+
+    if (!newProject.name.trim() || !newProject.deadline) {
+      setCreateError('Please fill in required fields: Project Name and Target Deadline.');
       return;
     }
 
     try {
-      const pmId = newProject.projectManagerId || user?.id;
+      setIsSubmitting(true);
+      const pmId = newProject.projectManagerId?.trim() || user?.id;
+
       await api.post('/projects', {
-        ...newProject,
+        name: newProject.name.trim(),
+        description: newProject.description.trim() || undefined,
+        clientId: newProject.clientId?.trim() || undefined,
         projectManagerId: pmId || undefined,
-        budget: Number(newProject.budget),
+        priority: newProject.priority || 'MEDIUM',
+        budget: Number(newProject.budget) || 0,
+        deadline: newProject.deadline,
+        status: 'PLANNING',
       });
+
       setIsModalOpen(false);
       setNewProject({
         name: '',
@@ -102,9 +130,12 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
         budget: 50000,
         deadline: '',
       });
-      fetchProjects();
+      await fetchProjects();
     } catch (err: any) {
-      alert(err.message || 'Failed to create project');
+      console.error('Project creation failed:', err);
+      setCreateError(err.response?.data?.message || err.message || 'Failed to create project. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -126,22 +157,11 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
 
         <div className="flex items-center gap-3">
           <button
-            onClick={() => {
-              setNewProject({
-                name: '',
-                description: '',
-                clientId: '',
-                projectManagerId: user?.id || '',
-                priority: 'MEDIUM',
-                budget: 50000,
-                deadline: '',
-              });
-              setIsModalOpen(true);
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-brand-600/30 transition-all"
+            onClick={handleOpenModal}
+            className="flex items-center gap-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/30 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            New Project
+            + New Project
           </button>
         </div>
       </div>
@@ -215,10 +235,19 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
           <RefreshCw className="w-8 h-8 text-brand-400 animate-spin" />
         </div>
       ) : projects.length === 0 ? (
-        <div className="p-12 text-center bg-slate-900 border border-slate-800 rounded-2xl">
-          <FolderKanban className="w-10 h-10 text-slate-500 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-white">No projects found</h3>
-          <p className="text-xs text-slate-400 mt-1">Try adjusting your search criteria or create a new project.</p>
+        <div className="p-12 text-center bg-slate-900 border border-slate-800 rounded-2xl space-y-4">
+          <FolderKanban className="w-12 h-12 text-slate-500 mx-auto" />
+          <div>
+            <h3 className="text-base font-bold text-white">No projects found</h3>
+            <p className="text-xs text-slate-400 mt-1">Start by initializing your first project workspace.</p>
+          </div>
+          <button
+            onClick={handleOpenModal}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/30 transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            + Create New Project
+          </button>
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -376,7 +405,14 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
             </button>
 
             <h2 className="text-lg font-bold text-white mb-1">Create New Project</h2>
-            <p className="text-xs text-slate-400 mb-4">Initialize an executive project workspace in the database</p>
+            <p className="text-xs text-slate-400 mb-4">Initialize a project workspace and assign delivery leads</p>
+
+            {createError && (
+              <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-rose-400" />
+                <span>{createError}</span>
+              </div>
+            )}
 
             <form onSubmit={handleCreateProject} className="space-y-3 text-xs">
               <div>
@@ -385,7 +421,7 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
                   type="text"
                   value={newProject.name}
                   onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-                  placeholder="e.g. NextGen Cloud Portal"
+                  placeholder="e.g. NextGen Digital Campaign"
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
                   required
                 />
@@ -426,12 +462,15 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
                     onChange={(e) => setNewProject({ ...newProject, projectManagerId: e.target.value })}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
                   >
-                    <option value="">-- Assign Manager --</option>
-                    {staffUsers.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.name} ({u.role})
-                      </option>
-                    ))}
+                    <option value="">-- Assign Manager (Default: You) --</option>
+                    {staffUsers.map((u) => {
+                      const roleName = typeof u.role === 'object' ? (u.role as any)?.name : u.role || u.designation || 'Staff';
+                      return (
+                        <option key={u.id} value={u.id}>
+                          {u.name} ({roleName})
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
               </div>
@@ -476,16 +515,25 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
               <div className="pt-4 border-t border-slate-800 flex justify-end gap-2">
                 <button
                   type="button"
+                  disabled={isSubmitting}
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium"
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold shadow-md shadow-brand-600/30"
+                  disabled={isSubmitting}
+                  className="flex items-center gap-2 px-5 py-2 bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl font-bold shadow-md shadow-brand-600/30 transition-all cursor-pointer"
                 >
-                  Create Project
+                  {isSubmitting ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Creating...</span>
+                    </>
+                  ) : (
+                    <span>Create Project</span>
+                  )}
                 </button>
               </div>
             </form>

@@ -25,25 +25,26 @@ export async function createProject(data: CreateProjectInput, creatorUserId?: st
   let projectCode = data.projectCode;
   if (!projectCode) {
     const count = await prisma.project.count();
-    projectCode = `PRJ-${(count + 1).toString().padStart(4, '0')}`;
+    const uniqueSuffix = Math.floor(100 + Math.random() * 900);
+    projectCode = `PRJ-${(count + 1).toString().padStart(3, '0')}-${uniqueSuffix}`;
   }
 
   const project = await prisma.project.create({
     data: {
       name: data.name,
       projectCode,
-      description: data.description,
-      clientId: data.clientId,
-      accountManagerId: data.accountManagerId,
-      projectManagerId: data.projectManagerId,
-      departmentId: data.departmentId,
-      teamId: data.teamId,
+      description: data.description || null,
+      clientId: data.clientId && data.clientId.trim() ? data.clientId : null,
+      accountManagerId: data.accountManagerId && data.accountManagerId.trim() ? data.accountManagerId : null,
+      projectManagerId: data.projectManagerId && data.projectManagerId.trim() ? data.projectManagerId : null,
+      departmentId: data.departmentId && data.departmentId.trim() ? data.departmentId : null,
+      teamId: data.teamId && data.teamId.trim() ? data.teamId : null,
       startDate: data.startDate ? new Date(data.startDate) : new Date(),
       deadline: new Date(data.deadline),
       priority: data.priority || 'MEDIUM',
       status: data.status || 'PLANNING',
-      budget: data.budget || 0,
-      revenue: data.revenue || 0,
+      budget: Number(data.budget) || 0,
+      revenue: Number(data.revenue) || 0,
       progress: 0,
     },
     include: {

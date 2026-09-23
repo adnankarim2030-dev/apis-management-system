@@ -141,6 +141,17 @@ export const VERIFIED_PROFILES: Record<string, User> = {
   },
 };
 
+export const USER_PASSWORDS: Record<string, string> = {
+  'operation@apis.com': 'Apis@Ops2026!',
+  'staff@apis.com': 'Apis@Staff2026#',
+  'khurram@apis.com': 'Khurram@ApisCEO2026!',
+  'naeem@apis.com': 'Naeem@Media2026$',
+  'kashif@apis.com': 'Kashif@BizDev2026&',
+  'musfira@apis.com': 'Musfira@ClientOps2026%',
+  'abeel@apis.com': 'Abeel@Design2026*',
+  'adnan@apis.com': 'Adnan@Creative2026+',
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
     try {
@@ -194,9 +205,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(data.token);
       setUser(data.user);
     } catch (apiErr: any) {
-      // Fallback verification for demo user accounts
+      // Fallback verification for verified user accounts
       const fallbackUser = VERIFIED_PROFILES[cleanEmail];
-      if (fallbackUser && passwordPlain === 'password123') {
+      const validPass = USER_PASSWORDS[cleanEmail];
+      if (fallbackUser && (passwordPlain === validPass || passwordPlain === 'password123')) {
         const mockToken = `apis_session_${fallbackUser.id}_${Date.now()}`;
         localStorage.setItem('apis_token', mockToken);
         localStorage.setItem('apis_user', JSON.stringify(fallbackUser));
@@ -218,7 +230,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const switchDemoRole = async (role: UserRole) => {
     const demoInfo = DEMO_USERS[role];
     if (demoInfo) {
-      await login(demoInfo.email, 'password123');
+      const pass = USER_PASSWORDS[demoInfo.email] || 'password123';
+      await login(demoInfo.email, pass);
     }
   };
 

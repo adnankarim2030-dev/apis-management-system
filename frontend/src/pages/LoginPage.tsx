@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Shield, Lock, Mail, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
-import { useAuth, DEMO_USERS } from '../context/AuthContext';
+import { useAuth, DEMO_USERS, USER_PASSWORDS } from '../context/AuthContext';
 import { UserRole } from '../types';
 
 export const LoginPage: React.FC = () => {
   const { login, switchDemoRole } = useAuth();
-  const [email, setEmail] = useState('khurram@apis.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('operation@apis.com');
+  const [password, setPassword] = useState('Apis@Ops2026!');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -104,10 +104,10 @@ export const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          {/* Quick 1-Click Role Switcher Section for Pair Programming & Testing */}
+          {/* Quick 1-Click Role Switcher Section */}
           <div className="pt-4 border-t border-slate-800/80 space-y-3">
             <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              <span>Instant Demo Logins</span>
+              <span>Instant Team Logins</span>
               <span className="text-[10px] text-brand-400 font-mono flex items-center gap-1">
                 <Sparkles className="w-3 h-3" /> 1-Click
               </span>
@@ -131,7 +131,8 @@ export const LoginPage: React.FC = () => {
                     setIsLoading(true);
                     setError(null);
                     try {
-                      await login(userEmail, 'password123');
+                      const userPass = USER_PASSWORDS[userEmail] || 'password123';
+                      await login(userEmail, userPass);
                     } catch (err: any) {
                       setError(err.message || 'Login failed');
                     } finally {

@@ -55,20 +55,6 @@ export const VERIFIED_PROFILES: Record<string, User> = {
     status: 'ACTIVE',
     joiningDate: '2026-09-03T06:05:58.799Z',
   },
-  'operation@apis.com': {
-    id: 'a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d',
-    employeeId: 'EMP-0007',
-    name: 'Operations Oversight',
-    email: 'operation@apis.com',
-    role: 'CEO',
-    designation: 'Operations & Strategy Director',
-    phone: '+92 300 0001122',
-    avatarUrl: '/avatars/khurram_jaffrani.png',
-    department: { id: '0c9d3688-10ec-44ab-b810-90077d79298a', name: 'Executive Leadership' },
-    team: null,
-    status: 'ACTIVE',
-    joiningDate: '2026-09-03T06:05:58.799Z',
-  },
   'shoaib@apis.com': {
     id: 'b1a2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
     employeeId: 'EMP-0012',
@@ -153,33 +139,17 @@ export const VERIFIED_PROFILES: Record<string, User> = {
     status: 'ACTIVE',
     joiningDate: '2026-09-03T06:05:58.799Z',
   },
-  'staff@apis.com': {
-    id: 'f1e2d3c4-b5a6-4f5e-9d8c-7b6a5f4e3d2c',
-    employeeId: 'EMP-0008',
-    name: 'APIS Staff Member',
-    email: 'staff@apis.com',
-    role: 'STAFF',
-    designation: 'Campaign & Project Associate',
-    phone: '+92 333 1112233',
-    avatarUrl: '/avatars/syeda_musfira.png',
-    department: { id: 'dept-acc', name: 'Client Accounts & Strategy' },
-    team: { id: 'team-acc', name: 'Enterprise Accounts' },
-    status: 'ACTIVE',
-    joiningDate: '2026-09-03T06:05:58.799Z',
-  },
 };
 
 export const USER_PASSWORDS: Record<string, string> = {
   'khurram@apis.com': 'Khurram@ApisCEO2026!',
   'musfira@apis.com': 'Musfira@ClientOps2026%',
-  'operation@apis.com': 'Apis@Ops2026!',
   'shoaib@apis.com': 'Shoaib@Client2026$',
   'noel@apis.com': 'Noel@Director2026#',
   'naeem@apis.com': 'Naeem@Media2026$',
   'kashif@apis.com': 'Kashif@BizDev2026&',
   'abeel@apis.com': 'Abeel@Design2026*',
   'adnan@apis.com': 'Adnan@Creative2026+',
-  'staff@apis.com': 'Apis@Staff2026#',
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -267,7 +237,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const hasRole = (...roles: UserRole[]): boolean => {
     if (!user) return false;
-    if (user.role === 'CEO' || user.role === 'ADMIN' || user.email === 'khurram@apis.com' || user.email === 'musfira@apis.com' || user.email === 'operation@apis.com') return true;
+    if (user.role === 'CEO' || user.role === 'ADMIN' || user.email === 'khurram@apis.com' || user.email === 'musfira@apis.com') return true;
     return roles.includes(user.role as UserRole);
   };
 

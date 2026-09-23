@@ -39009,7 +39009,7 @@ async function getProjects2(req, res) {
     const { search: search2, status, priority, departmentId, clientId, projectManagerId, userId, riskLevel, page, limit } = req.query;
     const userRole = req.user?.role;
     const userEmail = req.user?.email;
-    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "operation@apis.com"].includes(userEmail || "");
+    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com"].includes(userEmail || "");
     let effectiveUserId = userId;
     if (!isExecutiveOrOperations && req.user?.userId) {
       effectiveUserId = req.user.userId;
@@ -39448,7 +39448,7 @@ async function getTasks2(req, res) {
     const { search: search2, projectId, assigneeId, reviewerId, status, priority, isOverdue, page, limit } = req.query;
     const userRole = req.user?.role;
     const userEmail = req.user?.email;
-    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "operation@apis.com"].includes(userEmail || "");
+    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com"].includes(userEmail || "");
     let effectiveAssigneeId = assigneeId;
     if (!isExecutiveOrOperations && !projectId && !assigneeId && req.user?.userId) {
       effectiveAssigneeId = req.user.userId;

@@ -5,8 +5,8 @@ import { UserRole } from '../types';
 
 export const LoginPage: React.FC = () => {
   const { login, switchDemoRole } = useAuth();
-  const [email, setEmail] = useState('operation@apis.com');
-  const [password, setPassword] = useState('Apis@Ops2026!');
+  const [email, setEmail] = useState('khurram@apis.com');
+  const [password, setPassword] = useState('Khurram@ApisCEO2026!');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -117,7 +117,6 @@ export const LoginPage: React.FC = () => {
               {[
                 { email: 'khurram@apis.com', role: 'CEO' as UserRole, name: 'Khurram Jaffrani', title: 'Chief Executive Officer • Full Access', avatar: '/avatars/khurram_jaffrani.png' },
                 { email: 'musfira@apis.com', role: 'CEO' as UserRole, name: 'Syeda Musfira', title: 'Client Service & Operations Executive • Full Access', avatar: '/avatars/syeda_musfira.png' },
-                { email: 'operation@apis.com', role: 'CEO' as UserRole, name: 'Operations Oversight', title: 'Operations & Strategy Director • Full Access', avatar: '/avatars/khurram_jaffrani.png' },
                 { email: 'shoaib@apis.com', role: 'STAFF' as UserRole, name: 'Shoaib Jaffrani', title: 'Head Of Client Service', avatar: '/avatars/shoaib_jaffrani.png' },
                 { email: 'noel@apis.com', role: 'STAFF' as UserRole, name: 'Noel Francis', title: 'Business Director', avatar: '/avatars/noel_francis.png' },
                 { email: 'naeem@apis.com', role: 'STAFF' as UserRole, name: 'Naeem Ahmed', title: 'Head Of Media Buying & Planning', avatar: '/avatars/naeem_ahmed.png' },

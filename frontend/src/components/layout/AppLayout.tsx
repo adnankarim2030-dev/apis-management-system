@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { GlobalSearchModal } from '../common/GlobalSearchModal';
+import { MessageAlertModal } from '../common/MessageAlertModal';
+import { TimelineAlertModal } from '../common/TimelineAlertModal';
 
 interface AppLayoutProps {
   currentPath: string;
@@ -57,6 +59,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ currentPath, onNavigate, c
         onClose={() => setIsSearchOpen(false)}
         onNavigate={onNavigate}
       />
+
+      {/* Real-time Global Center Modals */}
+      <MessageAlertModal onNavigate={onNavigate} />
+      <TimelineAlertModal onNavigate={onNavigate} />
     </div>
   );
 };

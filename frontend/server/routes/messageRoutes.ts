@@ -7,6 +7,7 @@ const router = Router();
 router.use(authenticate);
 
 router.get('/conversations', messageController.getConversations);
+router.post('/direct', messageController.createDirectConversation);
 router.get('/:conversationId', messageController.getMessages);
 router.post('/', messageController.sendMessage);
 

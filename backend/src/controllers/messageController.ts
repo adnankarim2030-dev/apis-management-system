@@ -39,3 +39,16 @@ export async function sendMessage(req: AuthenticatedRequest, res: Response) {
     return sendError(res, error.message, 400);
   }
 }
+
+export async function createDirectConversation(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { targetUserId } = req.body;
+    if (!targetUserId) {
+      return sendError(res, 'Target user ID is required', 400);
+    }
+    const conversation = await messageService.createDirectConversation(req.user!.userId, targetUserId);
+    return sendSuccess(res, conversation, 201);
+  } catch (error: any) {
+    return sendError(res, error.message, 400);
+  }
+}

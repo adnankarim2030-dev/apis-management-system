@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   MessageSquare,
   Send,
@@ -8,9 +8,13 @@ import {
   CheckCheck,
   Megaphone,
   RefreshCw,
+  Plus,
+  X,
+  User as UserIcon,
+  Search,
 } from 'lucide-react';
 import { api } from '../api/client';
-import { Announcement } from '../types';
+import { Announcement, User } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 
@@ -27,6 +31,18 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
   const [activeTab, setActiveTab] = useState<'broadcasts' | 'channels'>('broadcasts');
   const [isLoading, setIsLoading] = useState(true);
 
+  // New Direct Chat Modal
+  const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
+  const [teamMembers, setTeamMembers] = useState<User[]>([]);
+  const [teamSearch, setTeamSearch] = useState('');
+  const [isStartingChat, setIsStartingChat] = useState(false);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const fetchAnnouncements = async () => {
     try {
       const res = await api.get<Announcement[]>('/announcements');
@@ -36,10 +52,18 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
     }
   };
 
-  const fetchConversations = async () => {
+  const fetchConversations = async (targetConvId?: string) => {
     try {
       const res = await api.get<any[]>('/messages/conversations');
       setConversations(res.data);
+      if (targetConvId) {
+        const found = res.data.find((c) => c.id === targetConvId);
+        if (found) {
+          setActiveConv(found);
+          setActiveTab('channels');
+          return;
+        }
+      }
       if (res.data.length > 0 && !activeConv) {
         setActiveConv(res.data[0]);
       }
@@ -48,18 +72,32 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
     }
   };
 
+  const fetchTeamMembers = async () => {
+    try {
+      const res = await api.get<User[]>('/users');
+      setTeamMembers(res.data.filter((u) => u.id !== user?.id));
+    } catch (err) {
+      console.error('Failed to fetch team members:', err);
+    }
+  };
+
   const fetchMessages = async (convId: string) => {
     try {
       const res = await api.get<any[]>(`/messages/${convId}`);
       setMessages(res.data);
+      setTimeout(scrollToBottom, 100);
     } catch (err) {
       console.error('Failed to load messages:', err);
     }
   };
 
   useEffect(() => {
+    // Check url params for convId
+    const params = new URLSearchParams(window.location.search);
+    const convIdFromUrl = params.get('convId');
+
     setIsLoading(true);
-    Promise.all([fetchAnnouncements(), fetchConversations()]).finally(() => {
+    Promise.all([fetchAnnouncements(), fetchConversations(convIdFromUrl || undefined), fetchTeamMembers()]).finally(() => {
       setIsLoading(false);
     });
   }, [user?.id]);
@@ -79,6 +117,7 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
     socket.on('new_message', (msg: any) => {
       if (msg.conversationId === activeConv?.id) {
         setMessages((prev) => [...prev, msg]);
+        setTimeout(scrollToBottom, 50);
       }
     });
 
@@ -103,8 +142,25 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
       });
       setMessages((prev) => [...prev, data]);
       setNewMessageText('');
+      setTimeout(scrollToBottom, 50);
     } catch (err) {
       console.error('Failed to send message:', err);
+    }
+  };
+
+  const handleStartDirectChat = async (targetUser: User) => {
+    try {
+      setIsStartingChat(true);
+      const res = await api.post('/messages/direct', { targetUserId: targetUser.id });
+      const newConv = res.data;
+      await fetchConversations(newConv.id);
+      setActiveConv(newConv);
+      setActiveTab('channels');
+      setIsNewChatModalOpen(false);
+    } catch (err) {
+      console.error('Failed to start direct conversation:', err);
+    } finally {
+      setIsStartingChat(false);
     }
   };
 
@@ -117,6 +173,12 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
     }
   };
 
+  const filteredTeam = teamMembers.filter((m) =>
+    m.name.toLowerCase().includes(teamSearch.toLowerCase()) ||
+    m.designation?.toLowerCase().includes(teamSearch.toLowerCase()) ||
+    m.department?.name?.toLowerCase().includes(teamSearch.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -127,9 +189,17 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
             Communications & Broadcast Hub
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Real-time project chats, department channels, and executive broadcast directives
+            Real-time project chats, direct staff communication, and executive broadcast directives
           </p>
         </div>
+
+        <button
+          onClick={() => setIsNewChatModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-pink-600 to-indigo-600 hover:from-pink-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-pink-950/30 transition-all self-start sm:self-auto"
+        >
+          <Plus className="w-4 h-4" />
+          + Start Direct Chat
+        </button>
       </div>
 
       {/* Tabs */}
@@ -155,7 +225,7 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
           }`}
         >
           <FolderKanban className="w-4 h-4" />
-          Project Channels & Direct Chats
+          Channels & Direct Chats ({conversations.length})
         </button>
       </div>
 
@@ -229,31 +299,55 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
         </div>
       )}
 
-      {/* Tab 2: Project Channels */}
+      {/* Tab 2: Project Channels & Direct Chats */}
       {activeTab === 'channels' && (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden min-h-[550px]">
           {/* Channels Sidebar */}
           <div className="border-r border-slate-800 p-3 space-y-2 bg-slate-950/40">
-            <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Active Channels
+            <div className="flex items-center justify-between px-3 py-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Active Chats ({conversations.length})
+              </span>
+              <button
+                onClick={() => setIsNewChatModalOpen(true)}
+                className="text-[10px] text-pink-400 hover:text-pink-300 font-bold flex items-center gap-1"
+              >
+                <Plus className="w-3 h-3" /> New
+              </button>
             </div>
-            <div className="space-y-1">
-              {conversations.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => setActiveConv(c)}
-                  className={`w-full flex items-center justify-between p-3 rounded-xl text-left text-xs transition-colors ${
-                    activeConv?.id === c.id
-                      ? 'bg-brand-600/20 text-brand-300 font-semibold border border-brand-500/30'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-                  }`}
-                >
-                  <div className="truncate">
-                    <div className="font-bold text-slate-200 truncate">{c.title || c.project?.name || 'Channel'}</div>
-                    <div className="text-[10px] text-slate-400 truncate">{c.messages?.[0]?.text || 'No messages yet'}</div>
-                  </div>
-                </button>
-              ))}
+            <div className="space-y-1 overflow-y-auto max-h-[480px]">
+              {conversations.map((c) => {
+                const isSelected = activeConv?.id === c.id;
+                const isDirect = c.type === 'DIRECT';
+
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => setActiveConv(c)}
+                    className={`w-full flex items-center gap-3 p-3 rounded-xl text-left text-xs transition-colors ${
+                      isSelected
+                        ? 'bg-brand-600/20 text-brand-300 font-semibold border border-brand-500/30'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                    }`}
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-slate-300 shrink-0">
+                      {isDirect ? (
+                        <Users className="w-4 h-4 text-pink-400" />
+                      ) : (
+                        <FolderKanban className="w-4 h-4 text-brand-400" />
+                      )}
+                    </div>
+                    <div className="truncate flex-1">
+                      <div className="font-bold text-slate-200 truncate">
+                        {c.title || c.project?.name || 'Channel'}
+                      </div>
+                      <div className="text-[10px] text-slate-400 truncate">
+                        {c.messages?.[0]?.text || 'No messages yet'}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -277,7 +371,7 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
                       <img
                         src={m.sender?.avatarUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60'}
                         alt=""
-                        className="w-7 h-7 rounded-full object-cover"
+                        className="w-7 h-7 rounded-full object-cover shrink-0"
                       />
                       <div
                         className={`p-3 rounded-2xl text-xs space-y-1 ${
@@ -298,6 +392,7 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
                   );
                 })
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input Composer */}
@@ -306,13 +401,13 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
                 type="text"
                 value={newMessageText}
                 onChange={(e) => setNewMessageText(e.target.value)}
-                placeholder="Type a team message..."
+                placeholder="Type a message to team..."
                 className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500"
               />
               <button
                 type="submit"
                 disabled={!newMessageText.trim()}
-                className="px-4 py-2.5 bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+                className="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-brand-950/40"
               >
                 <Send className="w-3.5 h-3.5" />
                 Send
@@ -321,6 +416,72 @@ export const MessagesHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
           </div>
         </div>
       )}
+
+      {/* Start Direct Chat Modal */}
+      {isNewChatModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-md shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-pink-400" />
+                <h3 className="text-base font-bold text-white">Start Direct Peer-to-Peer Chat</h3>
+              </div>
+              <button
+                onClick={() => setIsNewChatModalOpen(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <input
+                type="text"
+                value={teamSearch}
+                onChange={(e) => setTeamSearch(e.target.value)}
+                placeholder="Search staff by name or role..."
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-pink-500"
+              />
+            </div>
+
+            {/* Team Members List */}
+            <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+              {filteredTeam.length === 0 ? (
+                <div className="text-center py-6 text-xs text-slate-500">No team members found</div>
+              ) : (
+                filteredTeam.map((m) => (
+                  <button
+                    key={m.id}
+                    disabled={isStartingChat}
+                    onClick={() => handleStartDirectChat(m)}
+                    className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-950/60 hover:bg-slate-800/80 border border-slate-800 hover:border-pink-500/40 transition-all text-left"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={m.avatarUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60'}
+                        alt=""
+                        className="w-9 h-9 rounded-xl object-cover border border-slate-700"
+                      />
+                      <div>
+                        <div className="font-bold text-xs text-white">{m.name}</div>
+                        <div className="text-[10px] text-slate-400">
+                          {m.designation || m.role?.name || 'Team Member'}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] text-pink-400 font-semibold px-2 py-1 bg-pink-500/10 rounded-lg border border-pink-500/20">
+                      Message
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+

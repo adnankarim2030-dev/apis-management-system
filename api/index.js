@@ -40694,17 +40694,66 @@ async function sendMessage(data) {
   const io = getIO();
   if (io) {
     io.to(`conversation:${data.conversationId}`).emit("new_message", message);
+    io.emit("new_message_global", { message, conversationId: data.conversationId });
   }
   return message;
 }
-async function getConversations(userId) {
-  return prisma_default.conversation.findMany({
+async function createDirectConversation(user1Id, user2Id) {
+  const [user1, user2] = await Promise.all([
+    prisma_default.user.findUnique({ where: { id: user1Id }, select: { id: true, name: true } }),
+    prisma_default.user.findUnique({ where: { id: user2Id }, select: { id: true, name: true } })
+  ]);
+  if (!user1 || !user2) throw new Error("User not found");
+  const title = `${user1.name} & ${user2.name}`;
+  const existing = await prisma_default.conversation.findFirst({
+    where: {
+      type: "DIRECT",
+      OR: [
+        { title: `${user1.name} & ${user2.name}` },
+        { title: `${user2.name} & ${user1.name}` }
+      ]
+    },
     include: {
       project: { select: { id: true, name: true, projectCode: true } },
       messages: {
         orderBy: { createdAt: "desc" },
         take: 1,
         include: { sender: { select: { name: true } } }
+      }
+    }
+  });
+  if (existing) return existing;
+  return prisma_default.conversation.create({
+    data: {
+      title,
+      type: "DIRECT"
+    },
+    include: {
+      project: { select: { id: true, name: true, projectCode: true } },
+      messages: true
+    }
+  });
+}
+async function getConversations(userId) {
+  const user = await prisma_default.user.findUnique({
+    where: { id: userId },
+    select: { name: true, role: { select: { name: true } } }
+  });
+  const whereClause = {};
+  if (user && user.role?.name !== "CEO" && user.role?.name !== "ADMIN") {
+    whereClause.OR = [
+      { type: { not: "DIRECT" } },
+      { type: "DIRECT", title: { contains: user.name } }
+    ];
+  }
+  return prisma_default.conversation.findMany({
+    where: Object.keys(whereClause).length > 0 ? whereClause : void 0,
+    include: {
+      project: { select: { id: true, name: true, projectCode: true } },
+      messages: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+        include: { sender: { select: { name: true, avatarUrl: true } } }
       }
     },
     orderBy: { updatedAt: "desc" }
@@ -40764,11 +40813,24 @@ async function sendMessage2(req, res) {
     return sendError(res, error.message, 400);
   }
 }
+async function createDirectConversation2(req, res) {
+  try {
+    const { targetUserId } = req.body;
+    if (!targetUserId) {
+      return sendError(res, "Target user ID is required", 400);
+    }
+    const conversation = await createDirectConversation(req.user.userId, targetUserId);
+    return sendSuccess(res, conversation, 201);
+  } catch (error) {
+    return sendError(res, error.message, 400);
+  }
+}
 
 // server/routes/messageRoutes.ts
 var router12 = (0, import_express12.Router)();
 router12.use(authenticate);
 router12.get("/conversations", getConversations2);
+router12.post("/direct", createDirectConversation2);
 router12.get("/:conversationId", getMessages);
 router12.post("/", sendMessage2);
 var messageRoutes_default = router12;

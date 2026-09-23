@@ -25,7 +25,9 @@ export interface StaffWorkloadReport {
  * Computes workload % and capacity balance
  */
 export async function calculateStaffWorkload(userId?: string): Promise<StaffWorkloadReport[]> {
-  const where = userId ? { id: userId, status: 'ACTIVE' } : { status: 'ACTIVE' };
+  const where: any = userId
+    ? { id: userId, status: 'ACTIVE' }
+    : { status: 'ACTIVE', email: { not: 'khurram@apis.com' } };
 
   const users = await prisma.user.findMany({
     where,

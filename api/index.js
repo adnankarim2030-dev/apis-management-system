@@ -38336,7 +38336,7 @@ async function deleteUser(id, actorUserId) {
 
 // server/services/workloadEngine.ts
 async function calculateStaffWorkload(userId) {
-  const where = userId ? { id: userId, status: "ACTIVE" } : { status: "ACTIVE" };
+  const where = userId ? { id: userId, status: "ACTIVE" } : { status: "ACTIVE", email: { not: "khurram@apis.com" } };
   const users = await prisma_default.user.findMany({
     where,
     include: {

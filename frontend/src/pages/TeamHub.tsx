@@ -46,8 +46,11 @@ export const TeamHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onNa
         api.get<StaffWorkloadReport[]>('/users/workload'),
         api.get<any[]>('/departments'),
       ]);
-      setUsers(uRes.data);
-      setWorkloads(wRes.data);
+      // Exclude Khurram Jaffrani (CEO) from Team & Staff Intelligence
+      const staffOnly = uRes.data.filter((u) => u.email !== 'khurram@apis.com');
+      const staffWorkloads = wRes.data.filter((w) => w.email !== 'khurram@apis.com');
+      setUsers(staffOnly);
+      setWorkloads(staffWorkloads);
       setDepartments(dRes.data);
     } catch (err) {
       console.error('Failed to load team data:', err);

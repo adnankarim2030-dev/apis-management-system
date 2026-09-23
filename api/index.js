@@ -38706,21 +38706,21 @@ async function createProject(data, creatorUserId) {
       team: true
     }
   });
-  if (data.memberIds && data.memberIds.length > 0) {
+  const memberList = Array.from(
+    /* @__PURE__ */ new Set([
+      ...data.memberIds || [],
+      ...creatorUserId ? [creatorUserId] : [],
+      ...data.projectManagerId ? [data.projectManagerId] : []
+    ])
+  );
+  if (memberList.length > 0) {
     await prisma_default.projectMember.createMany({
-      data: data.memberIds.map((userId) => ({
+      data: memberList.map((userId) => ({
         projectId: project.id,
         userId,
-        role: userId === data.projectManagerId ? "LEAD" : "MEMBER"
-      }))
-    });
-  } else if (data.projectManagerId) {
-    await prisma_default.projectMember.create({
-      data: {
-        projectId: project.id,
-        userId: data.projectManagerId,
-        role: "LEAD"
-      }
+        role: userId === data.projectManagerId || userId === creatorUserId ? "LEAD" : "MEMBER"
+      })),
+      skipDuplicates: true
     });
   }
   await prisma_default.conversation.create({
@@ -38757,27 +38757,32 @@ async function getProjects(filters) {
   const page = filters.page || 1;
   const limit = filters.limit || 50;
   const skip = (page - 1) * limit;
-  const where = {};
+  const conditions = [];
   if (filters.search) {
-    where.OR = [
-      { name: { contains: filters.search } },
-      { projectCode: { contains: filters.search } },
-      { description: { contains: filters.search } },
-      { client: { company: { contains: filters.search } } }
-    ];
+    conditions.push({
+      OR: [
+        { name: { contains: filters.search, mode: "insensitive" } },
+        { projectCode: { contains: filters.search, mode: "insensitive" } },
+        { description: { contains: filters.search, mode: "insensitive" } },
+        { client: { company: { contains: filters.search, mode: "insensitive" } } }
+      ]
+    });
   }
-  if (filters.status) where.status = filters.status;
-  if (filters.priority) where.priority = filters.priority;
-  if (filters.departmentId) where.departmentId = filters.departmentId;
-  if (filters.clientId) where.clientId = filters.clientId;
-  if (filters.projectManagerId) where.projectManagerId = filters.projectManagerId;
+  if (filters.status) conditions.push({ status: filters.status });
+  if (filters.priority) conditions.push({ priority: filters.priority });
+  if (filters.departmentId) conditions.push({ departmentId: filters.departmentId });
+  if (filters.clientId) conditions.push({ clientId: filters.clientId });
+  if (filters.projectManagerId) conditions.push({ projectManagerId: filters.projectManagerId });
   if (filters.userId) {
-    where.OR = [
-      { projectManagerId: filters.userId },
-      { accountManagerId: filters.userId },
-      { members: { some: { userId: filters.userId } } }
-    ];
+    conditions.push({
+      OR: [
+        { projectManagerId: filters.userId },
+        { accountManagerId: filters.userId },
+        { members: { some: { userId: filters.userId } } }
+      ]
+    });
   }
+  const where = conditions.length > 0 ? { AND: conditions } : {};
   const [projects, total] = await Promise.all([
     prisma_default.project.findMany({
       where,
@@ -39002,6 +39007,12 @@ async function deleteProject(id, actorUserId) {
 async function getProjects2(req, res) {
   try {
     const { search: search2, status, priority, departmentId, clientId, projectManagerId, userId, riskLevel, page, limit } = req.query;
+    const userRole = req.user?.role;
+    const isExecutiveOrOperations = ["CEO", "ADMIN", "DEPARTMENT_HEAD"].includes(userRole || "");
+    let effectiveUserId = userId;
+    if (!isExecutiveOrOperations && req.user?.userId) {
+      effectiveUserId = req.user.userId;
+    }
     const result = await getProjects({
       search: search2,
       status,
@@ -39009,7 +39020,7 @@ async function getProjects2(req, res) {
       departmentId,
       clientId,
       projectManagerId,
-      userId,
+      userId: effectiveUserId,
       riskLevel,
       page: page ? parseInt(page, 10) : 1,
       limit: limit ? parseInt(limit, 10) : 50
@@ -39034,7 +39045,12 @@ async function getProjectById2(req, res) {
 }
 async function createProject2(req, res) {
   try {
-    const project = await createProject(req.body, req.user?.userId);
+    const projectData = { ...req.body };
+    const isExecutiveOrOperations = ["CEO", "ADMIN", "DEPARTMENT_HEAD"].includes(req.user?.role || "");
+    if (!isExecutiveOrOperations && !projectData.projectManagerId && req.user?.userId) {
+      projectData.projectManagerId = req.user.userId;
+    }
+    const project = await createProject(projectData, req.user?.userId);
     return sendSuccess(res, project, 201);
   } catch (error) {
     return sendError(res, error.message, 400);
@@ -39137,7 +39153,10 @@ async function createTask(data, creatorUserId) {
     const prefix = project?.projectCode ? project.projectCode : "TSK";
     taskCode = `${prefix}-T${(count + 1).toString().padStart(3, "0")}`;
   }
-  const assigneeId = data.assigneeId && data.assigneeId.trim() !== "" ? data.assigneeId : null;
+  let assigneeId = data.assigneeId && data.assigneeId.trim() !== "" ? data.assigneeId : null;
+  if (!assigneeId && creatorUserId) {
+    assigneeId = creatorUserId;
+  }
   const reviewerId = data.reviewerId && data.reviewerId.trim() !== "" ? data.reviewerId : null;
   const milestoneId = data.milestoneId && data.milestoneId.trim() !== "" ? data.milestoneId : null;
   const dependsOnTaskId = data.dependsOnTaskId && data.dependsOnTaskId.trim() !== "" ? data.dependsOnTaskId : null;
@@ -39210,23 +39229,28 @@ async function getTasks(filters) {
   const page = filters.page || 1;
   const limit = filters.limit || 100;
   const skip = (page - 1) * limit;
-  const where = {};
+  const conditions = [];
   if (filters.search) {
-    where.OR = [
-      { title: { contains: filters.search } },
-      { taskCode: { contains: filters.search } },
-      { description: { contains: filters.search } }
-    ];
+    conditions.push({
+      OR: [
+        { title: { contains: filters.search, mode: "insensitive" } },
+        { taskCode: { contains: filters.search, mode: "insensitive" } },
+        { description: { contains: filters.search, mode: "insensitive" } }
+      ]
+    });
   }
-  if (filters.projectId) where.projectId = filters.projectId;
-  if (filters.assigneeId) where.assigneeId = filters.assigneeId;
-  if (filters.reviewerId) where.reviewerId = filters.reviewerId;
-  if (filters.status) where.status = filters.status;
-  if (filters.priority) where.priority = filters.priority;
+  if (filters.projectId) conditions.push({ projectId: filters.projectId });
+  if (filters.assigneeId) conditions.push({ assigneeId: filters.assigneeId });
+  if (filters.reviewerId) conditions.push({ reviewerId: filters.reviewerId });
+  if (filters.status) conditions.push({ status: filters.status });
+  if (filters.priority) conditions.push({ priority: filters.priority });
   if (filters.isOverdue) {
-    where.dueDate = { lt: /* @__PURE__ */ new Date() };
-    where.status = { notIn: ["COMPLETED", "APPROVED"] };
+    conditions.push({
+      dueDate: { lt: /* @__PURE__ */ new Date() },
+      status: { notIn: ["COMPLETED", "APPROVED"] }
+    });
   }
+  const where = conditions.length > 0 ? { AND: conditions } : {};
   const [tasks, total] = await Promise.all([
     prisma_default.task.findMany({
       where,
@@ -39421,10 +39445,16 @@ async function deleteSubtask(subtaskId) {
 async function getTasks2(req, res) {
   try {
     const { search: search2, projectId, assigneeId, reviewerId, status, priority, isOverdue, page, limit } = req.query;
+    const userRole = req.user?.role;
+    const isExecutiveOrOperations = ["CEO", "ADMIN", "DEPARTMENT_HEAD"].includes(userRole || "");
+    let effectiveAssigneeId = assigneeId;
+    if (!isExecutiveOrOperations && !projectId && !assigneeId && req.user?.userId) {
+      effectiveAssigneeId = req.user.userId;
+    }
     const result = await getTasks({
       search: search2,
       projectId,
-      assigneeId,
+      assigneeId: effectiveAssigneeId,
       reviewerId,
       status,
       priority,
@@ -39452,7 +39482,12 @@ async function getTaskById2(req, res) {
 }
 async function createTask2(req, res) {
   try {
-    const task = await createTask(req.body, req.user?.userId);
+    const taskData = { ...req.body };
+    const isExecutiveOrOperations = ["CEO", "ADMIN", "DEPARTMENT_HEAD"].includes(req.user?.role || "");
+    if (!isExecutiveOrOperations && !taskData.assigneeId && req.user?.userId) {
+      taskData.assigneeId = req.user.userId;
+    }
+    const task = await createTask(taskData, req.user?.userId);
     return sendSuccess(res, task, 201);
   } catch (error) {
     return sendError(res, error.message, 400);

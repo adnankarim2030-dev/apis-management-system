@@ -30,7 +30,10 @@ export async function createTask(data: CreateTaskInput, creatorUserId?: string) 
     taskCode = `${prefix}-T${(count + 1).toString().padStart(3, '0')}`;
   }
 
-  const assigneeId = data.assigneeId && data.assigneeId.trim() !== '' ? data.assigneeId : null;
+  let assigneeId = data.assigneeId && data.assigneeId.trim() !== '' ? data.assigneeId : null;
+  if (!assigneeId && creatorUserId) {
+    assigneeId = creatorUserId;
+  }
   const reviewerId = data.reviewerId && data.reviewerId.trim() !== '' ? data.reviewerId : null;
   const milestoneId = data.milestoneId && data.milestoneId.trim() !== '' ? data.milestoneId : null;
   const dependsOnTaskId = data.dependsOnTaskId && data.dependsOnTaskId.trim() !== '' ? data.dependsOnTaskId : null;
@@ -129,24 +132,30 @@ export async function getTasks(filters: {
   const limit = filters.limit || 100;
   const skip = (page - 1) * limit;
 
-  const where: any = {};
+  const conditions: any[] = [];
   if (filters.search) {
-    where.OR = [
-      { title: { contains: filters.search } },
-      { taskCode: { contains: filters.search } },
-      { description: { contains: filters.search } },
-    ];
+    conditions.push({
+      OR: [
+        { title: { contains: filters.search, mode: 'insensitive' } },
+        { taskCode: { contains: filters.search, mode: 'insensitive' } },
+        { description: { contains: filters.search, mode: 'insensitive' } },
+      ],
+    });
   }
-  if (filters.projectId) where.projectId = filters.projectId;
-  if (filters.assigneeId) where.assigneeId = filters.assigneeId;
-  if (filters.reviewerId) where.reviewerId = filters.reviewerId;
-  if (filters.status) where.status = filters.status;
-  if (filters.priority) where.priority = filters.priority;
+  if (filters.projectId) conditions.push({ projectId: filters.projectId });
+  if (filters.assigneeId) conditions.push({ assigneeId: filters.assigneeId });
+  if (filters.reviewerId) conditions.push({ reviewerId: filters.reviewerId });
+  if (filters.status) conditions.push({ status: filters.status });
+  if (filters.priority) conditions.push({ priority: filters.priority });
 
   if (filters.isOverdue) {
-    where.dueDate = { lt: new Date() };
-    where.status = { notIn: ['COMPLETED', 'APPROVED'] };
+    conditions.push({
+      dueDate: { lt: new Date() },
+      status: { notIn: ['COMPLETED', 'APPROVED'] },
+    });
   }
+
+  const where: any = conditions.length > 0 ? { AND: conditions } : {};
 
   const [tasks, total] = await Promise.all([
     prisma.task.findMany({

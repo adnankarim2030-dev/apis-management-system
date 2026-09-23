@@ -7,6 +7,17 @@ import { sendSuccess, sendError } from '../utils/response';
 export async function getProjects(req: AuthenticatedRequest, res: Response) {
   try {
     const { search, status, priority, departmentId, clientId, projectManagerId, userId, riskLevel, page, limit } = req.query;
+    
+    // Executive Leadership and Operations Oversight have full visibility across all staff and projects
+    const userRole = req.user?.role;
+    const isExecutiveOrOperations = ['CEO', 'ADMIN', 'DEPARTMENT_HEAD'].includes(userRole || '');
+
+    // Non-executive staff strictly see only their own projects (as PM, AM, or member)
+    let effectiveUserId = userId as string;
+    if (!isExecutiveOrOperations && req.user?.userId) {
+      effectiveUserId = req.user.userId;
+    }
+
     const result = await projectService.getProjects({
       search: search as string,
       status: status as string,
@@ -14,7 +25,7 @@ export async function getProjects(req: AuthenticatedRequest, res: Response) {
       departmentId: departmentId as string,
       clientId: clientId as string,
       projectManagerId: projectManagerId as string,
-      userId: userId as string,
+      userId: effectiveUserId,
       riskLevel: riskLevel as string,
       page: page ? parseInt(page as string, 10) : 1,
       limit: limit ? parseInt(limit as string, 10) : 50,
@@ -41,7 +52,13 @@ export async function getProjectById(req: AuthenticatedRequest, res: Response) {
 
 export async function createProject(req: AuthenticatedRequest, res: Response) {
   try {
-    const project = await projectService.createProject(req.body, req.user?.userId);
+    const projectData = { ...req.body };
+    // If not executive/operations and no projectManagerId provided, default to current user
+    const isExecutiveOrOperations = ['CEO', 'ADMIN', 'DEPARTMENT_HEAD'].includes(req.user?.role || '');
+    if (!isExecutiveOrOperations && !projectData.projectManagerId && req.user?.userId) {
+      projectData.projectManagerId = req.user.userId;
+    }
+    const project = await projectService.createProject(projectData, req.user?.userId);
     return sendSuccess(res, project, 201);
   } catch (error: any) {
     return sendError(res, error.message, 400);

@@ -56,21 +56,22 @@ export async function createProject(data: CreateProjectInput, creatorUserId?: st
   });
 
   // Add members
-  if (data.memberIds && data.memberIds.length > 0) {
+  const memberList = Array.from(
+    new Set([
+      ...(data.memberIds || []),
+      ...(creatorUserId ? [creatorUserId] : []),
+      ...(data.projectManagerId ? [data.projectManagerId] : []),
+    ])
+  );
+
+  if (memberList.length > 0) {
     await prisma.projectMember.createMany({
-      data: data.memberIds.map((userId) => ({
+      data: memberList.map((userId) => ({
         projectId: project.id,
         userId,
-        role: userId === data.projectManagerId ? 'LEAD' : 'MEMBER',
+        role: userId === data.projectManagerId || userId === creatorUserId ? 'LEAD' : 'MEMBER',
       })),
-    });
-  } else if (data.projectManagerId) {
-    await prisma.projectMember.create({
-      data: {
-        projectId: project.id,
-        userId: data.projectManagerId,
-        role: 'LEAD',
-      },
+      skipDuplicates: true,
     });
   }
 
@@ -129,27 +130,34 @@ export async function getProjects(filters: {
   const limit = filters.limit || 50;
   const skip = (page - 1) * limit;
 
-  const where: any = {};
+  const conditions: any[] = [];
+
   if (filters.search) {
-    where.OR = [
-      { name: { contains: filters.search } },
-      { projectCode: { contains: filters.search } },
-      { description: { contains: filters.search } },
-      { client: { company: { contains: filters.search } } },
-    ];
+    conditions.push({
+      OR: [
+        { name: { contains: filters.search, mode: 'insensitive' } },
+        { projectCode: { contains: filters.search, mode: 'insensitive' } },
+        { description: { contains: filters.search, mode: 'insensitive' } },
+        { client: { company: { contains: filters.search, mode: 'insensitive' } } },
+      ],
+    });
   }
-  if (filters.status) where.status = filters.status;
-  if (filters.priority) where.priority = filters.priority;
-  if (filters.departmentId) where.departmentId = filters.departmentId;
-  if (filters.clientId) where.clientId = filters.clientId;
-  if (filters.projectManagerId) where.projectManagerId = filters.projectManagerId;
+  if (filters.status) conditions.push({ status: filters.status });
+  if (filters.priority) conditions.push({ priority: filters.priority });
+  if (filters.departmentId) conditions.push({ departmentId: filters.departmentId });
+  if (filters.clientId) conditions.push({ clientId: filters.clientId });
+  if (filters.projectManagerId) conditions.push({ projectManagerId: filters.projectManagerId });
   if (filters.userId) {
-    where.OR = [
-      { projectManagerId: filters.userId },
-      { accountManagerId: filters.userId },
-      { members: { some: { userId: filters.userId } } },
-    ];
+    conditions.push({
+      OR: [
+        { projectManagerId: filters.userId },
+        { accountManagerId: filters.userId },
+        { members: { some: { userId: filters.userId } } },
+      ],
+    });
   }
+
+  const where: any = conditions.length > 0 ? { AND: conditions } : {};
 
   const [projects, total] = await Promise.all([
     prisma.project.findMany({

@@ -115,17 +115,29 @@ export const LoginPage: React.FC = () => {
 
             <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
               {[
-                { role: 'CEO' as UserRole, name: 'Khurram Jaffrani', title: 'Chief Executive Officer', avatar: '/avatars/khurram_jaffrani.png' },
-                { role: 'DEPARTMENT_HEAD' as UserRole, name: 'Naeem Ahmed', title: 'Head Of Media Buying & Planning', avatar: '/avatars/naeem_ahmed.png' },
-                { role: 'ACCOUNT_MANAGER' as UserRole, name: 'Kashif Aghani', title: 'Manager Business Development', avatar: '/avatars/kashif_aghani.png' },
-                { role: 'STAFF' as UserRole, name: 'Syeda Musfira', title: 'Client Service & Operations Executive', avatar: '/avatars/syeda_musfira.png' },
-                { role: 'VIEWER' as UserRole, name: 'Syed Abeel Ahmed', title: 'Head Of Design & Digital', avatar: '/avatars/syed_abeel_ahmed.png' },
-                { role: 'PROJECT_MANAGER' as UserRole, name: 'Adnan Karim', title: 'Creative Manager (AI)', avatar: '/avatars/adnan_karim.png' },
-              ].map(({ role, name, title, avatar }) => (
+                { email: 'operation@apis.com', role: 'CEO' as UserRole, name: 'Operations Oversight', title: 'Full Access • All Projects & Staff', avatar: '/avatars/khurram_jaffrani.png' },
+                { email: 'staff@apis.com', role: 'STAFF' as UserRole, name: 'Staff Workspace', title: 'Isolated Access • Only Own Projects & Tasks', avatar: '/avatars/syeda_musfira.png' },
+                { email: 'khurram@apis.com', role: 'CEO' as UserRole, name: 'Khurram Jaffrani', title: 'Chief Executive Officer', avatar: '/avatars/khurram_jaffrani.png' },
+                { email: 'musfira@apis.com', role: 'STAFF' as UserRole, name: 'Syeda Musfira', title: 'Client Service & Operations Executive', avatar: '/avatars/syeda_musfira.png' },
+                { email: 'naeem@apis.com', role: 'DEPARTMENT_HEAD' as UserRole, name: 'Naeem Ahmed', title: 'Head Of Media Buying & Planning', avatar: '/avatars/naeem_ahmed.png' },
+                { email: 'kashif@apis.com', role: 'ACCOUNT_MANAGER' as UserRole, name: 'Kashif Aghani', title: 'Manager Business Development', avatar: '/avatars/kashif_aghani.png' },
+                { email: 'abeel@apis.com', role: 'VIEWER' as UserRole, name: 'Syed Abeel Ahmed', title: 'Head Of Design & Digital', avatar: '/avatars/syed_abeel_ahmed.png' },
+                { email: 'adnan@apis.com', role: 'PROJECT_MANAGER' as UserRole, name: 'Adnan Karim', title: 'Creative Manager (AI)', avatar: '/avatars/adnan_karim.png' },
+              ].map(({ email: userEmail, role, name, title, avatar }) => (
                 <button
                   key={name}
                   type="button"
-                  onClick={() => handleQuickLogin(role)}
+                  onClick={async () => {
+                    setIsLoading(true);
+                    setError(null);
+                    try {
+                      await login(userEmail, 'password123');
+                    } catch (err: any) {
+                      setError(err.message || 'Login failed');
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }}
                   className="w-full p-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-left text-xs text-slate-200 transition-all group flex items-center justify-between gap-3"
                 >
                   <div className="flex items-center gap-2.5 truncate">

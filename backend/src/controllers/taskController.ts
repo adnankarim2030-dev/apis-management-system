@@ -6,10 +6,20 @@ import { sendSuccess, sendError } from '../utils/response';
 export async function getTasks(req: AuthenticatedRequest, res: Response) {
   try {
     const { search, projectId, assigneeId, reviewerId, status, priority, isOverdue, page, limit } = req.query;
+    
+    const userRole = req.user?.role;
+    const isExecutiveOrOperations = ['CEO', 'ADMIN', 'DEPARTMENT_HEAD'].includes(userRole || '');
+
+    // For staff users who are not operations/executive, if no project is specified and no assignee specified, default to their own tasks
+    let effectiveAssigneeId = assigneeId as string;
+    if (!isExecutiveOrOperations && !projectId && !assigneeId && req.user?.userId) {
+      effectiveAssigneeId = req.user.userId;
+    }
+
     const result = await taskService.getTasks({
       search: search as string,
       projectId: projectId as string,
-      assigneeId: assigneeId as string,
+      assigneeId: effectiveAssigneeId,
       reviewerId: reviewerId as string,
       status: status as string,
       priority: priority as string,
@@ -39,7 +49,12 @@ export async function getTaskById(req: AuthenticatedRequest, res: Response) {
 
 export async function createTask(req: AuthenticatedRequest, res: Response) {
   try {
-    const task = await taskService.createTask(req.body, req.user?.userId);
+    const taskData = { ...req.body };
+    const isExecutiveOrOperations = ['CEO', 'ADMIN', 'DEPARTMENT_HEAD'].includes(req.user?.role || '');
+    if (!isExecutiveOrOperations && !taskData.assigneeId && req.user?.userId) {
+      taskData.assigneeId = req.user.userId;
+    }
+    const task = await taskService.createTask(taskData, req.user?.userId);
     return sendSuccess(res, task, 201);
   } catch (error: any) {
     return sendError(res, error.message, 400);

@@ -33,100 +33,140 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setIsMobileOpen,
 }) => {
   const { user } = useAuth();
-  const isExecutive = ['CEO', 'ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER'].includes(user?.role || '');
+  const isExecutive = user?.role === 'CEO' || user?.role === 'ADMIN' || user?.email === 'khurram@apis.com' || user?.email === 'musfira@apis.com';
 
-  const navSections = [
-    {
-      title: 'OVERVIEW',
-      items: [
-        ...(isExecutive
-          ? [
-              {
-                name: 'Executive Intelligence',
-                path: '/ceo-dashboard',
-                icon: <Sparkles className="w-4 h-4 text-amber-400" />,
-                badge: 'CEO',
-                badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-              },
-            ]
-          : []),
+  const navSections = isExecutive
+    ? [
         {
-          name: 'Staff Workbench',
-          path: '/staff-dashboard',
-          icon: <LayoutDashboard className="w-4 h-4 text-brand-400" />,
-        },
-      ],
-    },
-    {
-      title: 'PROJECT DELIVERY',
-      items: [
-        {
-          name: 'Projects Hub',
-          path: '/projects',
-          icon: <FolderKanban className="w-4 h-4 text-blue-400" />,
+          title: 'EXECUTIVE OVERVIEW',
+          items: [
+            {
+              name: 'Executive Intelligence',
+              path: '/ceo-dashboard',
+              icon: <Sparkles className="w-4 h-4 text-amber-400" />,
+              badge: 'LEADERSHIP',
+              badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+            },
+            {
+              name: 'Staff Workbench',
+              path: '/staff-dashboard',
+              icon: <LayoutDashboard className="w-4 h-4 text-brand-400" />,
+            },
+          ],
         },
         {
-          name: 'Tasks & Workflow',
-          path: '/tasks',
-          icon: <CheckSquare className="w-4 h-4 text-emerald-400" />,
+          title: 'DELIVERY & OPERATIONS',
+          items: [
+            {
+              name: 'Projects Hub',
+              path: '/projects',
+              icon: <FolderKanban className="w-4 h-4 text-blue-400" />,
+            },
+            {
+              name: 'Tasks & Workflow',
+              path: '/tasks',
+              icon: <CheckSquare className="w-4 h-4 text-emerald-400" />,
+            },
+            {
+              name: 'Timesheets & Tracking',
+              path: '/timesheets',
+              icon: <Clock className="w-4 h-4 text-cyan-400" />,
+            },
+            {
+              name: 'Approvals Center',
+              path: '/approvals',
+              icon: <CheckCircle className="w-4 h-4 text-purple-400" />,
+            },
+          ],
         },
         {
-          name: 'Timesheets & Tracking',
-          path: '/timesheets',
-          icon: <Clock className="w-4 h-4 text-cyan-400" />,
+          title: 'ORGANIZATION',
+          items: [
+            {
+              name: 'Team & Workload',
+              path: '/team',
+              icon: <Users className="w-4 h-4 text-indigo-400" />,
+            },
+            {
+              name: 'Client Directory',
+              path: '/clients',
+              icon: <Building className="w-4 h-4 text-orange-400" />,
+            },
+            {
+              name: 'Document Vault',
+              path: '/documents',
+              icon: <FileText className="w-4 h-4 text-teal-400" />,
+            },
+          ],
         },
         {
-          name: 'Approvals Center',
-          path: '/approvals',
-          icon: <CheckCircle className="w-4 h-4 text-purple-400" />,
+          title: 'COMMUNICATIONS & AUDIT',
+          items: [
+            {
+              name: 'Chat & Broadcasts',
+              path: '/messages',
+              icon: <MessageSquare className="w-4 h-4 text-pink-400" />,
+            },
+            {
+              name: 'Reports & Analytics',
+              path: '/reports',
+              icon: <BarChart3 className="w-4 h-4 text-yellow-400" />,
+            },
+            {
+              name: 'Activity Audit Log',
+              path: '/activity-logs',
+              icon: <Activity className="w-4 h-4 text-slate-400" />,
+            },
+          ],
         },
-      ],
-    },
-    {
-      title: 'ORGANIZATION',
-      items: [
+      ]
+    : [
         {
-          name: 'Team & Workload',
-          path: '/team',
-          icon: <Users className="w-4 h-4 text-indigo-400" />,
+          title: 'MY WORKSPACE',
+          items: [
+            {
+              name: 'Staff Workbench',
+              path: '/staff-dashboard',
+              icon: <LayoutDashboard className="w-4 h-4 text-brand-400" />,
+            },
+          ],
         },
         {
-          name: 'Client Directory',
-          path: '/clients',
-          icon: <Building className="w-4 h-4 text-orange-400" />,
+          title: 'MY DELIVERY',
+          items: [
+            {
+              name: 'My Projects',
+              path: '/projects',
+              icon: <FolderKanban className="w-4 h-4 text-blue-400" />,
+            },
+            {
+              name: 'My Tasks',
+              path: '/tasks',
+              icon: <CheckSquare className="w-4 h-4 text-emerald-400" />,
+            },
+            {
+              name: 'My Timesheets',
+              path: '/timesheets',
+              icon: <Clock className="w-4 h-4 text-cyan-400" />,
+            },
+          ],
         },
         {
-          name: 'Document Vault',
-          path: '/documents',
-          icon: <FileText className="w-4 h-4 text-teal-400" />,
+          title: 'COLLABORATION',
+          items: [
+            {
+              name: 'Document Vault',
+              path: '/documents',
+              icon: <FileText className="w-4 h-4 text-teal-400" />,
+            },
+            {
+              name: 'Team Chat',
+              path: '/messages',
+              icon: <MessageSquare className="w-4 h-4 text-pink-400" />,
+            },
+          ],
         },
-      ],
-    },
-    {
-      title: 'COMMUNICATIONS & INSIGHTS',
-      items: [
-        {
-          name: 'Chat & Broadcasts',
-          path: '/messages',
-          icon: <MessageSquare className="w-4 h-4 text-pink-400" />,
-        },
-        ...(isExecutive
-          ? [
-              {
-                name: 'Reports & Analytics',
-                path: '/reports',
-                icon: <BarChart3 className="w-4 h-4 text-yellow-400" />,
-              },
-            ]
-          : []),
-        {
-          name: 'Activity Audit Log',
-          path: '/activity-logs',
-          icon: <Activity className="w-4 h-4 text-slate-400" />,
-        },
-      ],
-    },
-  ];
+      ];
 
   return (
     <>

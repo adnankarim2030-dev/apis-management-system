@@ -51,11 +51,11 @@ export const App: React.FC = () => {
     return <LoginPage />;
   }
 
-  // Determine initial default route for CEO vs Staff
-  const isExecutive = ['CEO', 'ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER'].includes(user?.role || '');
+  // Determine initial default route for CEO/Musfira vs Staff
+  const isExecutive = user?.role === 'CEO' || user?.role === 'ADMIN' || user?.email === 'khurram@apis.com' || user?.email === 'musfira@apis.com';
   const activePath = currentPath === '/' ? (isExecutive ? '/ceo-dashboard' : '/staff-dashboard') : currentPath;
 
-  // Route matching
+  // Route matching with security guards
   const renderContent = () => {
     if (activePath.startsWith('/projects/')) {
       const projectId = activePath.replace('/projects/', '');
@@ -64,7 +64,7 @@ export const App: React.FC = () => {
 
     switch (activePath) {
       case '/ceo-dashboard':
-        return <CEODashboard onNavigate={navigate} />;
+        return isExecutive ? <CEODashboard onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
       case '/staff-dashboard':
         return <StaffDashboard onNavigate={navigate} />;
       case '/projects':
@@ -74,20 +74,20 @@ export const App: React.FC = () => {
       case '/timesheets':
         return <TimesheetsHub onNavigate={navigate} />;
       case '/team':
-        return <TeamHub onNavigate={navigate} />;
+        return isExecutive ? <TeamHub onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
       case '/clients':
-        return <ClientsHub onNavigate={navigate} />;
+        return isExecutive ? <ClientsHub onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
       case '/documents':
         return <DocumentsHub onNavigate={navigate} />;
       case '/approvals':
-        return <ApprovalsHub onNavigate={navigate} />;
+        return isExecutive ? <ApprovalsHub onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
       case '/messages':
       case '/announcements':
         return <MessagesHub onNavigate={navigate} />;
       case '/reports':
-        return <ReportsHub onNavigate={navigate} />;
+        return isExecutive ? <ReportsHub onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
       case '/activity-logs':
-        return <ActivityLogsHub onNavigate={navigate} />;
+        return isExecutive ? <ActivityLogsHub onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
       default:
         return isExecutive ? <CEODashboard onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
     }

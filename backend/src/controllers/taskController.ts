@@ -9,7 +9,7 @@ export async function getTasks(req: AuthenticatedRequest, res: Response) {
     
     const userRole = req.user?.role;
     const userEmail = req.user?.email;
-    const isExecutiveOrOperations = ['CEO', 'ADMIN'].includes(userRole || '') || ['khurram@apis.com', 'musfira@apis.com'].includes(userEmail || '');
+    const isExecutiveOrOperations = ['CEO', 'ADMIN'].includes(userRole || '') || ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(userEmail || '');
 
     // For staff users who are not operations/executive, if no project is specified and no assignee specified, default to their own tasks
     let effectiveAssigneeId = assigneeId as string;

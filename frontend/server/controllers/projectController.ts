@@ -11,7 +11,7 @@ export async function getProjects(req: AuthenticatedRequest, res: Response) {
     // Executive Leadership and Operations Oversight have full visibility across all staff and projects
     const userRole = req.user?.role;
     const userEmail = req.user?.email;
-    const isExecutiveOrOperations = ['CEO', 'ADMIN'].includes(userRole || '') || ['khurram@apis.com', 'musfira@apis.com'].includes(userEmail || '');
+    const isExecutiveOrOperations = ['CEO', 'ADMIN'].includes(userRole || '') || ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(userEmail || '');
 
     // Non-executive staff strictly see only their own projects (as PM, AM, or member)
     let effectiveUserId = userId as string;

@@ -33,7 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setIsMobileOpen,
 }) => {
   const { user } = useAuth();
-  const isExecutive = user?.role === 'CEO' || user?.role === 'ADMIN' || user?.email === 'khurram@apis.com' || user?.email === 'musfira@apis.com';
+  const isExecutive = user?.role === 'CEO' || user?.role === 'ADMIN' || ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email || '');
 
   const navSections = isExecutive
     ? [

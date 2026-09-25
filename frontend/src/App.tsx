@@ -51,8 +51,8 @@ export const App: React.FC = () => {
     return <LoginPage />;
   }
 
-  // Determine initial default route for CEO/Musfira vs Staff
-  const isExecutive = user?.role === 'CEO' || user?.role === 'ADMIN' || user?.email === 'khurram@apis.com' || user?.email === 'musfira@apis.com';
+  // Determine initial default route for CEO/Musfira/Shoaib vs Staff
+  const isExecutive = user?.role === 'CEO' || user?.role === 'ADMIN' || ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email || '');
   const activePath = currentPath === '/' ? (isExecutive ? '/ceo-dashboard' : '/staff-dashboard') : currentPath;
 
   // Route matching with security guards

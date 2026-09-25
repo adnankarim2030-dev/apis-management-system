@@ -22,7 +22,7 @@ export const DEMO_USERS: Record<UserRole, { email: string; label: string; name: 
   DEPARTMENT_HEAD: { email: 'shoaib@apis.com', label: 'Head Of Client Service', name: 'Shoaib Jaffrani', avatar: '/avatars/shoaib_jaffrani.png' },
   ACCOUNT_MANAGER: { email: 'kashif@apis.com', label: 'Manager Business Development', name: 'Kashif Aghani', avatar: '/avatars/kashif_aghani.png' },
   STAFF: { email: 'noel@apis.com', label: 'Business Director', name: 'Noel Francis', avatar: '/avatars/noel_francis.png' },
-  PROJECT_MANAGER: { email: 'adnan@apis.com', label: 'Creative Manager (AI)', name: 'Adnan Karim', avatar: '/avatars/adnan_karim.png' },
+  PROJECT_MANAGER: { email: 'adnan@apis.com', label: 'Head of AI, Software & Digital Innovation', name: 'Adnan Karim', avatar: '/avatars/adnan_karim.png' },
   VIEWER: { email: 'abeel@apis.com', label: 'Head Of Design & Digital', name: 'Syed Abeel Ahmed', avatar: '/avatars/syed_abeel_ahmed.png' },
 };
 
@@ -131,7 +131,7 @@ export const VERIFIED_PROFILES: Record<string, User> = {
     name: 'Adnan Karim',
     email: 'adnan@apis.com',
     role: 'STAFF',
-    designation: 'Creative Manager (AI)',
+    designation: 'Head of AI, Software & Digital Innovation',
     phone: '+92 312 3456789',
     avatarUrl: '/avatars/adnan_karim.png',
     department: { id: 'dept-prd', name: 'Product & Design' },

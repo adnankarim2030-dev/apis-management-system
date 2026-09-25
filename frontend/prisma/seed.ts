@@ -146,7 +146,7 @@ async function main() {
       employeeId: 'EMP-0006',
       name: 'Adnan Karim',
       email: 'adnan@apis.com',
-      designation: 'Creative Manager (AI)',
+      designation: 'Head of AI, Software & Digital Innovation',
       phone: '+92 312 3456789',
       roleId: roleMap['PROJECT_MANAGER'].id,
       departmentId: deptMap['PRD'].id,

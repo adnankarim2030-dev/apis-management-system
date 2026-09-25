@@ -1,35 +1,27 @@
 import React, { useState } from 'react';
-import { Shield, Lock, Mail, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
-import { useAuth, DEMO_USERS, USER_PASSWORDS } from '../context/AuthContext';
-import { UserRole } from '../types';
+import { Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export const LoginPage: React.FC = () => {
-  const { login, switchDemoRole } = useAuth();
-  const [email, setEmail] = useState('khurram@apis.com');
-  const [password, setPassword] = useState('Khurram@Apis2026!');
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    try {
-      await login(email, password);
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
-    } finally {
-      setIsLoading(false);
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter your email and password.');
+      return;
     }
-  };
 
-  const handleQuickLogin = async (role: UserRole) => {
     setIsLoading(true);
     setError(null);
     try {
-      await switchDemoRole(role);
+      await login(email.trim(), password);
     } catch (err: any) {
-      setError(err.message || 'Quick login failed');
+      setError(err.response?.data?.message || err.message || 'Invalid credentials. Please check your email and password.');
     } finally {
       setIsLoading(false);
     }
@@ -57,6 +49,14 @@ export const LoginPage: React.FC = () => {
 
         {/* Login Form Box */}
         <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md space-y-5">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <h2 className="text-sm font-bold text-white">Staff & Executive Portal</h2>
+            <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-mono">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Secure Access</span>
+            </div>
+          </div>
+
           {error && (
             <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs text-center font-medium">
               {error}
@@ -65,16 +65,17 @@ export const LoginPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Email Address</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Work Email Address</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@apis.com"
+                  placeholder="e.g. name@apis.com"
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors"
                   required
+                  autoFocus
                 />
               </div>
             </div>
@@ -87,7 +88,7 @@ export const LoginPage: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="••••••••••••"
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors"
                   required
                 />
@@ -97,70 +98,12 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2"
+              className="w-full py-3 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>{isLoading ? 'Signing In...' : 'Sign In to APIS'}</span>
+              <span>{isLoading ? 'Authenticating...' : 'Sign In to Workspace'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Quick 1-Click Role Switcher Section */}
-          <div className="pt-4 border-t border-slate-800/80 space-y-3">
-            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              <span>Instant Team Logins (11 Profiles)</span>
-              <span className="text-[10px] text-brand-400 font-mono flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> 1-Click
-              </span>
-            </div>
-
-            <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-              {[
-                { email: 'khurram@apis.com', role: 'CEO' as UserRole, name: 'Khurram Jaffrani', title: 'Chief Executive Officer • Full Access', avatar: '/avatars/khurram_jaffrani.png' },
-                { email: 'musfira@apis.com', role: 'CEO' as UserRole, name: 'Syeda Musfira', title: 'Client Service & Operations Executive • Full Access', avatar: '/avatars/syeda_musfira.png' },
-                { email: 'adnan@apis.com', role: 'STAFF' as UserRole, name: 'Adnan Karim', title: 'Creative Manager (AI)', avatar: '/avatars/adnan_karim.png' },
-                { email: 'shoaib@apis.com', role: 'STAFF' as UserRole, name: 'Shoaib Jaffrani', title: 'Head Of Client Service', avatar: '/avatars/shoaib_jaffrani.png' },
-                { email: 'noel@apis.com', role: 'STAFF' as UserRole, name: 'Noel Francis', title: 'Business Director', avatar: '/avatars/noel_francis.png' },
-                { email: 'naeem@apis.com', role: 'STAFF' as UserRole, name: 'Naeem Ahmed', title: 'Head Of Media Buying & Planning', avatar: '/avatars/naeem_ahmed.png' },
-                { email: 'kashif@apis.com', role: 'STAFF' as UserRole, name: 'Kashif Aghani', title: 'Manager Business Development', avatar: '/avatars/kashif_aghani.png' },
-                { email: 'abeel@apis.com', role: 'STAFF' as UserRole, name: 'Syed Abeel Ahmed', title: 'Head Of Design & Digital', avatar: '/avatars/syed_abeel_ahmed.png' },
-                { email: 'fahim@apis.com', role: 'STAFF' as UserRole, name: 'Fahim Nisar', title: 'Digital Strategy Planner', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-                { email: 'fatima@apis.com', role: 'STAFF' as UserRole, name: 'Fatima', title: 'Creative Executive', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150' },
-                { email: 'maha@apis.com', role: 'STAFF' as UserRole, name: 'Maha', title: 'Media Executive', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
-              ].map(({ email: userEmail, role, name, title, avatar }) => (
-                <button
-                  key={name}
-                  type="button"
-                  onClick={async () => {
-                    setIsLoading(true);
-                    setError(null);
-                    try {
-                      const userPass = USER_PASSWORDS[userEmail] || 'password123';
-                      await login(userEmail, userPass);
-                    } catch (err: any) {
-                      setError(err.message || 'Login failed');
-                    } finally {
-                      setIsLoading(false);
-                    }
-                  }}
-                  className="w-full p-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-left text-xs text-slate-200 transition-all group flex items-center justify-between gap-3 cursor-pointer"
-                >
-                  <div className="flex items-center gap-2.5 truncate">
-                    <img src={avatar} alt={name} className="w-8 h-8 rounded-lg object-cover border border-slate-700 shadow-sm shrink-0" />
-                    <div className="truncate">
-                      <div className="font-bold text-white group-hover:text-brand-300 flex items-center gap-1.5">
-                        {name}
-                        {(userEmail === 'khurram@apis.com' || userEmail === 'musfira@apis.com') && (
-                          <span className="px-1.5 py-0.2 text-[9px] font-mono bg-brand-500/20 text-brand-300 border border-brand-500/30 rounded-md">Full Access</span>
-                        )}
-                      </div>
-                      <div className="text-[10px] text-slate-400 truncate">{title}</div>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-brand-400 transition-transform group-hover:translate-x-0.5 flex-shrink-0" />
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Footer info */}

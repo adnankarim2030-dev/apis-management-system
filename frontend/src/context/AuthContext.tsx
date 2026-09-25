@@ -184,17 +184,17 @@ export const VERIFIED_PROFILES: Record<string, User> = {
 };
 
 export const USER_PASSWORDS: Record<string, string> = {
-  'khurram@apis.com': 'Khurram@Apis2026!',
-  'musfira@apis.com': 'Musfira@Apis2026!',
-  'shoaib@apis.com': 'Shoaib@Apis2026!',
-  'noel@apis.com': 'Noel@Apis2026!',
-  'naeem@apis.com': 'Naeem@Apis2026!',
-  'kashif@apis.com': 'Kashif@Apis2026!',
-  'abeel@apis.com': 'Abeel@Apis2026!',
-  'adnan@apis.com': 'Adnan@Apis2026!',
-  'fahim@apis.com': 'Fahim@Apis2026!',
-  'fatima@apis.com': 'Fatima@Apis2026!',
-  'maha@apis.com': 'Maha@Apis2026!',
+  'khurram@apis.com': 'Khurram#Exec982$Secure',
+  'musfira@apis.com': 'Musfira!Ops847*Prime',
+  'adnan@apis.com': 'Adnan%AiStudio531^',
+  'shoaib@apis.com': 'Shoaib&LeadClient764#',
+  'noel@apis.com': 'Noel$BizGrowth912@',
+  'naeem@apis.com': 'Naeem*MediaPlan628!',
+  'kashif@apis.com': 'Kashif^DevPartner419%',
+  'abeel@apis.com': 'Abeel#CreativeDesign357$',
+  'fahim@apis.com': 'Fahim@StrategyHub824*',
+  'fatima@apis.com': 'Fatima!ArtStudio193^',
+  'maha@apis.com': 'Maha%MediaReach285#',
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

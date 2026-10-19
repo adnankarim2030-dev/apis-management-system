@@ -210,12 +210,28 @@ async function main() {
     },
   ];
 
+  const userPasswords: Record<string, string> = {
+    'khurram@apis.com': 'Khurram#Exec982$Secure',
+    'musfira@apis.com': 'Musfira!Ops847*Prime',
+    'adnan@apis.com': 'Adnan%AiStudio531^',
+    'shoaib@apis.com': 'Shoaib&LeadClient764#',
+    'noel@apis.com': 'Noel$BizGrowth912@',
+    'naeem@apis.com': 'Naeem*MediaPlan628!',
+    'kashif@apis.com': 'Kashif^DevPartner419%',
+    'abeel@apis.com': 'Abeel#CreativeDesign357$',
+    'fahim@apis.com': 'Fahim@StrategyHub824*',
+    'fatima@apis.com': 'Fatima!ArtStudio193^',
+    'maha@apis.com': 'Maha%MediaReach285#',
+  };
+
   const userMap: Record<string, any> = {};
   for (const u of usersData) {
+    const specificPassword = userPasswords[u.email] || 'password123';
+    const specificHash = await bcrypt.hash(specificPassword, 10);
     const user = await prisma.user.create({
       data: {
         ...u,
-        passwordHash: defaultPasswordHash,
+        passwordHash: specificHash,
         status: 'ACTIVE',
       },
     });

@@ -21,7 +21,11 @@ import { useAuth } from '../context/AuthContext';
 
 export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
-  const isCEO = user?.role === 'CEO' || user?.role === 'ADMIN';
+  const roleStr = typeof user?.role === 'object' ? (user.role as any).name : user?.role || '';
+  const isCEO =
+    roleStr === 'CEO' ||
+    roleStr === 'ADMIN' ||
+    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email?.toLowerCase() || '');
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [clients, setClients] = useState<Client[]>([]);

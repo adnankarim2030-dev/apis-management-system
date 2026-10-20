@@ -18,7 +18,10 @@ import { useAuth } from '../context/AuthContext';
 
 export const TeamHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
-  const isLeader = ['CEO', 'ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER'].includes(user?.role || '');
+  const roleStr = typeof user?.role === 'object' ? (user.role as any).name : user?.role || '';
+  const isLeader =
+    ['CEO', 'ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER'].includes(roleStr) ||
+    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email?.toLowerCase() || '');
 
   const [users, setUsers] = useState<User[]>([]);
   const [workloads, setWorkloads] = useState<StaffWorkloadReport[]>([]);
@@ -109,6 +112,36 @@ export const TeamHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onNa
             Add Team Member
           </button>
         )}
+      </div>
+
+      {/* Live Staff Capacity & Status Summary Strip */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
+          <div className="text-[11px] text-slate-400 uppercase font-semibold">Total Active Staff</div>
+          <div className="text-2xl font-extrabold font-mono text-white mt-1">{users.length}</div>
+          <div className="text-[11px] text-indigo-400 mt-0.5">Live status monitored</div>
+        </div>
+        <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
+          <div className="text-[11px] text-slate-400 uppercase font-semibold">Available Capacity</div>
+          <div className="text-2xl font-extrabold font-mono text-emerald-400 mt-1">
+            {workloads.filter((w) => w.status === 'AVAILABLE').length}
+          </div>
+          <div className="text-[11px] text-slate-400 mt-0.5">Ready for new tasks</div>
+        </div>
+        <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
+          <div className="text-[11px] text-slate-400 uppercase font-semibold">Optimal / Healthy</div>
+          <div className="text-2xl font-extrabold font-mono text-brand-400 mt-1">
+            {workloads.filter((w) => w.status === 'HEALTHY').length}
+          </div>
+          <div className="text-[11px] text-slate-400 mt-0.5">Balanced active load</div>
+        </div>
+        <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
+          <div className="text-[11px] text-slate-400 uppercase font-semibold">Overloaded Alert</div>
+          <div className="text-2xl font-extrabold font-mono text-rose-400 mt-1">
+            {workloads.filter((w) => w.status === 'OVERLOADED').length}
+          </div>
+          <div className="text-[11px] text-slate-400 mt-0.5">High workload attention</div>
+        </div>
       </div>
 
       {/* Filter Bar */}
@@ -205,9 +238,30 @@ export const TeamHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onNa
                   </div>
                 </div>
 
-                {/* Workload Capacity Meter */}
+                {/* Workload Capacity Meter & Live Task Status */}
                 {workload && (
-                  <div className="pt-3 border-t border-slate-800/80 space-y-2">
+                  <div className="pt-3 border-t border-slate-800/80 space-y-2.5">
+                    <div className="grid grid-cols-4 gap-1.5 text-center">
+                      <div className="bg-slate-950/80 border border-slate-800 rounded-lg py-1.5 px-1">
+                        <div className="text-[9px] uppercase text-slate-500 font-semibold">Active</div>
+                        <div className="text-xs font-mono font-bold text-brand-400">{workload.activeTasksCount}</div>
+                      </div>
+                      <div className="bg-slate-950/80 border border-slate-800 rounded-lg py-1.5 px-1">
+                        <div className="text-[9px] uppercase text-slate-500 font-semibold">Done</div>
+                        <div className="text-xs font-mono font-bold text-emerald-400">{workload.completedTasksCount}</div>
+                      </div>
+                      <div className="bg-slate-950/80 border border-slate-800 rounded-lg py-1.5 px-1">
+                        <div className="text-[9px] uppercase text-slate-500 font-semibold">Overdue</div>
+                        <div className={`text-xs font-mono font-bold ${workload.overdueTasksCount > 0 ? 'text-rose-400' : 'text-slate-400'}`}>
+                          {workload.overdueTasksCount}
+                        </div>
+                      </div>
+                      <div className="bg-slate-950/80 border border-slate-800 rounded-lg py-1.5 px-1">
+                        <div className="text-[9px] uppercase text-slate-500 font-semibold">7d Hrs</div>
+                        <div className="text-xs font-mono font-bold text-cyan-400">{workload.totalActualHours}h</div>
+                      </div>
+                    </div>
+
                     <WorkloadMeter
                       percentage={workload.workloadPercentage}
                       status={workload.status}

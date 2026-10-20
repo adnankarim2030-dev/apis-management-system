@@ -26,14 +26,18 @@ export async function authenticate(
     // Optional: check if user is still active in DB
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
-      select: { id: true, status: true, role: { select: { name: true } } },
+      select: { id: true, email: true, status: true, role: { select: { name: true } } },
     });
 
     if (!user || user.status !== 'ACTIVE') {
       return sendError(res, 'User account is inactive or not found', 401, 'ACCOUNT_INACTIVE');
     }
 
-    req.user = decoded;
+    req.user = {
+      ...decoded,
+      email: user.email || decoded.email,
+      role: user.role?.name || decoded.role,
+    };
     next();
   } catch (err: any) {
     return sendError(res, 'Invalid or expired token', 401, 'TOKEN_INVALID', err.message);

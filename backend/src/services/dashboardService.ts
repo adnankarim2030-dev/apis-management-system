@@ -164,7 +164,7 @@ export async function getCEODashboardData() {
     projectsByPriority,
     atRiskProjects,
     departmentAnalytics,
-    staffWorkloadTop: workloadReports.slice(0, 6),
+    staffWorkloadTop: workloadReports,
     recentActivities,
   };
 }

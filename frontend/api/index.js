@@ -38137,12 +38137,16 @@ async function authenticate(req, res, next) {
     const decoded = verifyToken(token);
     const user = await prisma_default.user.findUnique({
       where: { id: decoded.userId },
-      select: { id: true, status: true, role: { select: { name: true } } }
+      select: { id: true, email: true, status: true, role: { select: { name: true } } }
     });
     if (!user || user.status !== "ACTIVE") {
       return sendError(res, "User account is inactive or not found", 401, "ACCOUNT_INACTIVE");
     }
-    req.user = decoded;
+    req.user = {
+      ...decoded,
+      email: user.email || decoded.email,
+      role: user.role?.name || decoded.role
+    };
     next();
   } catch (err) {
     return sendError(res, "Invalid or expired token", 401, "TOKEN_INVALID", err.message);
@@ -38476,7 +38480,8 @@ function authorizeRoles(...allowedRoles) {
       return sendError(res, "Authentication required", 401, "UNAUTHORIZED");
     }
     const userRole = req.user.role;
-    if (userRole === "CEO" || userRole === "ADMIN") {
+    const userEmail = (req.user.email || "").toLowerCase();
+    if (userRole === "CEO" || userRole === "ADMIN" || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes(userEmail)) {
       return next();
     }
     if (!allowedRoles.includes(userRole)) {
@@ -39742,7 +39747,7 @@ async function approveOrRejectTimesheet(timesheetId, status, approverUserId, com
 async function getTimesheets2(req, res) {
   try {
     const { userId, projectId, startDate, endDate, status, page, limit } = req.query;
-    const isExecutive = ["CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD"].includes(req.user.role);
+    const isExecutive = ["CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD"].includes(req.user.role) || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes((req.user.email || "").toLowerCase());
     const targetUserId = isExecutive ? userId : req.user.userId;
     const result = await getTimesheets({
       userId: targetUserId,
@@ -40982,7 +40987,7 @@ async function getCEODashboardData() {
     projectsByPriority,
     atRiskProjects,
     departmentAnalytics,
-    staffWorkloadTop: workloadReports.slice(0, 6),
+    staffWorkloadTop: workloadReports,
     recentActivities
   };
 }

@@ -476,9 +476,9 @@ export const CEODashboard: React.FC<{ onNavigate: (path: string) => void }> = ({
             </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 max-h-[540px] overflow-y-auto pr-1">
             {staffWorkloadTop?.map((staff: any) => (
-              <div key={staff.userId} className="p-3.5 bg-slate-950/60 border border-slate-800 rounded-xl space-y-2">
+              <div key={staff.userId} className="p-3.5 bg-slate-950/60 border border-slate-800 rounded-xl space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <img
@@ -492,6 +492,28 @@ export const CEODashboard: React.FC<{ onNavigate: (path: string) => void }> = ({
                     </div>
                   </div>
                   <WorkloadMeter percentage={staff.workloadPercentage} status={staff.status} compact />
+                </div>
+
+                {/* Live Staff Task & Hours Status */}
+                <div className="grid grid-cols-4 gap-1.5 text-center">
+                  <div className="bg-slate-900/80 border border-slate-800/80 rounded-lg py-1 px-1.5">
+                    <div className="text-[9px] uppercase text-slate-500 font-semibold">Active</div>
+                    <div className="text-xs font-mono font-bold text-brand-400">{staff.activeTasksCount ?? 0}</div>
+                  </div>
+                  <div className="bg-slate-900/80 border border-slate-800/80 rounded-lg py-1 px-1.5">
+                    <div className="text-[9px] uppercase text-slate-500 font-semibold">Done</div>
+                    <div className="text-xs font-mono font-bold text-emerald-400">{staff.completedTasksCount ?? 0}</div>
+                  </div>
+                  <div className="bg-slate-900/80 border border-slate-800/80 rounded-lg py-1 px-1.5">
+                    <div className="text-[9px] uppercase text-slate-500 font-semibold">Overdue</div>
+                    <div className={`text-xs font-mono font-bold ${(staff.overdueTasksCount ?? 0) > 0 ? 'text-rose-400' : 'text-slate-400'}`}>
+                      {staff.overdueTasksCount ?? 0}
+                    </div>
+                  </div>
+                  <div className="bg-slate-900/80 border border-slate-800/80 rounded-lg py-1 px-1.5">
+                    <div className="text-[9px] uppercase text-slate-500 font-semibold">7d Hrs</div>
+                    <div className="text-xs font-mono font-bold text-cyan-400">{staff.totalActualHours ?? 0}h</div>
+                  </div>
                 </div>
 
                 <div className="text-[11px] text-slate-400 bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-800/70">

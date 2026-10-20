@@ -20,7 +20,11 @@ import { useAuth, VERIFIED_PROFILES } from '../context/AuthContext';
 
 export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
-  const isCEO = user?.role === 'CEO' || user?.role === 'ADMIN';
+  const roleStr = typeof user?.role === 'object' ? (user.role as any).name : user?.role || '';
+  const isCEO =
+    roleStr === 'CEO' ||
+    roleStr === 'ADMIN' ||
+    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email?.toLowerCase() || '');
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);

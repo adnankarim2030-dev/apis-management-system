@@ -8,15 +8,14 @@ import {
   UserCheck,
   LogOut,
   CheckCircle2,
-  ChevronDown,
   ShieldCheck,
   ExternalLink,
   Menu,
   Smartphone,
   MapPin,
 } from 'lucide-react';
-import { useAuth, DEMO_USERS } from '../../context/AuthContext';
-import { UserRole, Timesheet, Notification } from '../../types';
+import { useAuth } from '../../context/AuthContext';
+import { Timesheet, Notification } from '../../types';
 import { api } from '../../api/client';
 import { useSocket } from '../../context/SocketContext';
 import { MobileDownloadModal } from '../common/MobileDownloadModal';
@@ -28,7 +27,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpenSearch, onNavigate, onToggleMobile }) => {
-  const { user, logout, switchDemoRole } = useAuth();
+  const { user, logout } = useAuth();
   const { socket } = useSocket();
 
   // Active Timesheet state
@@ -40,8 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, onNavigate, onTogg
   const [unreadCount, setUnreadCount] = useState(0);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
-  // Demo user menu
-  const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
+  // User menu & mobile download modal
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileDownloadOpen, setIsMobileDownloadOpen] = useState(false);
 
@@ -209,46 +207,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, onNavigate, onTogg
           </button>
         )}
 
-        {/* 1-Click Role Switcher */}
-        <div className="relative">
-          <button
-            onClick={() => setIsRoleMenuOpen(!isRoleMenuOpen)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/70 text-xs font-medium text-slate-200 transition-colors"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-brand-400" />
-            <span className="hidden md:inline font-mono uppercase text-[11px] text-brand-300">{user?.role}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-          </button>
-
-          {isRoleMenuOpen && (
-            <div className="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-2 z-50 animate-fadeIn">
-              <div className="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800 mb-1">
-                Switch Demo Role / Perspective
-              </div>
-              {(Object.keys(DEMO_USERS) as UserRole[]).map((roleKey) => {
-                const item = DEMO_USERS[roleKey];
-                const isActive = user?.role === roleKey;
-                return (
-                  <button
-                    key={roleKey}
-                    onClick={() => {
-                      switchDemoRole(roleKey);
-                      setIsRoleMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs transition-colors ${
-                      isActive ? 'bg-brand-500/20 text-brand-300 font-semibold' : 'hover:bg-slate-800 text-slate-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-[10px] uppercase font-bold text-slate-400">{roleKey}</span>
-                      <span className="truncate">{item.name.split(' ')[0]}</span>
-                    </div>
-                    {isActive && <CheckCircle2 className="w-3.5 h-3.5 text-brand-400" />}
-                  </button>
-                );
-              })}
-            </div>
-          )}
+        {/* Clean Static Role Badge (No dropdown / no popup window) */}
+        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700/70 text-xs font-medium text-slate-200">
+          <ShieldCheck className="w-3.5 h-3.5 text-brand-400" />
+          <span className="font-mono uppercase text-[11px] text-brand-300">{user?.role}</span>
         </div>
 
         {/* Notifications Dropdown */}

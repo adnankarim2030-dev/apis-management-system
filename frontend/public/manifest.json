@@ -1,0 +1,37 @@
+{
+  "name": "APIS Project Management & Telemetry",
+  "short_name": "APIS Mobile",
+  "description": "APIS Executive Intelligence, Field Operations & Live GPS Telemetry System",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/adpulse-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/adpulse-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "shortcuts": [
+    {
+      "name": "My Workbench",
+      "url": "/staff-dashboard",
+      "icons": [{ "src": "/adpulse-logo.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Projects Hub",
+      "url": "/projects",
+      "icons": [{ "src": "/adpulse-logo.png", "sizes": "96x96" }]
+    }
+  ]
+}

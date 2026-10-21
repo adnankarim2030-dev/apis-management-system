@@ -16,6 +16,15 @@ const queryClient = new QueryClient({
   },
 });
 
+// Register Service Worker for Mobile PWA / Offline Telemetry
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.log('ServiceWorker registration skipped:', err);
+    });
+  });
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>

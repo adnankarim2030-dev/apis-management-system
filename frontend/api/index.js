@@ -39045,6 +39045,15 @@ async function getProjects2(req, res) {
 async function getProjectById2(req, res) {
   try {
     const project = await getProjectById(req.params.id);
+    const userRole = req.user?.role;
+    const userEmail = (req.user?.email || "").toLowerCase();
+    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes(userEmail);
+    if (!isExecutiveOrOperations && req.user?.userId) {
+      const isMember = project.projectManagerId === req.user.userId || project.accountManagerId === req.user.userId || project.members?.some((m) => m.userId === req.user.userId || m.user?.id === req.user.userId);
+      if (!isMember) {
+        return sendError(res, "Access denied. You do not have permission to view another staff member's project.", 403);
+      }
+    }
     return sendSuccess(res, project);
   } catch (error) {
     return sendError(res, error.message, 404);
@@ -39053,7 +39062,9 @@ async function getProjectById2(req, res) {
 async function createProject2(req, res) {
   try {
     const projectData = { ...req.body };
-    const isExecutiveOrOperations = ["CEO", "ADMIN", "DEPARTMENT_HEAD"].includes(req.user?.role || "");
+    const userRole = req.user?.role;
+    const userEmail = (req.user?.email || "").toLowerCase();
+    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes(userEmail);
     if (!isExecutiveOrOperations && !projectData.projectManagerId && req.user?.userId) {
       projectData.projectManagerId = req.user.userId;
     }
@@ -39065,6 +39076,16 @@ async function createProject2(req, res) {
 }
 async function updateProject2(req, res) {
   try {
+    const userRole = req.user?.role;
+    const userEmail = (req.user?.email || "").toLowerCase();
+    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes(userEmail);
+    if (!isExecutiveOrOperations && req.user?.userId) {
+      const existing = await getProjectById(req.params.id);
+      const isMember = existing.projectManagerId === req.user.userId || existing.accountManagerId === req.user.userId || existing.members?.some((m) => m.userId === req.user.userId || m.user?.id === req.user.userId);
+      if (!isMember) {
+        return sendError(res, "Access denied. You can only update your own projects.", 403);
+      }
+    }
     const project = await updateProject(req.params.id, req.body, req.user?.userId);
     return sendSuccess(res, project);
   } catch (error) {
@@ -39093,8 +39114,8 @@ var router3 = (0, import_express3.Router)();
 router3.use(authenticate);
 router3.get("/", getProjects2);
 router3.get("/:id", getProjectById2);
-router3.post("/", authorizeRoles("CEO", "ADMIN"), createProject2);
-router3.put("/:id", authorizeRoles("CEO", "ADMIN"), updateProject2);
+router3.post("/", authorizeRoles("CEO", "ADMIN", "PROJECT_MANAGER", "ACCOUNT_MANAGER", "DEPARTMENT_HEAD", "STAFF"), createProject2);
+router3.put("/:id", authorizeRoles("CEO", "ADMIN", "PROJECT_MANAGER", "ACCOUNT_MANAGER", "DEPARTMENT_HEAD", "STAFF"), updateProject2);
 router3.delete("/:id", authorizeRoles("CEO", "ADMIN"), deleteProject2);
 router3.post("/:id/refresh-risk", refreshProjectRisk);
 var projectRoutes_default = router3;
@@ -39995,7 +40016,11 @@ async function getClientById2(req, res) {
 }
 async function createClient2(req, res) {
   try {
-    const client = await createClient(req.body, req.user?.userId);
+    const clientData = { ...req.body };
+    if (!clientData.accountManagerId && req.user?.userId) {
+      clientData.accountManagerId = req.user.userId;
+    }
+    const client = await createClient(clientData, req.user?.userId);
     return sendSuccess(res, client, 201);
   } catch (error) {
     return sendError(res, error.message, 400);
@@ -40023,8 +40048,8 @@ var router6 = (0, import_express6.Router)();
 router6.use(authenticate);
 router6.get("/", getClients2);
 router6.get("/:id", getClientById2);
-router6.post("/", authorizeRoles("CEO", "ADMIN", "ACCOUNT_MANAGER", "PROJECT_MANAGER"), createClient2);
-router6.put("/:id", authorizeRoles("CEO", "ADMIN", "ACCOUNT_MANAGER", "PROJECT_MANAGER"), updateClient2);
+router6.post("/", authorizeRoles("CEO", "ADMIN", "ACCOUNT_MANAGER", "PROJECT_MANAGER", "DEPARTMENT_HEAD", "STAFF"), createClient2);
+router6.put("/:id", authorizeRoles("CEO", "ADMIN", "ACCOUNT_MANAGER", "PROJECT_MANAGER", "DEPARTMENT_HEAD", "STAFF"), updateClient2);
 router6.delete("/:id", authorizeRoles("CEO", "ADMIN"), deleteClient2);
 var clientRoutes_default = router6;
 

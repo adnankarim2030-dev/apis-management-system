@@ -149,6 +149,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
               path: '/timesheets',
               icon: <Clock className="w-4 h-4 text-cyan-400" />,
             },
+            {
+              name: 'Client Directory',
+              path: '/clients',
+              icon: <Building className="w-4 h-4 text-orange-400" />,
+            },
           ],
         },
         {

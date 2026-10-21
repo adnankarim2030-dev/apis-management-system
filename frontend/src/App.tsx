@@ -76,7 +76,7 @@ export const App: React.FC = () => {
       case '/team':
         return isExecutive ? <TeamHub onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
       case '/clients':
-        return isExecutive ? <ClientsHub onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
+        return <ClientsHub onNavigate={navigate} />;
       case '/documents':
         return <DocumentsHub onNavigate={navigate} />;
       case '/approvals':

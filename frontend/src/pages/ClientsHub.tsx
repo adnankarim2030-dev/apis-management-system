@@ -97,15 +97,13 @@ export const ClientsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ o
           </p>
         </div>
 
-        {isManager && (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-brand-600/30 transition-all"
-          >
-            <Plus className="w-4 h-4" />
-            New Client Account
-          </button>
-        )}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-brand-600/30 transition-all cursor-pointer"
+        >
+          <Plus className="w-4 h-4" />
+          New Client Account
+        </button>
       </div>
 
       {/* Filter */}

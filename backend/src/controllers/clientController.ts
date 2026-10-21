@@ -35,7 +35,11 @@ export async function getClientById(req: AuthenticatedRequest, res: Response) {
 
 export async function createClient(req: AuthenticatedRequest, res: Response) {
   try {
-    const client = await clientService.createClient(req.body, req.user?.userId);
+    const clientData = { ...req.body };
+    if (!clientData.accountManagerId && req.user?.userId) {
+      clientData.accountManagerId = req.user.userId;
+    }
+    const client = await clientService.createClient(clientData, req.user?.userId);
     return sendSuccess(res, client, 201);
   } catch (error: any) {
     return sendError(res, error.message, 400);

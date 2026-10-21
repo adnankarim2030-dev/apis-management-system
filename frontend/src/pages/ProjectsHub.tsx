@@ -50,6 +50,40 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
     deadline: '',
   });
 
+  // Quick Client Creation Modal inside Project Flow
+  const [isAddClientOpen, setIsAddClientOpen] = useState(false);
+  const [isCreatingClient, setIsCreatingClient] = useState(false);
+  const [quickClientError, setQuickClientError] = useState<string | null>(null);
+  const [quickClient, setQuickClient] = useState({
+    company: '',
+    contactPerson: '',
+    email: '',
+    phone: '',
+    industry: '',
+  });
+
+  const handleQuickCreateClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quickClient.company.trim() || !quickClient.contactPerson.trim() || !quickClient.email.trim()) {
+      setQuickClientError('Company, Contact Person, and Email are required.');
+      return;
+    }
+    try {
+      setIsCreatingClient(true);
+      setQuickClientError(null);
+      const res = await api.post<Client>('/clients', quickClient);
+      const createdClient = res.data;
+      await fetchAuxData();
+      setNewProject((prev) => ({ ...prev, clientId: createdClient.id }));
+      setIsAddClientOpen(false);
+      setQuickClient({ company: '', contactPerson: '', email: '', phone: '', industry: '' });
+    } catch (err: any) {
+      setQuickClientError(err.message || 'Failed to create client');
+    } finally {
+      setIsCreatingClient(false);
+    }
+  };
+
   const fetchProjects = async () => {
     try {
       setIsLoading(true);
@@ -444,7 +478,19 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Client</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-semibold text-slate-300">Client</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuickClientError(null);
+                        setIsAddClientOpen(true);
+                      }}
+                      className="text-[10px] text-brand-400 hover:text-brand-300 font-semibold flex items-center gap-0.5"
+                    >
+                      <Plus className="w-3 h-3" /> New Client
+                    </button>
+                  </div>
                   <select
                     value={newProject.clientId}
                     onChange={(e) => setNewProject({ ...newProject, clientId: e.target.value })}
@@ -537,6 +583,116 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
                     </>
                   ) : (
                     <span>Create Project</span>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Quick Add Client Modal */}
+      {isAddClientOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button
+              onClick={() => setIsAddClientOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-lg font-bold text-white mb-1">Add New Client</h2>
+            <p className="text-xs text-slate-400 mb-4">Register client profile directly into organization</p>
+
+            {quickClientError && (
+              <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-rose-400" />
+                <span>{quickClientError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleQuickCreateClient} className="space-y-3 text-xs">
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Company Name *</label>
+                <input
+                  type="text"
+                  value={quickClient.company}
+                  onChange={(e) => setQuickClient({ ...quickClient, company: e.target.value })}
+                  placeholder="e.g. Acme Media Corp"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Contact Person *</label>
+                <input
+                  type="text"
+                  value={quickClient.contactPerson}
+                  onChange={(e) => setQuickClient({ ...quickClient, contactPerson: e.target.value })}
+                  placeholder="e.g. Sarah Jenkins"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">Email Address *</label>
+                  <input
+                    type="email"
+                    value={quickClient.email}
+                    onChange={(e) => setQuickClient({ ...quickClient, email: e.target.value })}
+                    placeholder="sarah@acme.com"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">Phone (Optional)</label>
+                  <input
+                    type="text"
+                    value={quickClient.phone}
+                    onChange={(e) => setQuickClient({ ...quickClient, phone: e.target.value })}
+                    placeholder="+92 300 1234567"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Industry</label>
+                <input
+                  type="text"
+                  value={quickClient.industry}
+                  onChange={(e) => setQuickClient({ ...quickClient, industry: e.target.value })}
+                  placeholder="e.g. FMCG / Out-of-Home Advertising"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-800 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAddClientOpen(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isCreatingClient}
+                  className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl font-bold shadow-md shadow-brand-600/30 transition-all cursor-pointer"
+                >
+                  {isCreatingClient ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Saving Client...</span>
+                    </>
+                  ) : (
+                    <span>Add Client</span>
                   )}
                 </button>
               </div>

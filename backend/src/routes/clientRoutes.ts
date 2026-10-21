@@ -9,8 +9,8 @@ router.use(authenticate);
 
 router.get('/', clientController.getClients);
 router.get('/:id', clientController.getClientById);
-router.post('/', authorizeRoles('CEO', 'ADMIN', 'ACCOUNT_MANAGER', 'PROJECT_MANAGER'), clientController.createClient);
-router.put('/:id', authorizeRoles('CEO', 'ADMIN', 'ACCOUNT_MANAGER', 'PROJECT_MANAGER'), clientController.updateClient);
+router.post('/', authorizeRoles('CEO', 'ADMIN', 'ACCOUNT_MANAGER', 'PROJECT_MANAGER', 'DEPARTMENT_HEAD', 'STAFF'), clientController.createClient);
+router.put('/:id', authorizeRoles('CEO', 'ADMIN', 'ACCOUNT_MANAGER', 'PROJECT_MANAGER', 'DEPARTMENT_HEAD', 'STAFF'), clientController.updateClient);
 router.delete('/:id', authorizeRoles('CEO', 'ADMIN'), clientController.deleteClient);
 
 export default router;

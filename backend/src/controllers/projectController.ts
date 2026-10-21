@@ -45,6 +45,24 @@ export async function getProjects(req: AuthenticatedRequest, res: Response) {
 export async function getProjectById(req: AuthenticatedRequest, res: Response) {
   try {
     const project = await projectService.getProjectById(req.params.id);
+    
+    // Check access: Executives/Operations see all; staff can only see projects they belong to
+    const userRole = req.user?.role;
+    const userEmail = (req.user?.email || '').toLowerCase();
+    const isExecutiveOrOperations =
+      ['CEO', 'ADMIN'].includes(userRole || '') ||
+      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(userEmail);
+
+    if (!isExecutiveOrOperations && req.user?.userId) {
+      const isMember =
+        project.projectManagerId === req.user.userId ||
+        project.accountManagerId === req.user.userId ||
+        project.members?.some((m: any) => m.userId === req.user.userId || m.user?.id === req.user.userId);
+      if (!isMember) {
+        return sendError(res, 'Access denied. You do not have permission to view another staff member\'s project.', 403);
+      }
+    }
+
     return sendSuccess(res, project);
   } catch (error: any) {
     return sendError(res, error.message, 404);
@@ -54,8 +72,13 @@ export async function getProjectById(req: AuthenticatedRequest, res: Response) {
 export async function createProject(req: AuthenticatedRequest, res: Response) {
   try {
     const projectData = { ...req.body };
-    // If not executive/operations and no projectManagerId provided, default to current user
-    const isExecutiveOrOperations = ['CEO', 'ADMIN', 'DEPARTMENT_HEAD'].includes(req.user?.role || '');
+    const userRole = req.user?.role;
+    const userEmail = (req.user?.email || '').toLowerCase();
+    const isExecutiveOrOperations =
+      ['CEO', 'ADMIN'].includes(userRole || '') ||
+      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(userEmail);
+
+    // If staff creates a project and no projectManagerId is provided, assign themselves
     if (!isExecutiveOrOperations && !projectData.projectManagerId && req.user?.userId) {
       projectData.projectManagerId = req.user.userId;
     }
@@ -68,6 +91,24 @@ export async function createProject(req: AuthenticatedRequest, res: Response) {
 
 export async function updateProject(req: AuthenticatedRequest, res: Response) {
   try {
+    // If not executive, verify that user is assigned to this project
+    const userRole = req.user?.role;
+    const userEmail = (req.user?.email || '').toLowerCase();
+    const isExecutiveOrOperations =
+      ['CEO', 'ADMIN'].includes(userRole || '') ||
+      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(userEmail);
+
+    if (!isExecutiveOrOperations && req.user?.userId) {
+      const existing = await projectService.getProjectById(req.params.id);
+      const isMember =
+        existing.projectManagerId === req.user.userId ||
+        existing.accountManagerId === req.user.userId ||
+        existing.members?.some((m: any) => m.userId === req.user.userId || m.user?.id === req.user.userId);
+      if (!isMember) {
+        return sendError(res, 'Access denied. You can only update your own projects.', 403);
+      }
+    }
+
     const project = await projectService.updateProject(req.params.id, req.body, req.user?.userId);
     return sendSuccess(res, project);
   } catch (error: any) {

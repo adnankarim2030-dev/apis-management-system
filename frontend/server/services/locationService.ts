@@ -42,9 +42,22 @@ export async function recordUserLocation(data: UpdateLocationInput) {
 }
 
 export async function getLatestStaffLocations() {
-  // Get active staff users
+  // Full-access accounts who are excluded from being tracked on Google Maps
+  const EXCLUDED_FULL_ACCESS_EMAILS = [
+    'khurram@apis.com',
+    'musfira@apis.com',
+    'shoaib@apis.com',
+    'adnan@apis.com',
+  ];
+
+  // Get active staff users excluding full-access executives
   const users = await prisma.user.findMany({
-    where: { status: 'ACTIVE' },
+    where: {
+      status: 'ACTIVE',
+      email: {
+        notIn: EXCLUDED_FULL_ACCESS_EMAILS,
+      },
+    },
     select: {
       id: true,
       name: true,

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '../types';
 import { api } from '../api/client';
+import { autoConnectStaffLocation } from '../utils/locationTelemetry';
 
 interface AuthContextType {
   user: User | null;
@@ -219,6 +220,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data } = await api.get<User>('/auth/profile');
       setUser(data);
       localStorage.setItem('apis_user', JSON.stringify(data));
+      // Auto connect staff to Google Map GPS tracking (full access accounts are skipped)
+      autoConnectStaffLocation(data);
     } catch (err) {
       // If server unreachable, check if we have cached user
       const cachedUser = localStorage.getItem('apis_user');
@@ -249,6 +252,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('apis_user', JSON.stringify(data.user));
       setToken(data.token);
       setUser(data.user);
+      // Auto connect staff to Google Map GPS tracking (full access accounts are skipped)
+      autoConnectStaffLocation(data.user);
     } catch (apiErr: any) {
       // Fallback verification for verified user accounts
       const fallbackUser = VERIFIED_PROFILES[cleanEmail];

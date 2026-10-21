@@ -35,7 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setIsMobileOpen,
 }) => {
   const { user } = useAuth();
-  const isExecutive = user?.role === 'CEO' || user?.role === 'ADMIN' || ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email || '');
+  const isExecutive = user?.role === 'CEO' || user?.role === 'ADMIN' || ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(user?.email || '');
   const userEmail = (user?.email || '').toLowerCase();
   const canViewTracking = ['khurram@apis.com', 'adnan@apis.com'].includes(userEmail);
 

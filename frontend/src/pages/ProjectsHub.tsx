@@ -25,7 +25,7 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
   const isCEO =
     roleStr === 'CEO' ||
     roleStr === 'ADMIN' ||
-    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email?.toLowerCase() || '');
+    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(user?.email?.toLowerCase() || '');
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [clients, setClients] = useState<Client[]>([]);

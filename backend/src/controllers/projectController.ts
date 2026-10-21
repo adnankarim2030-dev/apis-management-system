@@ -51,7 +51,7 @@ export async function getProjectById(req: AuthenticatedRequest, res: Response) {
     const userEmail = (req.user?.email || '').toLowerCase();
     const isExecutiveOrOperations =
       ['CEO', 'ADMIN'].includes(userRole || '') ||
-      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(userEmail);
+      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(userEmail);
 
     if (!isExecutiveOrOperations && req.user?.userId) {
       const isMember =
@@ -76,7 +76,7 @@ export async function createProject(req: AuthenticatedRequest, res: Response) {
     const userEmail = (req.user?.email || '').toLowerCase();
     const isExecutiveOrOperations =
       ['CEO', 'ADMIN'].includes(userRole || '') ||
-      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(userEmail);
+      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(userEmail);
 
     // If staff creates a project and no projectManagerId is provided, assign themselves
     if (!isExecutiveOrOperations && !projectData.projectManagerId && req.user?.userId) {
@@ -96,7 +96,7 @@ export async function updateProject(req: AuthenticatedRequest, res: Response) {
     const userEmail = (req.user?.email || '').toLowerCase();
     const isExecutiveOrOperations =
       ['CEO', 'ADMIN'].includes(userRole || '') ||
-      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(userEmail);
+      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(userEmail);
 
     if (!isExecutiveOrOperations && req.user?.userId) {
       const existing = await projectService.getProjectById(req.params.id);

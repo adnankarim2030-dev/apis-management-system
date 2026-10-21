@@ -9,7 +9,7 @@ export async function getTimesheets(req: AuthenticatedRequest, res: Response) {
     // Non-admins can only see their own timesheets unless PM/CEO or Full-Access Executive
     const isExecutive =
       ['CEO', 'ADMIN', 'PROJECT_MANAGER', 'DEPARTMENT_HEAD'].includes(req.user!.role) ||
-      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes((req.user!.email || '').toLowerCase());
+      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes((req.user!.email || '').toLowerCase());
     const targetUserId = isExecutive ? (userId as string) : req.user!.userId;
 
     const result = await timesheetService.getTimesheets({

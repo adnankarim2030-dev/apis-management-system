@@ -24,7 +24,7 @@ export const TasksHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onN
   const isCEO =
     roleStr === 'CEO' ||
     roleStr === 'ADMIN' ||
-    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email?.toLowerCase() || '');
+    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(user?.email?.toLowerCase() || '');
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);

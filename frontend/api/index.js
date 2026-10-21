@@ -38481,7 +38481,7 @@ function authorizeRoles(...allowedRoles) {
     }
     const userRole = req.user.role;
     const userEmail = (req.user.email || "").toLowerCase();
-    if (userRole === "CEO" || userRole === "ADMIN" || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes(userEmail)) {
+    if (userRole === "CEO" || userRole === "ADMIN" || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com", "adnan@apis.com"].includes(userEmail)) {
       return next();
     }
     if (!allowedRoles.includes(userRole)) {
@@ -39047,7 +39047,7 @@ async function getProjectById2(req, res) {
     const project = await getProjectById(req.params.id);
     const userRole = req.user?.role;
     const userEmail = (req.user?.email || "").toLowerCase();
-    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes(userEmail);
+    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com", "adnan@apis.com"].includes(userEmail);
     if (!isExecutiveOrOperations && req.user?.userId) {
       const isMember = project.projectManagerId === req.user.userId || project.accountManagerId === req.user.userId || project.members?.some((m) => m.userId === req.user.userId || m.user?.id === req.user.userId);
       if (!isMember) {
@@ -39064,7 +39064,7 @@ async function createProject2(req, res) {
     const projectData = { ...req.body };
     const userRole = req.user?.role;
     const userEmail = (req.user?.email || "").toLowerCase();
-    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes(userEmail);
+    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com", "adnan@apis.com"].includes(userEmail);
     if (!isExecutiveOrOperations && !projectData.projectManagerId && req.user?.userId) {
       projectData.projectManagerId = req.user.userId;
     }
@@ -39078,7 +39078,7 @@ async function updateProject2(req, res) {
   try {
     const userRole = req.user?.role;
     const userEmail = (req.user?.email || "").toLowerCase();
-    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes(userEmail);
+    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com", "adnan@apis.com"].includes(userEmail);
     if (!isExecutiveOrOperations && req.user?.userId) {
       const existing = await getProjectById(req.params.id);
       const isMember = existing.projectManagerId === req.user.userId || existing.accountManagerId === req.user.userId || existing.members?.some((m) => m.userId === req.user.userId || m.user?.id === req.user.userId);
@@ -39475,7 +39475,7 @@ async function getTasks2(req, res) {
     const { search: search2, projectId, assigneeId, reviewerId, status, priority, isOverdue, page, limit } = req.query;
     const userRole = req.user?.role;
     const userEmail = req.user?.email;
-    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes(userEmail || "");
+    const isExecutiveOrOperations = ["CEO", "ADMIN"].includes(userRole || "") || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com", "adnan@apis.com"].includes(userEmail || "");
     let effectiveAssigneeId = assigneeId;
     if (!isExecutiveOrOperations && !projectId && !assigneeId && req.user?.userId) {
       effectiveAssigneeId = req.user.userId;
@@ -39768,7 +39768,7 @@ async function approveOrRejectTimesheet(timesheetId, status, approverUserId, com
 async function getTimesheets2(req, res) {
   try {
     const { userId, projectId, startDate, endDate, status, page, limit } = req.query;
-    const isExecutive = ["CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD"].includes(req.user.role) || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com"].includes((req.user.email || "").toLowerCase());
+    const isExecutive = ["CEO", "ADMIN", "PROJECT_MANAGER", "DEPARTMENT_HEAD"].includes(req.user.role) || ["khurram@apis.com", "musfira@apis.com", "shoaib@apis.com", "adnan@apis.com"].includes((req.user.email || "").toLowerCase());
     const targetUserId = isExecutive ? userId : req.user.userId;
     const result = await getTimesheets({
       userId: targetUserId,

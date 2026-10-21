@@ -20,11 +20,11 @@ export function authorizeRoles(...allowedRoles: string[]) {
     const userRole = req.user.role;
     const userEmail = (req.user.email || '').toLowerCase();
 
-    // CEO, ADMIN, and Full-Access Executives (Khurram, Musfira, Shoaib) always have universal access
+    // CEO, ADMIN, and Full-Access Executives (Khurram, Musfira, Shoaib, Adnan) always have universal access
     if (
       userRole === 'CEO' ||
       userRole === 'ADMIN' ||
-      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(userEmail)
+      ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(userEmail)
     ) {
       return next();
     }

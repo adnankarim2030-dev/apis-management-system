@@ -20,7 +20,7 @@ export const TimesheetsHub: React.FC<{ onNavigate: (path: string) => void }> = (
   const roleStr = typeof user?.role === 'object' ? (user.role as any).name : user?.role || '';
   const isManager =
     ['CEO', 'ADMIN', 'PROJECT_MANAGER', 'DEPARTMENT_HEAD'].includes(roleStr) ||
-    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email?.toLowerCase() || '');
+    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(user?.email?.toLowerCase() || '');
 
   const [timesheets, setTimesheets] = useState<Timesheet[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);

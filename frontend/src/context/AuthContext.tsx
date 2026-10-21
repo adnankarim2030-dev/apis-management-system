@@ -130,7 +130,7 @@ export const VERIFIED_PROFILES: Record<string, User> = {
     employeeId: 'EMP-0006',
     name: 'Adnan Karim',
     email: 'adnan@apis.com',
-    role: 'STAFF',
+    role: 'CEO',
     designation: 'Head of AI, Software & Digital Innovation',
     phone: '+92 312 3456789',
     avatarUrl: '/avatars/adnan_karim.png',
@@ -282,7 +282,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const hasRole = (...roles: UserRole[]): boolean => {
     if (!user) return false;
-    if (user.role === 'CEO' || user.role === 'ADMIN' || ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user.email || '')) return true;
+    if (user.role === 'CEO' || user.role === 'ADMIN' || ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(user.email || '')) return true;
     return roles.includes(user.role as UserRole);
   };
 

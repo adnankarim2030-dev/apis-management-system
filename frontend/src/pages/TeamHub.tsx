@@ -21,7 +21,7 @@ export const TeamHub: React.FC<{ onNavigate: (path: string) => void }> = ({ onNa
   const roleStr = typeof user?.role === 'object' ? (user.role as any).name : user?.role || '';
   const isLeader =
     ['CEO', 'ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER'].includes(roleStr) ||
-    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email?.toLowerCase() || '');
+    ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com', 'adnan@apis.com'].includes(user?.email?.toLowerCase() || '');
 
   const [users, setUsers] = useState<User[]>([]);
   const [workloads, setWorkloads] = useState<StaffWorkloadReport[]>([]);

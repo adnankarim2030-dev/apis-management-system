@@ -46,7 +46,7 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
     clientId: '',
     projectManagerId: '',
     priority: 'MEDIUM',
-    budget: 50000,
+    budget: 0,
     deadline: '',
   });
 
@@ -128,7 +128,7 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
       clientId: '',
       projectManagerId: user?.id || '',
       priority: 'MEDIUM',
-      budget: 50000,
+      budget: 0,
       deadline: defaultDate,
     });
     setIsModalOpen(true);
@@ -165,7 +165,7 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
         clientId: '',
         projectManagerId: '',
         priority: 'MEDIUM',
-        budget: 50000,
+        budget: 0,
         deadline: '',
       });
       await fetchProjects();
@@ -525,7 +525,7 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1">Priority</label>
                   <select
@@ -538,16 +538,6 @@ export const ProjectsHub: React.FC<{ onNavigate: (path: string) => void }> = ({ 
                     <option value="HIGH">High</option>
                     <option value="URGENT">Urgent</option>
                   </select>
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Budget ($)</label>
-                  <input
-                    type="number"
-                    value={newProject.budget}
-                    onChange={(e) => setNewProject({ ...newProject, budget: Number(e.target.value) })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-500"
-                  />
                 </div>
 
                 <div>

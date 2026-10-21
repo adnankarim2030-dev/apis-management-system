@@ -14,6 +14,7 @@ import { ApprovalsHub } from './pages/ApprovalsHub';
 import { MessagesHub } from './pages/MessagesHub';
 import { ReportsHub } from './pages/ReportsHub';
 import { ActivityLogsHub } from './pages/ActivityLogsHub';
+import { LiveTrackingHub } from './pages/LiveTrackingHub';
 import { LoginPage } from './pages/LoginPage';
 import { RefreshCw } from 'lucide-react';
 
@@ -88,6 +89,8 @@ export const App: React.FC = () => {
         return isExecutive ? <ReportsHub onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
       case '/activity-logs':
         return isExecutive ? <ActivityLogsHub onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
+      case '/tracking':
+        return <LiveTrackingHub onNavigate={navigate} />;
       default:
         return isExecutive ? <CEODashboard onNavigate={navigate} /> : <StaffDashboard onNavigate={navigate} />;
     }

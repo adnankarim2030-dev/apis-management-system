@@ -16,6 +16,8 @@ import {
   Sparkles,
   Menu,
   X,
+  Smartphone,
+  MapPin,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -34,6 +36,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { user } = useAuth();
   const isExecutive = user?.role === 'CEO' || user?.role === 'ADMIN' || ['khurram@apis.com', 'musfira@apis.com', 'shoaib@apis.com'].includes(user?.email || '');
+  const userEmail = (user?.email || '').toLowerCase();
+  const canViewTracking = ['khurram@apis.com', 'adnan@apis.com'].includes(userEmail);
 
   const navSections = isExecutive
     ? [
@@ -117,6 +121,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
               path: '/activity-logs',
               icon: <Activity className="w-4 h-4 text-slate-400" />,
             },
+            ...(canViewTracking
+              ? [
+                  {
+                    name: 'Staff GPS Map',
+                    path: '/tracking',
+                    icon: <MapPin className="w-4 h-4 text-amber-400 animate-pulse" />,
+                    badge: 'RESTRICTED',
+                    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+                  },
+                ]
+              : []),
           ],
         },
       ]
@@ -169,6 +184,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
               path: '/messages',
               icon: <MessageSquare className="w-4 h-4 text-pink-400" />,
             },
+            ...(canViewTracking
+              ? [
+                  {
+                    name: 'Staff GPS Map',
+                    path: '/tracking',
+                    icon: <MapPin className="w-4 h-4 text-amber-400 animate-pulse" />,
+                    badge: 'RESTRICTED',
+                    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+                  },
+                ]
+              : []),
           ],
         },
       ];

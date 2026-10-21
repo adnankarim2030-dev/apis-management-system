@@ -12,11 +12,14 @@ import {
   ShieldCheck,
   ExternalLink,
   Menu,
+  Smartphone,
+  MapPin,
 } from 'lucide-react';
 import { useAuth, DEMO_USERS } from '../../context/AuthContext';
 import { UserRole, Timesheet, Notification } from '../../types';
 import { api } from '../../api/client';
 import { useSocket } from '../../context/SocketContext';
+import { MobileDownloadModal } from '../common/MobileDownloadModal';
 
 interface HeaderProps {
   onOpenSearch: () => void;
@@ -40,6 +43,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, onNavigate, onTogg
   // Demo user menu
   const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isMobileDownloadOpen, setIsMobileDownloadOpen] = useState(false);
+
+  const userEmail = (user?.email || '').toLowerCase();
+  const canViewTracking = ['khurram@apis.com', 'adnan@apis.com'].includes(userEmail);
 
   // Fetch active timesheet
   const fetchActiveSession = async () => {
@@ -151,7 +158,29 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, onNavigate, onTogg
       </div>
 
       {/* Right Controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        {/* Mobile App Download Button */}
+        <button
+          onClick={() => setIsMobileDownloadOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-brand-600/20 to-indigo-600/20 hover:from-brand-600/30 hover:to-indigo-600/30 border border-brand-500/30 text-brand-300 hover:text-white text-xs font-bold transition-all shadow-sm"
+          title="Download Mobile App (Android & iOS)"
+        >
+          <Smartphone className="w-3.5 h-3.5 text-brand-400" />
+          <span className="hidden sm:inline">Mobile App</span>
+        </button>
+
+        {/* Live GPS Map Tracking Button (STRICTLY Adnan Karim & Khurram Jaffrani) */}
+        {canViewTracking && (
+          <button
+            onClick={() => onNavigate('/tracking')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-bold transition-all shadow-sm"
+            title="Live Staff GPS Map (Adnan & CEO Khurram only)"
+          >
+            <MapPin className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+            <span className="hidden md:inline">Staff GPS Map</span>
+          </button>
+        )}
+
         {/* Active Live Timer Widget */}
         {activeSession ? (
           <div className="flex items-center gap-2.5 bg-brand-500/10 border border-brand-500/30 px-3 py-1.5 rounded-xl animate-pulse">
@@ -329,6 +358,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, onNavigate, onTogg
           )}
         </div>
       </div>
+
+      {/* Mobile Download Modal */}
+      <MobileDownloadModal
+        isOpen={isMobileDownloadOpen}
+        onClose={() => setIsMobileDownloadOpen(false)}
+        onNavigateTracking={() => onNavigate('/tracking')}
+        canViewTracking={canViewTracking}
+      />
     </header>
   );
 };

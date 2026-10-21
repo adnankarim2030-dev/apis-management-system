@@ -114,6 +114,7 @@ model User {
   
   announcementsSent  Announcement[] @relation("AnnouncementSender")
   announcementReads  AnnouncementReceipt[]
+  locationTracks     UserLocation[]
 
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
@@ -513,6 +514,31 @@ model Notification {
 
   @@index([userId])
   @@index([isRead])
+}
+
+// ----------------------------------------------------
+// LOCATION & MOBILE APP TRACKING
+// ----------------------------------------------------
+
+model UserLocation {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  latitude  Float
+  longitude Float
+  accuracy  Float?
+  speed     Float?
+  heading   Float?
+  device    String?  // 'android', 'ios', 'web'
+  battery   Int?
+  address   String?  // Resolved reverse geocoded address / area
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
 }
 
 // ----------------------------------------------------

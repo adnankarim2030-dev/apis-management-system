@@ -15,6 +15,7 @@ import searchRoutes from './searchRoutes';
 import dashboardRoutes from './dashboardRoutes';
 import departmentRoutes from './departmentRoutes';
 import activityLogRoutes from './activityLogRoutes';
+import locationRoutes from './locationRoutes';
 
 const router = Router();
 
@@ -34,5 +35,6 @@ router.use('/search', searchRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/departments', departmentRoutes);
 router.use('/activity-logs', activityLogRoutes);
+router.use('/locations', locationRoutes);
 
 export default router;
